@@ -104,6 +104,121 @@ mod adrena_abi {
     pub fn update_pool_aum(ctx: Context<UpdatePoolAum>) -> Result<u128> {
         Ok(0)
     }
+
+    pub(crate) fn execute_limit_order_long(
+        cx: Context<ExecuteLimitOrderLong>,
+        params: ExecuteLimitOrderLongParams,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    pub(crate) fn execute_limit_order_short(
+        cx: Context<ExecuteLimitOrderShort>,
+        params: ExecuteLimitOrderShortParams,
+    ) -> Result<()> {
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct ExecuteLimitOrderLong<'info> {
+    /// #1
+    #[account(mut)]
+    pub owner: AccountInfo<'info>,
+    /// #2
+    #[account(mut)]
+    pub caller: Signer<'info>,
+    /// #3
+    #[account(mut)]
+    pub collateral_escrow: AccountInfo<'info>,
+    /// #4
+    #[account(mut)]
+    pub custody: AccountLoader<'info, Custody>,
+    /// #5
+    pub custody_oracle: AccountInfo<'info>,
+    /// #6
+    pub custody_trade_oracle: AccountInfo<'info>,
+    /// #7
+    #[account(mut)]
+    pub custody_token_account: AccountInfo<'info>,
+    /// #8
+    pub transfer_authority: AccountInfo<'info>,
+    /// #9
+    #[account(mut)]
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #10
+    #[account(mut)]
+    pub pool: AccountLoader<'info, Pool>,
+    /// #11
+    #[account(mut)]
+    pub position: UncheckedAccount<'info>,
+    /// #12
+    #[account(mut)]
+    pub user_profile: Option<AccountLoader<'info, UserProfile>>,
+    /// #13
+    #[account(mut)]
+    pub limit_order_book: AccountLoader<'info, LimitOrderBook>,
+    /// #14
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+    /// #15
+    #[account(address = SPL_TOKEN_PROGRAM_ID)]
+    pub token_program: AccountInfo<'info>,
+    /// #16
+    #[account(address = ADRENA_PROGRAM_ID)]
+    pub adrena_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ExecuteLimitOrderShort<'info> {
+    /// #1
+    #[account(mut)]
+    pub owner: AccountInfo<'info>,
+    /// #2
+    #[account(mut)]
+    pub caller: Signer<'info>,
+    /// #3
+    #[account(mut)]
+    pub collateral_escrow: AccountInfo<'info>,
+    /// #4
+    #[account(mut)]
+    pub custody: AccountLoader<'info, Custody>,
+    /// #5
+    pub custody_trade_oracle: AccountInfo<'info>,
+    /// #6
+    #[account(mut)]
+    pub collateral_custody: AccountLoader<'info, Custody>,
+    /// #7
+    pub collateral_custody_oracle: AccountInfo<'info>,
+    /// #8
+    #[account(mut)]
+    pub collateral_custody_token_account: AccountInfo<'info>,
+    /// #9
+    pub transfer_authority: AccountInfo<'info>,
+    /// #10
+    #[account(mut)]
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #11
+    #[account(mut)]
+    pub pool: AccountLoader<'info, Pool>,
+    /// #12
+    #[account(mut)]
+    pub position: UncheckedAccount<'info>,
+    /// #13
+    #[account(mut)]
+    pub user_profile: Option<AccountLoader<'info, UserProfile>>,
+    /// #14
+    #[account(mut)]
+    pub limit_order_book: AccountLoader<'info, LimitOrderBook>,
+    /// #15
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+    /// #16
+    #[account(address = SPL_TOKEN_PROGRAM_ID)]
+    pub token_program: AccountInfo<'info>,
+    /// #17
+    #[account(address = ADRENA_PROGRAM_ID)]
+    pub adrena_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]

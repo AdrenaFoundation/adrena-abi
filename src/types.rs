@@ -3,6 +3,7 @@ use {
     anchor_lang::prelude::*,
     anyhow::{anyhow, Result},
     bytemuck::{Pod, Zeroable},
+    std::num::NonZeroU64,
 };
 
 pub const HOURS_PER_DAY: i64 = 24;
@@ -20,6 +21,16 @@ pub const MAX_STABLE_CUSTODY: usize = 2;
 pub const MIN_INITIAL_LEVERAGE: u32 = 11_000; // BPS
 
 pub const MAX_LOCKED_STAKE_COUNT: usize = 32;
+
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
+pub struct ExecuteLimitOrderLongParams {
+    pub id: u64,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
+pub struct ExecuteLimitOrderShortParams {
+    pub id: u64,
+}
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy)]
 pub struct ClosePositionLongParams {
@@ -997,4 +1008,36 @@ impl Pool {
             Cortex::BPS_POWER,
         )?)
     }
+}
+
+pub const MAX_LIMIT_ORDERS: usize = 16;
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct LimitOrder {
+    pub id: u64,
+    pub trigger_price: u64,
+    pub limit_price: Option<NonZeroU64>,
+    pub custody: Pubkey,
+    pub collateral_custody: Pubkey,
+    pub side: u8,
+    pub initialized: u8,
+    pub _padding: [u8; 6],
+    pub amount: u64,
+    pub leverage: u32,
+    pub _padding2: [u8; 4],
+}
+
+#[account(zero_copy)]
+#[derive(Default, Debug)]
+#[repr(C)]
+pub struct LimitOrderBook {
+    pub initialized: u8,
+    pub bump: u8,
+    pub registered_limit_order_count: u8,
+    pub _padding: [u8; 5],
+    pub limit_orders: [LimitOrder; MAX_LIMIT_ORDERS],
+    pub escrowed_lamports: u64,
 }
