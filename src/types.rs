@@ -1047,4 +1047,37 @@ impl LimitOrder {
         // Consider value in the struct always good
         Side::try_from(self.side).unwrap()
     }
+
+    // Returns yes if the order can be executed as it meets the conditions
+    pub fn is_executable(&self, token_trade_price: &OraclePrice, custody: &Pubkey) -> bool {
+        if self.custody != *custody {
+            return false;
+        }
+
+        match self.get_side() {
+            Side::Long => {
+                if token_trade_price.price < self.trigger_price {
+                    return false;
+                }
+
+                if let Some(limit_price) = self.limit_price {
+                    return token_trade_price.price < limit_price.get();
+                }
+
+                true
+            }
+            Side::Short => {
+                if token_trade_price.price > self.trigger_price {
+                    return false;
+                }
+
+                if let Some(limit_price) = self.limit_price {
+                    return token_trade_price.price > limit_price.get();
+                }
+
+                true
+            }
+            _ => false,
+        }
+    }
 }
