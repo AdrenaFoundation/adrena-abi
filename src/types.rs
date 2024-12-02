@@ -1038,6 +1038,7 @@ pub struct LimitOrderBook {
     pub bump: u8,
     pub registered_limit_order_count: u8,
     pub _padding: [u8; 5],
+    pub owner: Pubkey,
     pub limit_orders: [LimitOrder; MAX_LIMIT_ORDERS],
     pub escrowed_lamports: u64,
 }
