@@ -1041,3 +1041,10 @@ pub struct LimitOrderBook {
     pub limit_orders: [LimitOrder; MAX_LIMIT_ORDERS],
     pub escrowed_lamports: u64,
 }
+
+impl LimitOrder {
+    pub fn get_side(&self) -> Side {
+        // Consider value in the struct always good
+        Side::try_from(self.side).unwrap()
+    }
+}
