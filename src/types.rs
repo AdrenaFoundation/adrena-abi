@@ -1,5 +1,9 @@
 use {
-    crate::{math, oracle_price::OraclePrice},
+    crate::{
+        limited_string::LimitedString,
+        math,
+        oracle::{ChaosLabsBatchPrices, OraclePrice},
+    },
     anchor_lang::prelude::*,
     anyhow::{anyhow, Result},
     bytemuck::{Pod, Zeroable},
@@ -21,21 +25,31 @@ pub const MIN_INITIAL_LEVERAGE: u32 = 11_000; // BPS
 
 pub const MAX_LOCKED_STAKE_COUNT: usize = 32;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ClosePositionLongParams {
     pub price: Option<u64>,
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ClosePositionShortParams {
     pub price: Option<u64>,
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct LiquidateLongParams {}
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct LiquidateLongParams {
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct LiquidateShortParams {}
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct LiquidateShortParams {
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
 
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
 pub struct FinalizeLockedStakeParams {
@@ -48,29 +62,40 @@ pub struct ClaimStakesParams {
     pub locked_stake_indexes: Option<Vec<u8>>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct UpdatePoolAumParams {
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct DistributeFeesParams {
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct OpenPositionWithSwapParams {
     pub price: u64,
     pub collateral: u64,
     pub leverage: u32, // in BPS
     pub referrer: Option<Pubkey>,
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ExecuteLimitOrderLongParams {
     pub id: u64,
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ExecuteLimitOrderShortParams {
     pub id: u64,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, Default, Pod, Zeroable)]
-#[repr(C)]
-pub struct LimitedString {
-    pub value: [u8; 31],
-    pub length: u8,
+    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
 #[deprecated]
@@ -504,8 +529,8 @@ pub struct Custody {
     pub pool: Pubkey,
     pub mint: Pubkey,
     pub token_account: Pubkey,
-    pub oracle: Pubkey,
-    pub trade_oracle: Pubkey,
+    pub oracle: LimitedString,
+    pub trade_oracle: LimitedString,
     pub pricing: PricingParams,
     pub fees: Fees,
     pub borrow_rate: BorrowRateParams,
@@ -1045,17 +1070,6 @@ impl Pool {
                 borrow_fee_usd: total_unrealized_interest_usd,
             })
         }
-    }
-
-    pub fn get_fee_amount(fee: u16, amount: u64) -> Result<u64> {
-        if fee == 0 || amount == 0 {
-            return Ok(0);
-        }
-
-        math::checked_as_u64(math::checked_ceil_div::<u128>(
-            amount as u128 * fee as u128,
-            Cortex::BPS_POWER,
-        )?)
     }
 }
 
