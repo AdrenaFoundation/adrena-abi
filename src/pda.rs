@@ -252,7 +252,7 @@ pub fn get_collateral_escrow_pda(pool_pda: &Pubkey, owner: &Pubkey, mint: &Pubke
     )
 }
 
-pub fn get_referrer_reward_token_vault(fee_redistribution_mint: &Pubkey) -> (Pubkey, u8) {
+pub fn get_referrer_reward_token_vault_pda(fee_redistribution_mint: &Pubkey) -> (Pubkey, u8) {
     Pubkey::find_program_address(
         &[
             "referrer_reward_token_vault".as_ref(),
@@ -263,6 +263,6 @@ pub fn get_referrer_reward_token_vault(fee_redistribution_mint: &Pubkey) -> (Pub
 }
 
 // The Oracle is now the onchain entity that aggregate prices from multiple sources
-pub fn get_oracle() -> (Pubkey, u8) {
+pub fn get_oracle_pda() -> (Pubkey, u8) {
     Pubkey::find_program_address(&["oracle".as_ref()], &crate::id())
 }
