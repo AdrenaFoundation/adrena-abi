@@ -261,3 +261,8 @@ pub fn get_referrer_reward_token_vault(fee_redistribution_mint: &Pubkey) -> (Pub
         &crate::id(),
     )
 }
+
+// The Oracle is now the onchain entity that aggregate prices from multiple sources
+pub fn get_oracle() -> (Pubkey, u8) {
+    Pubkey::find_program_address(&["oracle".as_ref()], &crate::id())
+}
