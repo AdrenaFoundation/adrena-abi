@@ -5,7 +5,7 @@ use {
 };
 
 // Storage space must be known in advance, as such all strings are limited to 64 characters.
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Zeroable, Pod)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Zeroable, Pod, Eq, Hash)]
 #[repr(C)]
 pub struct LimitedString {
     pub value: [u8; 31],
