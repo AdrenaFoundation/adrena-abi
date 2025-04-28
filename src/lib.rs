@@ -152,6 +152,17 @@ mod adrena_abi {
     ) -> Result<()> {
         Ok(())
     }
+
+    pub fn add_liquidity(ctx: Context<AddLiquidity>, params: AddLiquidityParams) -> Result<()> {
+        Ok(())
+    }
+
+    pub fn remove_liquidity(
+        ctx: Context<RemoveLiquidity>,
+        params: RemoveLiquidityParams,
+    ) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -684,7 +695,7 @@ pub struct ExecuteLimitOrderShort<'info> {
     pub custody: AccountLoader<'info, Custody>,
     /// #5  
     #[account(mut)]
-    pub oracle: AccountLoader<'info, Oracle>,   
+    pub oracle: AccountLoader<'info, Oracle>,
     /// #6
     #[account(mut)]
     pub collateral_custody: AccountLoader<'info, Custody>,
@@ -769,4 +780,91 @@ pub struct DistributeFees<'info> {
     /// #19
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct AddLiquidity<'info> {
+    /// #1
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    /// #2
+    #[account(mut)]
+    pub funding_account: AccountInfo<'info>,
+    /// #3
+    #[account(mut)]
+    pub lp_token_account: AccountInfo<'info>,
+    /// #4
+    pub transfer_authority: AccountInfo<'info>,
+    /// #5
+    #[account(mut)]
+    pub lp_staking: AccountLoader<'info, Staking>,
+    /// #6
+    #[account(mut)]
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #7
+    #[account(mut)]
+    pub pool: AccountLoader<'info, Pool>,
+    /// #8
+    #[account(mut)]
+    pub custody: AccountLoader<'info, Custody>,
+    /// #9
+    #[account(mut)]
+    pub oracle: AccountLoader<'info, Oracle>,
+    /// #10
+    #[account(mut)]
+    pub custody_token_account: AccountInfo<'info>,
+    /// #11
+    #[account(mut)]
+    pub lp_token_mint: AccountInfo<'info>,
+    /// #12
+    #[account(address = SPL_TOKEN_PROGRAM_ID)]
+    pub token_program: AccountInfo<'info>,
+    /// #13
+    #[account(address = ADRENA_PROGRAM_ID)]
+    pub adrena_program: AccountInfo<'info>,
+    //
+    // remaining accounts:
+    //   pool.tokens.len() custody accounts (read-only, unsigned)
+}
+
+#[derive(Accounts)]
+pub struct RemoveLiquidity<'info> {
+    /// #1
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    /// #2
+    #[account(mut)]
+    pub receiving_account: AccountInfo<'info>,
+    /// #3
+    #[account(mut)]
+    pub lp_token_account: AccountInfo<'info>,
+    /// #4
+    pub transfer_authority: AccountInfo<'info>,
+    /// #5
+    #[account(mut)]
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #6
+    #[account(mut)]
+    pub pool: AccountLoader<'info, Pool>,
+    /// #7
+    #[account(mut)]
+    pub custody: AccountLoader<'info, Custody>,
+    /// #8
+    #[account(mut)]
+    pub oracle: AccountLoader<'info, Oracle>,
+    /// #9
+    #[account(mut)]
+    pub custody_token_account: AccountInfo<'info>,
+    /// #10
+    #[account(mut)]
+    pub lp_token_mint: AccountInfo<'info>,
+    /// #11
+    #[account(address = SPL_TOKEN_PROGRAM_ID)]
+    pub token_program: AccountInfo<'info>,
+    /// #12
+    #[account(address = ADRENA_PROGRAM_ID)]
+    pub adrena_program: AccountInfo<'info>,
+    //
+    // remaining accounts:
+    //   pool.tokens.len() custody accounts (read-only, unsigned)
 }

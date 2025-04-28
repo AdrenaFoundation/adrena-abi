@@ -98,6 +98,22 @@ pub struct ExecuteLimitOrderShortParams {
     pub oracle_prices: Option<ChaosLabsBatchPrices>,
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct AddLiquidityParams {
+    pub amount_in: u64,
+    pub min_lp_amount_out: u64,
+    // Always use, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct RemoveLiquidityParams {
+    pub lp_amount_in: u64,
+    pub min_amount_out: u64,
+    // Always use, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
+    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+}
+
 #[deprecated]
 #[derive(
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
