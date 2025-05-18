@@ -124,7 +124,7 @@ impl OraclePrice {
         .map_err(|_| anyhow::anyhow!("Math error"))
     }
 
-    pub fn new(price: u64, exponent: i32, conf: u64, timestamp: i64) -> Self {
+    pub fn new(price: u64, exponent: i32, conf: u64, timestamp: i64, name: &LimitedString) -> Self {
         Self {
             price,
             exponent,
@@ -132,7 +132,7 @@ impl OraclePrice {
             timestamp,
             chaos_labs_feed_id: 0,
             _padding: [0; 3],
-            name: LimitedString::new(""),
+            name: name.clone(),
         }
     }
 }
