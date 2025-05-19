@@ -281,6 +281,7 @@ pub struct LiquidateShort<'info> {
     #[account(mut)]
     pub custody: AccountLoader<'info, Custody>,
     /// #8
+    #[account(mut)]
     pub oracle: AccountLoader<'info, Oracle>,
     /// #9
     #[account(mut)]
@@ -325,6 +326,7 @@ pub struct LiquidateLong<'info> {
     #[account(mut)]
     pub custody: AccountLoader<'info, Custody>,
     /// #8
+    #[account(mut)]
     pub oracle: AccountLoader<'info, Oracle>,
     /// #9
     #[account(mut)]
