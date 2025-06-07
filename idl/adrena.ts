@@ -1,5 +1,5 @@
 export type Adrena = {
-  "version": "1.2.3",
+  "version": "1.3.1",
   "name": "adrena",
   "instructions": [
     {
@@ -622,11 +622,19 @@ export type Adrena = {
       "accounts": [
         {
           "name": "owner",
-          "isMut": true,
-          "isSigner": true,
+          "isMut": false,
+          "isSigner": false,
           "docs": [
             "#1",
             "Wallet related to the user profile"
+          ]
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#2"
           ]
         },
         {
@@ -634,8 +642,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": true,
           "docs": [
-            "#2",
-            "Account paying for the reallocation"
+            "#3"
           ]
         },
         {
@@ -643,7 +650,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#3"
+            "#4"
           ]
         },
         {
@@ -651,7 +658,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#4",
+            "#5",
             "Use PDA to make nicknames unique"
           ]
         },
@@ -660,7 +667,7 @@ export type Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#5"
+            "#6"
           ]
         },
         {
@@ -668,7 +675,7 @@ export type Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#6"
+            "#7"
           ]
         },
         {
@@ -676,7 +683,7 @@ export type Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#7"
+            "#8"
           ]
         }
       ],
@@ -3653,6 +3660,14 @@ export type Adrena = {
           "docs": [
             "#4"
           ]
+        },
+        {
+          "name": "lpTokenMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
         }
       ],
       "args": [
@@ -4603,9 +4618,17 @@ export type Adrena = {
         {
           "name": "user",
           "isMut": false,
-          "isSigner": true,
+          "isSigner": false,
           "docs": [
             "#1"
+          ]
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#2"
           ]
         },
         {
@@ -4613,7 +4636,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": true,
           "docs": [
-            "#2"
+            "#3"
           ]
         },
         {
@@ -4621,7 +4644,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#3"
+            "#4"
           ]
         },
         {
@@ -4629,7 +4652,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#4",
+            "#5",
             "Use PDA to make nicknames unique"
           ]
         },
@@ -4639,7 +4662,7 @@ export type Adrena = {
           "isSigner": false,
           "isOptional": true,
           "docs": [
-            "#5",
+            "#6",
             "Apply this referrer to the user profile, If none, referrer_profile is set to default"
           ]
         },
@@ -4648,7 +4671,7 @@ export type Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#6"
+            "#7"
           ]
         },
         {
@@ -4656,7 +4679,7 @@ export type Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#7"
+            "#8"
           ]
         }
       ],
@@ -6815,7 +6838,7 @@ export type Adrena = {
         },
         {
           "name": "pool",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "#2"
@@ -6861,7 +6884,7 @@ export type Adrena = {
         },
         {
           "name": "pool",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "#2"
@@ -8826,6 +8849,75 @@ export type Adrena = {
           ]
         }
       ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "InitOracleParams"
+          }
+        }
+      ]
+    },
+    {
+      "name": "patchCustodiesOracles",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#1"
+          ]
+        },
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#2"
+          ]
+        },
+        {
+          "name": "cortex",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#3"
+          ]
+        },
+        {
+          "name": "usdcCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#4"
+          ]
+        },
+        {
+          "name": "bonkCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
+        },
+        {
+          "name": "wbtcCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#6"
+          ]
+        },
+        {
+          "name": "jitoCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#7"
+          ]
+        }
+      ],
       "args": []
     }
   ],
@@ -9254,49 +9346,6 @@ export type Adrena = {
       }
     },
     {
-      "name": "oraclePrice",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "price",
-            "type": "u64"
-          },
-          {
-            "name": "confidence",
-            "type": "u64"
-          },
-          {
-            "name": "timestamp",
-            "type": "i64"
-          },
-          {
-            "name": "exponent",
-            "type": "i32"
-          },
-          {
-            "name": "chaosLabsFeedId",
-            "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": {
-              "defined": "LimitedString"
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "pool",
       "type": {
         "kind": "struct",
@@ -9361,13 +9410,8 @@ export type Adrena = {
             "type": "u64"
           },
           {
-            "name": "padding1",
-            "type": {
-              "array": [
-                "u8",
-                8
-              ]
-            }
+            "name": "lpTokenPriceUsd",
+            "type": "u64"
           },
           {
             "name": "whitelistedSwapper",
@@ -9385,13 +9429,8 @@ export type Adrena = {
             }
           },
           {
-            "name": "padding2",
-            "type": {
-              "array": [
-                "u8",
-                8
-              ]
-            }
+            "name": "lastAumAndLpTokenPriceUsdUpdate",
+            "type": "i64"
           },
           {
             "name": "uniqueLimitOrderIdCounter",
@@ -9787,13 +9826,16 @@ export type Adrena = {
             "type": "u8"
           },
           {
+            "name": "team",
+            "type": "u8"
+          },
+          {
+            "name": "continent",
+            "type": "u8"
+          },
+          {
             "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
+            "type": "u8"
           },
           {
             "name": "nickname",
@@ -10272,6 +10314,40 @@ export type Adrena = {
           {
             "name": "ecosystemBucketAllocation",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePricesSetup",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "defined": "LimitedString"
+            }
+          },
+          {
+            "name": "chaosLabsFeedId",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitOracleParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oraclePrices",
+            "type": {
+              "vec": {
+                "defined": "OraclePricesSetup"
+              }
+            }
           }
         ]
       }
@@ -11126,6 +11202,18 @@ export type Adrena = {
           {
             "name": "title",
             "type": "u8"
+          },
+          {
+            "name": "team",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "continent",
+            "type": {
+              "option": "u8"
+            }
           }
         ]
       }
@@ -11165,6 +11253,14 @@ export type Adrena = {
           },
           {
             "name": "title",
+            "type": "u8"
+          },
+          {
+            "name": "team",
+            "type": "u8"
+          },
+          {
+            "name": "continent",
             "type": "u8"
           }
         ]
@@ -12148,6 +12244,49 @@ export type Adrena = {
       }
     },
     {
+      "name": "OraclePrice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "confidence",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "exponent",
+            "type": "i32"
+          },
+          {
+            "name": "chaosLabsFeedId",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "defined": "LimitedString"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "TokenRatios",
       "type": {
         "kind": "struct",
@@ -12702,7 +12841,73 @@ export type Adrena = {
             "name": "TheChameleon"
           },
           {
-            "name": "TheVoter"
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -12732,6 +12937,33 @@ export type Adrena = {
           },
           {
             "name": "Streak5"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -12767,6 +12999,54 @@ export type Adrena = {
           },
           {
             "name": "StakedHolder"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
           }
         ]
       }
@@ -12781,6 +13061,55 @@ export type Adrena = {
           },
           {
             "name": "V2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Team",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Default"
+          },
+          {
+            "name": "Bonk"
+          },
+          {
+            "name": "Jito"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Continent",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Default"
+          },
+          {
+            "name": "Europe"
+          },
+          {
+            "name": "NorthAmerica"
+          },
+          {
+            "name": "SouthAmerica"
+          },
+          {
+            "name": "Asia"
+          },
+          {
+            "name": "Africa"
+          },
+          {
+            "name": "Australia"
+          },
+          {
+            "name": "Antarctica"
           }
         ]
       }
@@ -12956,7 +13285,73 @@ export type Adrena = {
             "name": "ChangeUsername10"
           },
           {
-            "name": "VoteDAOProposal"
+            "name": "Soldier"
+          },
+          {
+            "name": "Sergeant"
+          },
+          {
+            "name": "Lieutenant"
+          },
+          {
+            "name": "General"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -13882,16 +14277,31 @@ export type Adrena = {
     },
     {
       "code": 6080,
+      "name": "UserNicknameInvalidFormat",
+      "msg": "User nickname expected format: Monster followed by digits"
+    },
+    {
+      "code": 6081,
+      "name": "InvalidContinentOrTeam",
+      "msg": "Continent or Team is invalid"
+    },
+    {
+      "code": 6082,
+      "name": "TeamImmutable",
+      "msg": "The team can not be changed after being already set"
+    },
+    {
+      "code": 6083,
       "name": "InvalidSigner",
       "msg": "Invalid signer"
     },
     {
-      "code": 6081,
+      "code": 6084,
       "name": "MissingOraclePrice",
       "msg": "Missing at least one oracle price"
     },
     {
-      "code": 6082,
+      "code": 6085,
       "name": "InvalidOracleSignature",
       "msg": "Invalid oracle signature"
     }
@@ -13899,7 +14309,7 @@ export type Adrena = {
 };
 
 export const IDL: Adrena = {
-  "version": "1.2.3",
+  "version": "1.3.1",
   "name": "adrena",
   "instructions": [
     {
@@ -14522,11 +14932,19 @@ export const IDL: Adrena = {
       "accounts": [
         {
           "name": "owner",
-          "isMut": true,
-          "isSigner": true,
+          "isMut": false,
+          "isSigner": false,
           "docs": [
             "#1",
             "Wallet related to the user profile"
+          ]
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#2"
           ]
         },
         {
@@ -14534,8 +14952,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": true,
           "docs": [
-            "#2",
-            "Account paying for the reallocation"
+            "#3"
           ]
         },
         {
@@ -14543,7 +14960,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#3"
+            "#4"
           ]
         },
         {
@@ -14551,7 +14968,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#4",
+            "#5",
             "Use PDA to make nicknames unique"
           ]
         },
@@ -14560,7 +14977,7 @@ export const IDL: Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#5"
+            "#6"
           ]
         },
         {
@@ -14568,7 +14985,7 @@ export const IDL: Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#6"
+            "#7"
           ]
         },
         {
@@ -14576,7 +14993,7 @@ export const IDL: Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#7"
+            "#8"
           ]
         }
       ],
@@ -17553,6 +17970,14 @@ export const IDL: Adrena = {
           "docs": [
             "#4"
           ]
+        },
+        {
+          "name": "lpTokenMint",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
         }
       ],
       "args": [
@@ -18503,9 +18928,17 @@ export const IDL: Adrena = {
         {
           "name": "user",
           "isMut": false,
-          "isSigner": true,
+          "isSigner": false,
           "docs": [
             "#1"
+          ]
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#2"
           ]
         },
         {
@@ -18513,7 +18946,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": true,
           "docs": [
-            "#2"
+            "#3"
           ]
         },
         {
@@ -18521,7 +18954,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#3"
+            "#4"
           ]
         },
         {
@@ -18529,7 +18962,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#4",
+            "#5",
             "Use PDA to make nicknames unique"
           ]
         },
@@ -18539,7 +18972,7 @@ export const IDL: Adrena = {
           "isSigner": false,
           "isOptional": true,
           "docs": [
-            "#5",
+            "#6",
             "Apply this referrer to the user profile, If none, referrer_profile is set to default"
           ]
         },
@@ -18548,7 +18981,7 @@ export const IDL: Adrena = {
           "isMut": true,
           "isSigner": false,
           "docs": [
-            "#6"
+            "#7"
           ]
         },
         {
@@ -18556,7 +18989,7 @@ export const IDL: Adrena = {
           "isMut": false,
           "isSigner": false,
           "docs": [
-            "#7"
+            "#8"
           ]
         }
       ],
@@ -20715,7 +21148,7 @@ export const IDL: Adrena = {
         },
         {
           "name": "pool",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "#2"
@@ -20761,7 +21194,7 @@ export const IDL: Adrena = {
         },
         {
           "name": "pool",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "#2"
@@ -22726,6 +23159,75 @@ export const IDL: Adrena = {
           ]
         }
       ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "InitOracleParams"
+          }
+        }
+      ]
+    },
+    {
+      "name": "patchCustodiesOracles",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "#1"
+          ]
+        },
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#2"
+          ]
+        },
+        {
+          "name": "cortex",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#3"
+          ]
+        },
+        {
+          "name": "usdcCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#4"
+          ]
+        },
+        {
+          "name": "bonkCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
+        },
+        {
+          "name": "wbtcCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#6"
+          ]
+        },
+        {
+          "name": "jitoCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#7"
+          ]
+        }
+      ],
       "args": []
     }
   ],
@@ -23154,49 +23656,6 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "oraclePrice",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "price",
-            "type": "u64"
-          },
-          {
-            "name": "confidence",
-            "type": "u64"
-          },
-          {
-            "name": "timestamp",
-            "type": "i64"
-          },
-          {
-            "name": "exponent",
-            "type": "i32"
-          },
-          {
-            "name": "chaosLabsFeedId",
-            "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": {
-              "defined": "LimitedString"
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "pool",
       "type": {
         "kind": "struct",
@@ -23261,13 +23720,8 @@ export const IDL: Adrena = {
             "type": "u64"
           },
           {
-            "name": "padding1",
-            "type": {
-              "array": [
-                "u8",
-                8
-              ]
-            }
+            "name": "lpTokenPriceUsd",
+            "type": "u64"
           },
           {
             "name": "whitelistedSwapper",
@@ -23285,13 +23739,8 @@ export const IDL: Adrena = {
             }
           },
           {
-            "name": "padding2",
-            "type": {
-              "array": [
-                "u8",
-                8
-              ]
-            }
+            "name": "lastAumAndLpTokenPriceUsdUpdate",
+            "type": "i64"
           },
           {
             "name": "uniqueLimitOrderIdCounter",
@@ -23687,13 +24136,16 @@ export const IDL: Adrena = {
             "type": "u8"
           },
           {
+            "name": "team",
+            "type": "u8"
+          },
+          {
+            "name": "continent",
+            "type": "u8"
+          },
+          {
             "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
+            "type": "u8"
           },
           {
             "name": "nickname",
@@ -24172,6 +24624,40 @@ export const IDL: Adrena = {
           {
             "name": "ecosystemBucketAllocation",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePricesSetup",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "defined": "LimitedString"
+            }
+          },
+          {
+            "name": "chaosLabsFeedId",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitOracleParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oraclePrices",
+            "type": {
+              "vec": {
+                "defined": "OraclePricesSetup"
+              }
+            }
           }
         ]
       }
@@ -25026,6 +25512,18 @@ export const IDL: Adrena = {
           {
             "name": "title",
             "type": "u8"
+          },
+          {
+            "name": "team",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "continent",
+            "type": {
+              "option": "u8"
+            }
           }
         ]
       }
@@ -25065,6 +25563,14 @@ export const IDL: Adrena = {
           },
           {
             "name": "title",
+            "type": "u8"
+          },
+          {
+            "name": "team",
+            "type": "u8"
+          },
+          {
+            "name": "continent",
             "type": "u8"
           }
         ]
@@ -26048,6 +26554,49 @@ export const IDL: Adrena = {
       }
     },
     {
+      "name": "OraclePrice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "confidence",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "exponent",
+            "type": "i32"
+          },
+          {
+            "name": "chaosLabsFeedId",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "defined": "LimitedString"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "TokenRatios",
       "type": {
         "kind": "struct",
@@ -26602,7 +27151,73 @@ export const IDL: Adrena = {
             "name": "TheChameleon"
           },
           {
-            "name": "TheVoter"
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -26632,6 +27247,33 @@ export const IDL: Adrena = {
           },
           {
             "name": "Streak5"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -26667,6 +27309,54 @@ export const IDL: Adrena = {
           },
           {
             "name": "StakedHolder"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
           }
         ]
       }
@@ -26681,6 +27371,55 @@ export const IDL: Adrena = {
           },
           {
             "name": "V2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Team",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Default"
+          },
+          {
+            "name": "Bonk"
+          },
+          {
+            "name": "Jito"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Continent",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Default"
+          },
+          {
+            "name": "Europe"
+          },
+          {
+            "name": "NorthAmerica"
+          },
+          {
+            "name": "SouthAmerica"
+          },
+          {
+            "name": "Asia"
+          },
+          {
+            "name": "Africa"
+          },
+          {
+            "name": "Australia"
+          },
+          {
+            "name": "Antarctica"
           }
         ]
       }
@@ -26856,7 +27595,73 @@ export const IDL: Adrena = {
             "name": "ChangeUsername10"
           },
           {
-            "name": "VoteDAOProposal"
+            "name": "Soldier"
+          },
+          {
+            "name": "Sergeant"
+          },
+          {
+            "name": "Lieutenant"
+          },
+          {
+            "name": "General"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
           }
         ]
       }
@@ -27782,16 +28587,31 @@ export const IDL: Adrena = {
     },
     {
       "code": 6080,
+      "name": "UserNicknameInvalidFormat",
+      "msg": "User nickname expected format: Monster followed by digits"
+    },
+    {
+      "code": 6081,
+      "name": "InvalidContinentOrTeam",
+      "msg": "Continent or Team is invalid"
+    },
+    {
+      "code": 6082,
+      "name": "TeamImmutable",
+      "msg": "The team can not be changed after being already set"
+    },
+    {
+      "code": 6083,
       "name": "InvalidSigner",
       "msg": "Invalid signer"
     },
     {
-      "code": 6081,
+      "code": 6084,
       "name": "MissingOraclePrice",
       "msg": "Missing at least one oracle price"
     },
     {
-      "code": 6082,
+      "code": 6085,
       "name": "InvalidOracleSignature",
       "msg": "Invalid oracle signature"
     }
