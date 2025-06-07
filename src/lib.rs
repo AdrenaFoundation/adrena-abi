@@ -525,6 +525,8 @@ pub struct UpdatePoolAum<'info> {
     /// #4
     #[account(mut)]
     pub oracle: AccountLoader<'info, Oracle>,
+    /// #5
+    pub lp_token_mint: AccountInfo<'info>,
     //
     // remaining accounts:
     //   pool.tokens.len() custody accounts (read-only, unsigned)
