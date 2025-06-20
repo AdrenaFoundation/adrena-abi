@@ -10,7 +10,6 @@ pub mod liquidation_price;
 pub mod math;
 pub mod oracle;
 pub mod pda;
-pub mod pyth;
 pub mod types;
 
 declare_id!("13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet");
@@ -51,13 +50,7 @@ pub mod main_pool {
     pub static WBTC_CUSTODY_ID: Pubkey = pubkey!("GFu3qS22mo6bAjg4Lr5R7L8pPgHq6GvbjJPKEHkbbs2c");
 }
 
-// For PriceUpdateV2 from Pyth
-// Needed for the DistributeFees structure
-pub use crate::pyth::PriceUpdateV2;
-
-// Define Adrena program type for the DistributeFees structure
 pub struct Adrena;
-
 #[program]
 mod adrena_abi {
     #![allow(dead_code)]
@@ -65,8 +58,6 @@ mod adrena_abi {
     #![allow(clippy::too_many_arguments)]
 
     use super::*;
-
-    // ========== MARGIN ==========
 
     pub(crate) fn close_position_long(
         cx: Context<ClosePositionLong>,

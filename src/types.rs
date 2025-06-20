@@ -296,7 +296,7 @@ pub struct U128Split {
 #[derive(Default, Debug)]
 #[repr(C)]
 pub struct Pool {
-    pub bump: u8,
+pub bump: u8,
     pub lp_token_bump: u8,
     pub nb_stable_custody: u8,
     pub initialized: u8,
@@ -306,17 +306,13 @@ pub struct Pool {
     pub registered_custody_count: u8,
     pub name: LimitedString,
     pub custodies: [Pubkey; MAX_CUSTODIES],
-    // Keep track of fees debt
     pub fees_debt_usd: u64, // Doesn't include the referrers_fee_debt_usd
     pub referrers_fee_debt_usd: u64,
-    //
-    // Keep a stat about how much referral fees have been generated from all time
     pub cumulative_referrer_fee_usd: u64,
-    pub _padding1: [u8; 8],
+    pub lp_token_price_usd: u64,
     pub whitelisted_swapper: Pubkey,
     pub ratios: [TokenRatios; MAX_CUSTODIES],
-    pub _padding2: [u8; 8],
-    // Unique ID counter for limit orders (incremented with wrapping add, looping)
+    pub last_aum_and_lp_token_price_usd_update: i64,
     pub unique_limit_order_id_counter: u64,
     pub aum_usd: U128Split,
     pub inception_time: i64,
@@ -818,6 +814,8 @@ pub enum LeverageCheckStatus {
 }
 
 impl Pool {
+     pub const LEN: usize = 8 + std::mem::size_of::<Pool>();
+
     // Utility function used to avoid dealing with blank spots in custodies array
     pub fn get_custodies(&self) -> Vec<Pubkey> {
         let mut custodies: Vec<Pubkey> = vec![];
