@@ -30,6 +30,7 @@ pub struct ClosePositionLongParams {
     pub price: Option<u64>,
     // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
     pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub percentage: u64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
@@ -37,6 +38,7 @@ pub struct ClosePositionShortParams {
     pub price: Option<u64>,
     // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
     pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub percentage: u64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
@@ -296,7 +298,7 @@ pub struct U128Split {
 #[derive(Default, Debug)]
 #[repr(C)]
 pub struct Pool {
-pub bump: u8,
+    pub bump: u8,
     pub lp_token_bump: u8,
     pub nb_stable_custody: u8,
     pub initialized: u8,
@@ -814,7 +816,7 @@ pub enum LeverageCheckStatus {
 }
 
 impl Pool {
-     pub const LEN: usize = 8 + std::mem::size_of::<Pool>();
+    pub const LEN: usize = 8 + std::mem::size_of::<Pool>();
 
     // Utility function used to avoid dealing with blank spots in custodies array
     pub fn get_custodies(&self) -> Vec<Pubkey> {
