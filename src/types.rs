@@ -349,7 +349,7 @@ pub struct Position {
     pub liquidation_fee_usd: u64,
     pub id: u64,
     pub take_profit_limit_price: u64,
-    pub _padding_unsafe3: [u8; 8],
+    pub paid_interest_usd: u64,
     pub stop_loss_limit_price: u64,
     pub stop_loss_close_position_price: u64,
 }
@@ -1006,7 +1006,7 @@ impl Pool {
         let exit_price = match Side::try_from(position.side)? {
             Side::Long => token_trade_price.price,
             Side::Short => token_trade_price.price,
-            Side::None => return Err(anyhow!("Invalid position state")),
+            Side::None => return Err(anyhow::anyhow!("Invalid position state")),
         };
 
         let exit_fee_usd: u64 = if liquidation {
@@ -1043,8 +1043,9 @@ impl Pool {
                 (position.size_usd as u128 * price_diff_profit as u128) / position.price as u128,
             )?;
 
-            if potential_profit_usd >= unrealized_loss_usd {
-                let cur_profit_usd = potential_profit_usd - unrealized_loss_usd;
+            if potential_profit_usd >= (unrealized_loss_usd + position.paid_interest_usd) {
+                let cur_profit_usd =
+                    potential_profit_usd - (unrealized_loss_usd + position.paid_interest_usd);
 
                 let max_profit_usd = if current_time <= position.open_time {
                     0
@@ -1059,15 +1060,16 @@ impl Pool {
                     loss_usd: 0u64,
                     exit_fee,
                     exit_fee_usd,
-                    borrow_fee_usd: total_unrealized_interest_usd,
+                    borrow_fee_usd: total_unrealized_interest_usd + position.paid_interest_usd,
                 })
             } else {
                 Ok(ProfitAndLoss {
                     profit_usd: 0u64,
-                    loss_usd: unrealized_loss_usd - potential_profit_usd,
+                    loss_usd: (unrealized_loss_usd + position.paid_interest_usd)
+                        - potential_profit_usd,
                     exit_fee,
                     exit_fee_usd,
-                    borrow_fee_usd: total_unrealized_interest_usd,
+                    borrow_fee_usd: total_unrealized_interest_usd + position.paid_interest_usd,
                 })
             }
         } else {
@@ -1076,14 +1078,14 @@ impl Pool {
                 position.price as u128,
             )?)?;
 
-            potential_loss_usd += unrealized_loss_usd;
+            potential_loss_usd += unrealized_loss_usd + position.paid_interest_usd;
 
             Ok(ProfitAndLoss {
                 profit_usd: 0u64,
                 loss_usd: potential_loss_usd,
                 exit_fee,
                 exit_fee_usd,
-                borrow_fee_usd: total_unrealized_interest_usd,
+                borrow_fee_usd: total_unrealized_interest_usd + position.paid_interest_usd,
             })
         }
     }
