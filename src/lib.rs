@@ -370,7 +370,7 @@ pub(crate) struct ResolveStakingRound<'info> {
     /// #9
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #10
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
@@ -439,7 +439,7 @@ pub(crate) struct ClaimStakes<'info> {
     /// #14
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #15
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
