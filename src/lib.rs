@@ -33,6 +33,7 @@ pub static ADX_MINT: Pubkey = pubkey!("AuQaustGiaqxRvj2gtCdrd22PBzTn8kM3kEPEkZCt
 pub static ALP_MINT: Pubkey = pubkey!("4yCLi5yWGzpTWMQ1iWHG5CrGYAdBkhyEdsuSugjDUqwj");
 pub static MAIN_POOL_ID: Pubkey = pubkey!("4bQRutgDJs6vuh6ZcWaPVXiQaBzbHketjbCDjL4oRN34");
 pub static GENESIS_LOCK_ID: Pubkey = pubkey!("CZpYRLt2bsuVFopyKftdWBBKm4rVr5wLiPX79Y4YoLJ5");
+pub static LM_TOKEN_TREASURY_ID: Pubkey = pubkey!("7KR5Km1NkUJsL1CLnXPmMxoE3Fq2kZyoWYSwrv5YkJ9T");
 
 pub static GOVERNANCE_PROGRAM_ID: Pubkey = pubkey!("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw");
 pub static ADRENA_GOVERNANCE_REALM_ID: Pubkey =
@@ -370,7 +371,7 @@ pub(crate) struct ResolveStakingRound<'info> {
     /// #9
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #10
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
@@ -439,7 +440,7 @@ pub(crate) struct ClaimStakes<'info> {
     /// #14
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #15
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
