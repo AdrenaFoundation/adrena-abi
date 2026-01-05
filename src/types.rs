@@ -352,6 +352,10 @@ pub struct Position {
     pub paid_interest_usd: u64,
     pub stop_loss_limit_price: u64,
     pub stop_loss_close_position_price: u64,
+    pub cumulative_long_to_short_snapshot: U128Split,
+    pub cumulative_short_to_long_snapshot: U128Split,
+    pub unrealized_funding_paid_usd: u64,
+    pub unrealized_funding_received_usd: u64,
 }
 
 impl Position {
@@ -523,6 +527,28 @@ pub struct PositionsAccounting {
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
 )]
 #[repr(C)]
+pub struct VirtualFundingParams {
+    pub max_hourly_funding_rate: u64,
+    pub min_total_oi_usd: u64,
+    pub imbalance_sensitivity_bps: u16,
+    pub _padding: [u8; 6],
+}
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct VirtualFundingState {
+    pub current_rate_long_to_short: i64,
+    pub last_update: i64,
+    pub cumulative_long_to_short: U128Split,
+    pub cumulative_short_to_long: U128Split,
+}
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
 pub struct BorrowRateState {
     pub current_rate: u64,
     pub last_update: i64,
@@ -555,6 +581,9 @@ pub struct Custody {
     pub long_positions: PositionsAccounting,
     pub short_positions: PositionsAccounting,
     pub borrow_rate_state: BorrowRateState,
+    pub optimal_utilization_bps: u64,
+    pub virtual_funding: VirtualFundingParams,
+    pub virtual_funding_state: VirtualFundingState,
 }
 
 impl Custody {

@@ -1,5 +1,5 @@
 export type Adrena = {
-  version: "1.3.2";
+  version: "1.4.0";
   name: "adrena";
   instructions: [
     {
@@ -11987,7 +11987,7 @@ export type Adrena = {
     {
       code: 6066;
       name: "PositionTooYoung";
-      msg: "A position cannot be close right after open, a slight delay is enforced";
+      msg: "A position cannot be close right after open or update, a slight delay is enforced";
     },
     {
       code: 6067;
@@ -12083,12 +12083,25 @@ export type Adrena = {
       code: 6085;
       name: "InvalidOracleSignature";
       msg: "Invalid oracle signature";
+    },
+    {
+      code: 6086;
+      name: "CustodyBelowMinimum";
+      msg: "Custody amount is below minimum required";
+    },
+    {
+      code: 6087;
+      name: "CustodyAlreadyMigrated";
+      msg: "Custody borrow rate params already migrated";
     }
   ];
+  metadata: {
+    address: "DAm58kVf5CB4XWp4vXD22JnbY46VTGTDBm3vdmzeSULx";
+  };
 };
 
 export const IDL: Adrena = {
-  version: "1.3.2",
+  version: "1.4.0",
   name: "adrena",
   instructions: [
     {
@@ -24076,7 +24089,7 @@ export const IDL: Adrena = {
     {
       code: 6066,
       name: "PositionTooYoung",
-      msg: "A position cannot be close right after open, a slight delay is enforced",
+      msg: "A position cannot be close right after open or update, a slight delay is enforced",
     },
     {
       code: 6067,
@@ -24173,5 +24186,18 @@ export const IDL: Adrena = {
       name: "InvalidOracleSignature",
       msg: "Invalid oracle signature",
     },
+    {
+      code: 6086,
+      name: "CustodyBelowMinimum",
+      msg: "Custody amount is below minimum required",
+    },
+    {
+      code: 6087,
+      name: "CustodyAlreadyMigrated",
+      msg: "Custody borrow rate params already migrated",
+    },
   ],
+  metadata: {
+    address: "DAm58kVf5CB4XWp4vXD22JnbY46VTGTDBm3vdmzeSULx",
+  },
 };
