@@ -12,7 +12,7 @@ pub mod oracle;
 pub mod pda;
 pub mod types;
 
-declare_id!("DAm58kVf5CB4XWp4vXD22JnbY46VTGTDBm3vdmzeSULx");
+declare_id!("2YQBWSzpJ3Cm9ACTM3mxbUNBFSDJPLkr77pcNgfQpfFQ");
 
 pub static SYSTEM_PROGRAM_ID: Pubkey = pubkey!("11111111111111111111111111111111");
 pub static SPL_TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
@@ -22,32 +22,40 @@ pub static SPL_GOVERNANCE_PROGRAM_ID: Pubkey =
     pubkey!("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw");
 
 pub static SOL_MINT: Pubkey = pubkey!("So11111111111111111111111111111111111111112");
-pub static USDC_MINT: Pubkey = pubkey!("9RvxDnALuB9K56o6Bm4vBjk9QrvdmVUN1nBbuYjAVaFq");
-pub static BONK_MINT: Pubkey = pubkey!("CaEpGQH3fn3J3vpxxHnsb7pg7KGiSx7C6BHSoYiggt3d");
-pub static JITO_MINT: Pubkey = pubkey!("G3xfER3NNmfzPnUF7JHvsnxzXVG7etUxSfP4bftXSWH");
-pub static WBTC_MINT: Pubkey = pubkey!("EuBHBg7cTaULkAFXNkmobGkvKNVqohj6Qhbc1V1wFZKS");
+pub static USDC_MINT: Pubkey = pubkey!("ASjUCMzDTrPBqqEjufAetHEFip3cgsTnzbuBn6oUksDH");
+// pub static BONK_MINT: Pubkey = pubkey!("CaEpGQH3fn3J3vpxxHnsb7pg7KGiSx7C6BHSoYiggt3d");
+// pub static JITO_MINT: Pubkey = pubkey!("G3xfER3NNmfzPnUF7JHvsnxzXVG7etUxSfP4bftXSWH");
+// pub static WBTC_MINT: Pubkey = pubkey!("EuBHBg7cTaULkAFXNkmobGkvKNVqohj6Qhbc1V1wFZKS");
 
-pub static ADRENA_PROGRAM_ID: Pubkey = pubkey!("DAm58kVf5CB4XWp4vXD22JnbY46VTGTDBm3vdmzeSULx");
-pub static CORTEX_ID: Pubkey = pubkey!("Bc1uPvsPrLnmsKNyJDUMsgDnQeGcLht3y2M4RSLfcCUf");
-pub static ADX_MINT: Pubkey = pubkey!("7vc6YfSjZPFUMb3yLU4YkoD8cvgUpMrqWxfKmqDix3p5");
-pub static ALP_MINT: Pubkey = pubkey!("BJUwxvBeisbdYbLeY8cMKRsD1ZgyYyeStuw3FGcSaj5a");
-pub static MAIN_POOL_ID: Pubkey = pubkey!("J549hEwweKk8v9jySQ8qExzNQMAWeYsL8HcUbfjarTCc");
-pub static GENESIS_LOCK_ID: Pubkey = pubkey!("RrALdWNDD9KR1pgJvTh1wiof1NsajyCVmGM623JmauM");
+
+
+pub static ADRENA_PROGRAM_ID: Pubkey = pubkey!("2YQBWSzpJ3Cm9ACTM3mxbUNBFSDJPLkr77pcNgfQpfFQ");
+pub static CORTEX_ID: Pubkey = pubkey!("6qSZCv6mZ6M2qKiDPzrodGTqgSTWeE94fMk4TQuvLv8U");
+pub static ADX_MINT: Pubkey = pubkey!("BNj5HRf8TaAvESEiihVHRWEYuhsg5qDpsZ1tDb1TLrLz");
+pub static ALP_MINT: Pubkey = pubkey!("DMKoK159PynLCpivqeaHCEGvhgZtwJGWKzbnNaLdq2Ry");
+pub static MAIN_POOL_ID: Pubkey = pubkey!("87P2SpeXog93mAnaGaF8DDK7nn6UvkKu2MiBSKpKJH1q");
+pub static GENESIS_LOCK_ID: Pubkey = pubkey!("GK4pAuN3J55BGzAfPmrhzKKm7huZosLAQiJMxvqJTb2H");
 
 pub static GOVERNANCE_PROGRAM_ID: Pubkey = pubkey!("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw");
 pub static ADRENA_GOVERNANCE_REALM_ID: Pubkey =
-    pubkey!("HykDsQFSZtEZAhA8Gk3H9hvUQzbFEDNmNszuT6Q1hDyF");
+    pubkey!("DR8GZUDmxAex2Ss2ofFfsdQfDGkQ2pqv4BuBSrAQWECG");
 pub static ADRENA_GOVERNANCE_REALM_CONFIG_ID: Pubkey =
-    pubkey!("3VrhTkzYJG5rtuyseN8Vpv8UpKCBMkmMMmi8M27gp8Wo");
+    pubkey!("CpJMyUuzshixV1m5963pi7m79rdsbUHXKf3GUwx2h1R5");
 pub static ADRENA_GOVERNANCE_SHADOW_TOKEN_MINT: Pubkey =
-    pubkey!("TPWYQAUYtkUf2Pq7uojrKRsgstz13Hho9vogCsSCaUN");
+    pubkey!("CL8DFkbptTLWn3W2PPGeLnEgB7f96QAvXAuYZckSGEAA");
 
 pub mod main_pool {
     use super::*;
-    pub static USDC_CUSTODY_ID: Pubkey = pubkey!("4R6hvRjDutgZk75mfLiM73rcxFLev7sYXWkXmHM6bpMt");
-    pub static BONK_CUSTODY_ID: Pubkey = pubkey!("GDj9qyrYRxNNCbzzTHqHFqLSZNhBbV15y6rPLgP4tqpM");
-    pub static JITOSOL_CUSTODY_ID: Pubkey = pubkey!("CB4onPyysWcStLPEfFKxFTNVEpP2FoNfGQSoEhAgXEPJ");
-    pub static WBTC_CUSTODY_ID: Pubkey = pubkey!("9sUTsSw3F6MGsvLae9DX98QgKRPrr2iM1Tx4teRHdjiy");
+    pub static USDC_CUSTODY_ID: Pubkey = pubkey!("GR27LsRjLczBbwaxs8QtSfjyNn3umgQAFDe2T6VHPc1S");
+    // pub static BONK_CUSTODY_ID: Pubkey = pubkey!("GDj9qyrYRxNNCbzzTHqHFqLSZNhBbV15y6rPLgP4tqpM");
+    // pub static JITOSOL_CUSTODY_ID: Pubkey = pubkey!("CB4onPyysWcStLPEfFKxFTNVEpP2FoNfGQSoEhAgXEPJ");
+    // pub static WBTC_CUSTODY_ID: Pubkey = pubkey!("9sUTsSw3F6MGsvLae9DX98QgKRPrr2iM1Tx4teRHdjiy");
+    
+    // Synthetic asset custodies
+    pub static CHE_CUSTODY_ID: Pubkey = pubkey!("8wqPp4po2HdnVDZWv1J4f5A2FeqUrg1XGWKwZuqq6M71");
+    pub static LH1_CUSTODY_ID: Pubkey = pubkey!("UQhR4BTKEFhHybc6TsovTV3NCPqsTTNXeaEMrspaSuC");
+    pub static XAU_CUSTODY_ID: Pubkey = pubkey!("EPLHGSYMQyZA2jjwn5LvF4nupuU1TKzXN4cfkYoGrrE4");
+    pub static XAG_CUSTODY_ID: Pubkey = pubkey!("Gpfj7PzkGwWWSqvuYViWvB4bF7qFrfSCLKaHXzURosiZ");
 }
 
 pub struct Adrena;
