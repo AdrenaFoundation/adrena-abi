@@ -387,10 +387,6 @@ pub struct Pool {
     pub custodies: [Pubkey; MAX_CUSTODIES],
     pub ratios: [TokenRatios; MAX_CUSTODIES],
     pub synthetic_custodies: [Pubkey; MAX_SYNTHETIC_CUSTODIES],
-    //
-    // Reserved space for future releases
-    // 128 bytes = 4 * 32 bytes (4 Pubkeys)
-    pub _reserved: [[u8; 32]; 4],
 }
 
 #[account(zero_copy)]
@@ -967,7 +963,6 @@ impl Default for Pool {
             custodies: [Pubkey::default(); MAX_CUSTODIES],
             ratios: [TokenRatios::default(); MAX_CUSTODIES],
             synthetic_custodies: [Pubkey::default(); MAX_SYNTHETIC_CUSTODIES],
-            _reserved: [[0u8; 32]; 4],
         }
     }
 }
