@@ -19,8 +19,8 @@ pub const SECONDS_PER_MONTH: i64 = 30 * SECONDS_PER_HOURS * 24;
 pub const MAX_ROUNDS_PER_MONTH: u64 = SECONDS_PER_MONTH as u64 / ROUND_MIN_DURATION_SECONDS as u64;
 
 pub const MAX_CUSTODIES: usize = 8;
-pub const MAX_SYNTHETIC_CUSTODIES: usize = 8;
-pub const MAX_AUTONOM_STOCKS_CUSTODIES: usize = 8;
+pub const MAX_SYNTHETIC_CUSTODIES: usize = 32;
+pub const MAX_AUTONOM_STOCKS_CUSTODIES: usize = 32;
 
 pub const MAX_STABLE_CUSTODY: usize = 2;
 pub const MIN_INITIAL_LEVERAGE: u32 = 11_000; // BPS
@@ -321,6 +321,7 @@ pub struct Pool {
     pub liquidity_state: u8, // PoolLiquidityState
     pub registered_custody_count: u8,
     pub name: LimitedString,
+    //
     pub oracle_provider: u8, // OracleProvider
     pub registered_synthetic_custody_count: u8,
     pub version: u8,
@@ -329,33 +330,55 @@ pub struct Pool {
     /* ****************************************** */
     /* Data specific to Autonom Stock Market Pool */
     /* ****************************************** */
+    //
+    // Only relevant when oracle_provider is OracleProvider::Autonom
+    //
+    // Must be updated every time the market opens to allow trades
     pub market_open_timestamp: i64,
     pub market_close_timestamp: i64,
-    pub market_close_affected_feeds: [u8; MAX_AUTONOM_STOCKS_CUSTODIES],
+
+    // Timestamp of the prices accepted to close affected positions with
     pub market_close_event_timestamp: i64,
-    pub _padding2a: [u8; 32],
-    pub _padding2b: [u8; 32],
-    pub _padding2c: [u8; 32],
-    pub _padding2d: [u8; 6],
+    //
+    // Feeds (stocks) affected by stock splits or dividends that occurred *between* sessions
+    // Used to force-close related positions
+    pub market_close_affected_feeds: [u8; MAX_AUTONOM_STOCKS_CUSTODIES],
+    //
+    /* ****************************************** */
+    /* ****************************************** */
+    /* ****************************************** */
+    //
+    pub _padding2: [u8; 32],
+    pub _padding2_cont: [u8; 32],
+    pub _padding2_cont2: [u8; 32],
+    pub _padding2_cont3: [u8; 6],
     //
     pub lp_fee_share_bps: u16, // 10000 = 100%
     pub lm_fee_share_bps: u16,
     pub referrer_fee_share_bps: u16,
     pub protocol_fee_share_bps: u16,
     pub manager_fee_share_bps: u16,
+    //
     pub manager_fee_recipient: Pubkey,
     pub manager_fee_debt_usd: u64,
-    pub cumulative_manager_fee_usd: u64,
     pub lm_fee_debt_usd: u64,
-    pub cumulative_lm_fee_usd: u64,
     pub protocol_fee_debt_usd: u64,
+    //
     pub cumulative_protocol_fee_usd: u64,
+    pub cumulative_lm_fee_usd: u64,
+    pub cumulative_manager_fee_usd: u64,
     pub cumulative_lp_fee_usd: u64,
+    //
     pub referrers_fee_debt_usd: u64,
+    //
+    // Keep a stat about how much referral fees have been generated from all time
     pub cumulative_referrer_fee_usd: u64,
     pub lp_token_price_usd: u64,
     pub whitelisted_swapper: Pubkey,
-    pub _padding3: [u8; 64],
+    //
+    pub _padding3: [u8; 32],
+    pub _padding3_cont: [u8; 32],
+    //
     pub last_aum_and_lp_token_price_usd_update: i64,
     pub unique_limit_order_id_counter: u64,
     pub aum_usd: U128Split,
@@ -907,12 +930,12 @@ impl Default for Pool {
             _padding1: [0u8; 5],
             market_open_timestamp: 0,
             market_close_timestamp: 0,
-            market_close_affected_feeds: [0u8; MAX_AUTONOM_STOCKS_CUSTODIES],
             market_close_event_timestamp: 0,
-            _padding2a: [0u8; 32],
-            _padding2b: [0u8; 32],
-            _padding2c: [0u8; 32],
-            _padding2d: [0u8; 6],
+            market_close_affected_feeds: [0u8; MAX_AUTONOM_STOCKS_CUSTODIES],
+            _padding2: [0u8; 32],
+            _padding2_cont: [0u8; 32],
+            _padding2_cont2: [0u8; 32],
+            _padding2_cont3: [0u8; 6],
             lp_fee_share_bps: 0,
             lm_fee_share_bps: 0,
             referrer_fee_share_bps: 0,
@@ -920,17 +943,18 @@ impl Default for Pool {
             manager_fee_share_bps: 0,
             manager_fee_recipient: Pubkey::default(),
             manager_fee_debt_usd: 0,
-            cumulative_manager_fee_usd: 0,
             lm_fee_debt_usd: 0,
-            cumulative_lm_fee_usd: 0,
             protocol_fee_debt_usd: 0,
             cumulative_protocol_fee_usd: 0,
+            cumulative_lm_fee_usd: 0,
+            cumulative_manager_fee_usd: 0,
             cumulative_lp_fee_usd: 0,
             referrers_fee_debt_usd: 0,
             cumulative_referrer_fee_usd: 0,
             lp_token_price_usd: 0,
             whitelisted_swapper: Pubkey::default(),
-            _padding3: [0u8; 64],
+            _padding3: [0u8; 32],
+            _padding3_cont: [0u8; 32],
             last_aum_and_lp_token_price_usd_update: 0,
             unique_limit_order_id_counter: 0,
             aum_usd: U128Split::default(),
