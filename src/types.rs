@@ -30,12 +30,13 @@ pub const MAX_LOCKED_STAKE_COUNT: usize = 32;
 #[derive(PartialEq, Copy, Clone, Debug, Default)]
 pub enum PoolVersion {
     #[default]
-    V1 = 1,
+    V1 = 0,
+    V2 = 2,
 }
 
 impl PoolVersion {
-    pub fn latest() -> Self {
-        PoolVersion::V1
+    pub const fn latest() -> Self {
+        PoolVersion::V2
     }
 }
 
@@ -178,7 +179,9 @@ pub struct UserProfile {
     pub profile_picture: u8, // Enum of profile pictures
     pub wallpaper: u8,       // Enum of wallpapers
     pub title: u8,           // Enum of title
-    pub _padding: [u8; 3],
+    pub team: u8,
+    pub continent: u8,
+    pub _padding: u8,
     pub nickname: LimitedString,
     pub created_at: i64,
     pub owner: Pubkey,
@@ -204,6 +207,16 @@ pub struct StakingRound {
     pub lm_total_claim: u64,
 }
 
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct NextStakingRound {
+    pub total_stake: u64,
+    pub _padding1: [u8; 16],
+    pub lm_total_stake: u64,
+}
+
 #[account(zero_copy)]
 #[derive(Default, Debug)]
 #[repr(C)]
@@ -224,7 +237,11 @@ pub struct Staking {
     pub resolved_lm_reward_token_amount: u64,
     pub resolved_lm_staked_token_amount: u64,
     pub current_staking_round: StakingRound,
-    pub next_staking_round: StakingRound,
+    #[deprecated]
+    pub current_staking_round_liquid_rewards_usd: u64,
+    pub _padding1: [u8; 16],
+    pub next_staking_round: NextStakingRound,
+    pub _padding2: [u8; 8],
     pub resolved_staking_rounds: [StakingRound; MAX_RESOLVED_ROUNDS],
     pub registered_resolved_staking_round_count: u8,
     pub _padding: [u8; 3],
@@ -348,10 +365,7 @@ pub struct Pool {
     /* ****************************************** */
     /* ****************************************** */
     //
-    pub _padding2: [u8; 32],
-    pub _padding2_cont: [u8; 32],
-    pub _padding2_cont2: [u8; 32],
-    pub _padding2_cont3: [u8; 6],
+    pub _padding2: [u8; 102],
     //
     pub lp_fee_share_bps: u16, // 10000 = 100%
     pub lm_fee_share_bps: u16,
@@ -376,8 +390,7 @@ pub struct Pool {
     pub lp_token_price_usd: u64,
     pub whitelisted_swapper: Pubkey,
     //
-    pub _padding3: [u8; 32],
-    pub _padding3_cont: [u8; 32],
+    pub _padding3: [u8; 64],
     //
     pub last_aum_and_lp_token_price_usd_update: i64,
     pub unique_limit_order_id_counter: u64,
@@ -420,10 +433,6 @@ pub struct Position {
     pub paid_interest_usd: u64,
     pub stop_loss_limit_price: u64,
     pub stop_loss_close_position_price: u64,
-    pub cumulative_long_to_short_snapshot: U128Split,
-    pub cumulative_short_to_long_snapshot: U128Split,
-    pub unrealized_funding_paid_usd: u64,
-    pub unrealized_funding_received_usd: u64,
 }
 
 impl Position {
@@ -484,9 +493,12 @@ impl Position {
 )]
 #[repr(C)]
 pub struct PricingParams {
+    // Pricing params have implied BPS_DECIMALS decimals (except ended with _usd)
     pub max_initial_leverage: u32,
     pub max_leverage: u32,
+    // One position size can't exceed this amount
     pub max_position_locked_usd: u64,
+    // Limit the total size of short positions for the custody
     pub max_cumulative_short_position_size_usd: u64,
     pub max_cumulative_long_position_size_usd: u64,
 }
@@ -589,12 +601,21 @@ pub struct PositionsAccounting {
     pub _padding1: [u8; 8],  // Unsafe padding (Need to reset to 0 before use)
     pub collateral_usd: u64, // Stat only used for long positions
     pub cumulative_interest_snapshot: U128Split,
-    // This exit fee stats is used to calculate the PnL of all opened positions
+    // This exit fee stats is used to calculate the PnL of all opened positions, it is not reflecting the actual exit fee of the position (that can sometimes be lesser)
+    // so that the AUM take into account an approximation of the PnL of all opened positions
     pub exit_fee_usd: u64,
     // track unrealized interest (doesn't contain Paid interests USD)
     pub unrealized_interest_usd: u64,
     pub _padding2: [u8; 24],
+    //
     // Store the stable custody locked amount related to this custody
+    //
+    // Example:
+    // When Shorting 1 ETH, 1500 USDC get locked to provide for trader maximum payoff
+    // USDC custody locked amount: +1500
+    // eth custody stable locked amount: +1500
+    //
+    // Needed to be able to calculate PnL
     pub stable_locked_amount: u64,
     pub _padding3: [u8; 8],
     // Total interests paid in advance, both LP and others
@@ -634,31 +655,17 @@ pub struct BorrowRateState {
 }
 
 #[account(zero_copy)]
-#[derive(Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Default, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
 #[repr(C)]
 pub struct Custody {
     pub bump: u8,
     pub token_account_bump: u8,
-    //
-    // Permissions
-    //
-    // If false, make positions readonly/closeonly
     pub allow_trade: u8,
     pub allow_swap: u8,
-    //
     pub decimals: u8,
     pub is_stable: u8,
-    //
-    // /!\ IMPORTANT
-    //
-    // If the custody is synthetic, it means that the custody will hold no tokens (i.e stocks)
-    // long & short will use stable as collateral
-    //
-    // When is_synthetic is true, the mint, decimals, token_account and oracle are ignored
     pub is_synthetic: u8,
-    //
     pub version: u8,
-    //
     pub pool: Pubkey,
     pub mint: Pubkey,
     pub token_account: Pubkey,
@@ -666,61 +673,20 @@ pub struct Custody {
     pub trade_oracle: LimitedString,
     pub oracle_feed_id: u8,
     pub trade_oracle_feed_id: u8,
-    //
     pub _padding1: [u8; 22],
-    //
     pub fees: Fees,
     pub borrow_rate: BorrowRateParams,
-    // All time stats
     pub collected_fees: FeesStats,
     pub volume_stats: VolumeStats,
     pub trade_stats: TradeStats,
-    // Real time stats
     pub assets: Assets,
     pub long_positions: PositionsAccounting,
-    // Used in the seed to derive the PDA of the custody
     pub seed: [u8; 32],
     pub _padding2: [u8; 8],
     pub short_positions: PositionsAccounting,
     pub pricing: PricingParams,
     pub _padding3: [u8; 8],
     pub borrow_rate_state: BorrowRateState,
-}
-
-impl Default for Custody {
-    fn default() -> Self {
-        Custody {
-            bump: 0,
-            token_account_bump: 0,
-            allow_trade: 0,
-            allow_swap: 0,
-            decimals: 0,
-            is_stable: 0,
-            is_synthetic: 0,
-            version: 2, // CustodyVersion::V2
-            pool: Pubkey::default(),
-            mint: Pubkey::default(),
-            token_account: Pubkey::default(),
-            oracle: LimitedString::default(),
-            trade_oracle: LimitedString::default(),
-            oracle_feed_id: 0,
-            trade_oracle_feed_id: 0,
-            _padding1: [0; 22],
-            fees: Fees::default(),
-            borrow_rate: BorrowRateParams::default(),
-            collected_fees: FeesStats::default(),
-            volume_stats: VolumeStats::default(),
-            trade_stats: TradeStats::default(),
-            assets: Assets::default(),
-            long_positions: PositionsAccounting::default(),
-            seed: [0; 32],
-            _padding2: [0; 8],
-            short_positions: PositionsAccounting::default(),
-            pricing: PricingParams::default(),
-            _padding3: [0; 8],
-            borrow_rate_state: BorrowRateState::default(),
-        }
-    }
 }
 
 impl Custody {
@@ -1001,10 +967,7 @@ impl Default for Pool {
             market_close_timestamp: 0,
             market_close_event_timestamp: 0,
             market_close_affected_feeds: [0u8; MAX_AUTONOM_STOCKS_CUSTODIES],
-            _padding2: [0u8; 32],
-            _padding2_cont: [0u8; 32],
-            _padding2_cont2: [0u8; 32],
-            _padding2_cont3: [0u8; 6],
+            _padding2: [0u8; 102],
             lp_fee_share_bps: 0,
             lm_fee_share_bps: 0,
             referrer_fee_share_bps: 0,
@@ -1022,8 +985,7 @@ impl Default for Pool {
             cumulative_referrer_fee_usd: 0,
             lp_token_price_usd: 0,
             whitelisted_swapper: Pubkey::default(),
-            _padding3: [0u8; 32],
-            _padding3_cont: [0u8; 32],
+            _padding3: [0u8; 64],
             last_aum_and_lp_token_price_usd_update: 0,
             unique_limit_order_id_counter: 0,
             aum_usd: U128Split::default(),

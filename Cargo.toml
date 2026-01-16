@@ -8,9 +8,9 @@ edition = "2021"
 [dependencies]
 anchor-lang = { git = "https://github.com/coral-xyz/anchor.git", rev = "04536725c2ea16329e84bcfe3200afd47eeeb464" } 
 anchor-client = { git = "https://github.com/coral-xyz/anchor.git", rev = "04536725c2ea16329e84bcfe3200afd47eeeb464" } 
-bytemuck = "1.19.0"
+bytemuck = { version = "1.15.0", features = ["derive", "min_const_generics"] }
 anyhow = "1.0.91"
-solana-program = "2.0.18"
-num-traits = "0.2.19"
+solana-program = "=1.18.22"
+num-traits = "0.2.15"
 log = "0.4.22"
 borsh = "1.5.1"
