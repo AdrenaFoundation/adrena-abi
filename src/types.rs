@@ -488,6 +488,7 @@ pub struct PricingParams {
     pub max_leverage: u32,
     pub max_position_locked_usd: u64,
     pub max_cumulative_short_position_size_usd: u64,
+    pub max_cumulative_long_position_size_usd: u64,
 }
 
 #[derive(
@@ -584,11 +585,20 @@ pub struct PositionsAccounting {
     pub locked_amount: u64,
     pub weighted_price: U128Split,
     pub total_quantity: U128Split,
-    pub cumulative_interest_usd: u64,
-    pub _padding: [u8; 8],
+    // interests due (unrealized)
+    pub _padding1: [u8; 8],  // Unsafe padding (Need to reset to 0 before use)
+    pub collateral_usd: u64, // Stat only used for long positions
     pub cumulative_interest_snapshot: U128Split,
+    // This exit fee stats is used to calculate the PnL of all opened positions
     pub exit_fee_usd: u64,
-    pub stable_locked_amount: [StableLockedAmountStat; MAX_STABLE_CUSTODY],
+    // track unrealized interest (doesn't contain Paid interests USD)
+    pub unrealized_interest_usd: u64,
+    pub _padding2: [u8; 24],
+    // Store the stable custody locked amount related to this custody
+    pub stable_locked_amount: u64,
+    pub _padding3: [u8; 8],
+    // Total interests paid in advance, both LP and others
+    pub prepaid_interest_usd: u64,
 }
 
 #[derive(
@@ -624,34 +634,93 @@ pub struct BorrowRateState {
 }
 
 #[account(zero_copy)]
-#[derive(Default, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
 #[repr(C)]
 pub struct Custody {
     pub bump: u8,
     pub token_account_bump: u8,
+    //
+    // Permissions
+    //
+    // If false, make positions readonly/closeonly
     pub allow_trade: u8,
     pub allow_swap: u8,
+    //
     pub decimals: u8,
     pub is_stable: u8,
-    pub _padding: [u8; 2],
+    //
+    // /!\ IMPORTANT
+    //
+    // If the custody is synthetic, it means that the custody will hold no tokens (i.e stocks)
+    // long & short will use stable as collateral
+    //
+    // When is_synthetic is true, the mint, decimals, token_account and oracle are ignored
+    pub is_synthetic: u8,
+    //
+    pub version: u8,
+    //
     pub pool: Pubkey,
     pub mint: Pubkey,
     pub token_account: Pubkey,
     pub oracle: LimitedString,
     pub trade_oracle: LimitedString,
-    pub pricing: PricingParams,
+    pub oracle_feed_id: u8,
+    pub trade_oracle_feed_id: u8,
+    //
+    pub _padding1: [u8; 22],
+    //
     pub fees: Fees,
     pub borrow_rate: BorrowRateParams,
+    // All time stats
     pub collected_fees: FeesStats,
     pub volume_stats: VolumeStats,
     pub trade_stats: TradeStats,
+    // Real time stats
     pub assets: Assets,
     pub long_positions: PositionsAccounting,
+    // Used in the seed to derive the PDA of the custody
+    pub seed: [u8; 32],
+    pub _padding2: [u8; 8],
     pub short_positions: PositionsAccounting,
+    pub pricing: PricingParams,
+    pub _padding3: [u8; 8],
     pub borrow_rate_state: BorrowRateState,
-    pub optimal_utilization_bps: u64,
-    pub virtual_funding: VirtualFundingParams,
-    pub virtual_funding_state: VirtualFundingState,
+}
+
+impl Default for Custody {
+    fn default() -> Self {
+        Custody {
+            bump: 0,
+            token_account_bump: 0,
+            allow_trade: 0,
+            allow_swap: 0,
+            decimals: 0,
+            is_stable: 0,
+            is_synthetic: 0,
+            version: 2, // CustodyVersion::V2
+            pool: Pubkey::default(),
+            mint: Pubkey::default(),
+            token_account: Pubkey::default(),
+            oracle: LimitedString::default(),
+            trade_oracle: LimitedString::default(),
+            oracle_feed_id: 0,
+            trade_oracle_feed_id: 0,
+            _padding1: [0; 22],
+            fees: Fees::default(),
+            borrow_rate: BorrowRateParams::default(),
+            collected_fees: FeesStats::default(),
+            volume_stats: VolumeStats::default(),
+            trade_stats: TradeStats::default(),
+            assets: Assets::default(),
+            long_positions: PositionsAccounting::default(),
+            seed: [0; 32],
+            _padding2: [0; 8],
+            short_positions: PositionsAccounting::default(),
+            pricing: PricingParams::default(),
+            _padding3: [0; 8],
+            borrow_rate_state: BorrowRateState::default(),
+        }
+    }
 }
 
 impl Custody {
@@ -716,7 +785,7 @@ impl Custody {
                 },
                 size_usd: accounting.size_usd,
                 borrow_size_usd: accounting.borrow_size_usd,
-                unrealized_interest_usd: accounting.cumulative_interest_usd,
+                unrealized_interest_usd: accounting.unrealized_interest_usd,
                 cumulative_interest_snapshot: accounting.cumulative_interest_snapshot,
                 locked_amount: accounting.locked_amount,
                 exit_fee_usd: accounting.exit_fee_usd,
