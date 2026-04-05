@@ -491,16 +491,16 @@ pub struct FinalizeLockedStake<'info> {
     pub governance_governing_token_owner_record: UncheckedAccount<'info>,
     /// #13
     #[account(address = SPL_GOVERNANCE_PROGRAM_ID)]
-    governance_program: AccountInfo<'info>,
+    pub governance_program: AccountInfo<'info>,
     /// #14
     #[account(address = ADRENA_PROGRAM_ID)]
-    adrena_program: AccountInfo<'info>,
+    pub adrena_program: AccountInfo<'info>,
     /// #15
     #[account(address = solana_sdk::system_program::ID)]
-    system_program: AccountInfo<'info>,
+    pub system_program: AccountInfo<'info>,
     /// #16
     #[account(address = SPL_TOKEN_PROGRAM_ID)]
-    token_program: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
@@ -571,6 +571,12 @@ pub struct OpenOrIncreasePositionWithSwapLong<'info> {
     /// #16
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #17
+    #[account(mut)]
+    pub user_profile: Option<AccountInfo<'info>>,
+    /// #18
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
 }
 
 #[derive(Accounts)]
@@ -627,6 +633,12 @@ pub struct OpenOrIncreasePositionWithSwapShort<'info> {
     /// #18
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #19
+    #[account(mut)]
+    pub user_profile: Option<AccountInfo<'info>>,
+    /// #20
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
 }
 
 #[derive(Accounts)]
@@ -672,6 +684,12 @@ pub struct ExecuteLimitOrderLong<'info> {
     /// #14
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #15
+    #[account(mut)]
+    pub user_profile: Option<AccountInfo<'info>>,
+    /// #16
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
 }
 
 #[derive(Accounts)]
@@ -720,6 +738,12 @@ pub struct ExecuteLimitOrderShort<'info> {
     /// #15
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #16
+    #[account(mut)]
+    pub user_profile: Option<AccountInfo<'info>>,
+    /// #17
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
 }
 
 #[derive(Accounts)]
