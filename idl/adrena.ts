@@ -1,5 +1,5 @@
 export type Adrena = {
-  version: "1.3.2";
+  version: "1.4.3";
   name: "adrena";
   instructions: [
     {
@@ -64,7 +64,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [
         {
@@ -72,7 +72,7 @@ export type Adrena = {
           type: {
             defined: "InitOneParams";
           };
-        }
+        },
       ];
     },
     {
@@ -137,7 +137,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#11"];
-        }
+        },
       ];
       args: [];
     },
@@ -180,7 +180,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#6",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -206,7 +206,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [];
     },
@@ -260,7 +260,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#8"];
-        }
+        },
       ];
       args: [];
     },
@@ -332,7 +332,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#17"];
-        }
+        },
       ];
       args: [
         {
@@ -340,9 +340,50 @@ export type Adrena = {
           type: {
             defined: "AddVestParams";
           };
-        }
+        },
       ];
       returns: "u8";
+    },
+    {
+      name: "cancelVest";
+      accounts: [
+        {
+          name: "admin";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "owner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "cortex";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vestRegistry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vest";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
       name: "setVestDelegate";
@@ -382,7 +423,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -390,7 +431,7 @@ export type Adrena = {
           type: {
             defined: "SetVestDelegateParams";
           };
-        }
+        },
       ];
     },
     {
@@ -437,7 +478,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [];
     },
@@ -491,7 +532,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#8"];
-        }
+        },
       ];
       args: [
         {
@@ -499,7 +540,7 @@ export type Adrena = {
           type: {
             defined: "MigrateUserProfileFromV1ToV2Params";
           };
-        }
+        },
       ];
     },
     {
@@ -554,7 +595,7 @@ export type Adrena = {
           docs: ["#8"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#9"];
@@ -571,7 +612,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#11",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -586,7 +627,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#13",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -624,7 +665,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#19"];
-        }
+        },
       ];
       args: [];
       returns: "u64";
@@ -703,7 +744,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -711,7 +752,7 @@ export type Adrena = {
           type: {
             defined: "AddPoolPartOneParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -777,7 +818,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [
         {
@@ -785,7 +826,7 @@ export type Adrena = {
           type: {
             defined: "AddPoolPartTwoParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -827,7 +868,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [];
       returns: "u8";
@@ -906,7 +947,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -914,7 +955,7 @@ export type Adrena = {
           type: {
             defined: "AddCustodyParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -974,7 +1015,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#9"];
-        }
+        },
       ];
       args: [
         {
@@ -982,7 +1023,7 @@ export type Adrena = {
           type: {
             defined: "RemoveCustodyParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -1012,7 +1053,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -1020,7 +1061,7 @@ export type Adrena = {
           type: {
             defined: "SetCustodyConfigParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -1050,7 +1091,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -1058,7 +1099,7 @@ export type Adrena = {
           type: {
             defined: "SetCustodyAllowSwapParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1087,7 +1128,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -1095,7 +1136,7 @@ export type Adrena = {
           type: {
             defined: "SetCustodyAllowTradeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1118,7 +1159,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -1126,7 +1167,7 @@ export type Adrena = {
           type: {
             defined: "SetPoolAllowSwapParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1149,7 +1190,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -1157,7 +1198,7 @@ export type Adrena = {
           type: {
             defined: "SetPoolAllowTradeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1180,7 +1221,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -1188,7 +1229,7 @@ export type Adrena = {
           type: {
             defined: "SetPoolAumSoftCapUsdParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1277,7 +1318,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
       ];
       args: [
         {
@@ -1285,7 +1326,7 @@ export type Adrena = {
           type: {
             defined: "SwapParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1308,7 +1349,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: [
-            "#3 Front end will target the owner account, but not limited to"
+            "#3 Front end will target the owner account, but not limited to",
           ];
         },
         {
@@ -1370,7 +1411,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#13"];
-        }
+        },
       ];
       args: [
         {
@@ -1378,7 +1419,7 @@ export type Adrena = {
           type: {
             defined: "AddLiquidityParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1443,7 +1484,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [];
     },
@@ -1545,7 +1586,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#16"];
-        }
+        },
       ];
       args: [
         {
@@ -1553,7 +1594,7 @@ export type Adrena = {
           type: {
             defined: "GenesisOtcInParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1570,7 +1611,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: [
-            "#2 Front end will target the owner account, but not limited to"
+            "#2 Front end will target the owner account, but not limited to",
           ];
         },
         {
@@ -1632,7 +1673,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -1640,7 +1681,7 @@ export type Adrena = {
           type: {
             defined: "RemoveLiquidityParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1653,7 +1694,7 @@ export type Adrena = {
           docs: [
             "#1 Must be signer or not depending",
             "if the caller is the transfer_authority (internal call for limit order) or the owner",
-            ""
+            "",
           ];
         },
         {
@@ -1733,7 +1774,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#15"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
       ];
       args: [
         {
@@ -1741,7 +1796,7 @@ export type Adrena = {
           type: {
             defined: "OpenPositionLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1754,7 +1809,7 @@ export type Adrena = {
           docs: [
             "#1 Must be signer or not depending",
             "if the caller is the transfer_authority (internal call for limit order) or the owner",
-            ""
+            "",
           ];
         },
         {
@@ -1840,7 +1895,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#15"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
       ];
       args: [
         {
@@ -1848,7 +1917,7 @@ export type Adrena = {
           type: {
             defined: "OpenPositionShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -1949,7 +2018,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#16"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#17"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#18"];
+        },
       ];
       args: [
         {
@@ -1957,7 +2040,7 @@ export type Adrena = {
           type: {
             defined: "OpenPositionWithSwapParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2070,7 +2153,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#18"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#19"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#20"];
+        },
       ];
       args: [
         {
@@ -2078,7 +2175,7 @@ export type Adrena = {
           type: {
             defined: "OpenPositionWithSwapParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2149,7 +2246,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#11"];
-        }
+        },
       ];
       args: [
         {
@@ -2157,7 +2254,7 @@ export type Adrena = {
           type: {
             defined: "AddCollateralLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2234,7 +2331,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -2242,7 +2339,7 @@ export type Adrena = {
           type: {
             defined: "AddCollateralShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2313,7 +2410,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#11"];
-        }
+        },
       ];
       args: [
         {
@@ -2321,7 +2418,7 @@ export type Adrena = {
           type: {
             defined: "RemoveCollateralLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2398,7 +2495,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -2406,7 +2503,7 @@ export type Adrena = {
           type: {
             defined: "RemoveCollateralShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2497,7 +2594,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
       ];
       args: [
         {
@@ -2505,7 +2602,7 @@ export type Adrena = {
           type: {
             defined: "ClosePositionLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2602,7 +2699,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#15"];
-        }
+        },
       ];
       args: [
         {
@@ -2610,7 +2707,7 @@ export type Adrena = {
           type: {
             defined: "ClosePositionShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2695,7 +2792,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#13"];
-        }
+        },
       ];
       args: [
         {
@@ -2703,7 +2800,7 @@ export type Adrena = {
           type: {
             defined: "LiquidateLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -2794,7 +2891,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
       ];
       args: [
         {
@@ -2802,8 +2899,50 @@ export type Adrena = {
           type: {
             defined: "LiquidateShortParams";
           };
-        }
+        },
       ];
+    },
+    {
+      name: "additionalProtectionFee";
+      accounts: [
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: true;
+          docs: ["#1"];
+        },
+        {
+          name: "cortex";
+          isMut: false;
+          isSigner: false;
+          docs: ["#2"];
+        },
+        {
+          name: "pool";
+          isMut: false;
+          isSigner: false;
+          docs: ["#3"];
+        },
+        {
+          name: "position";
+          isMut: true;
+          isSigner: false;
+          docs: ["#4"];
+        },
+        {
+          name: "custody";
+          isMut: true;
+          isSigner: false;
+          docs: ["#5"];
+        },
+        {
+          name: "collateralCustody";
+          isMut: true;
+          isSigner: false;
+          docs: ["#6"];
+        },
+      ];
+      args: [];
     },
     {
       name: "updatePoolAum";
@@ -2837,7 +2976,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -2845,7 +2984,7 @@ export type Adrena = {
           type: {
             defined: "UpdatePoolAumParams";
           };
-        }
+        },
       ];
       returns: "u128";
     },
@@ -2881,7 +3020,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -2889,7 +3028,7 @@ export type Adrena = {
           type: {
             defined: "GetAddLiquidityAmountAndFeeParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "AmountAndFee";
@@ -2927,7 +3066,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -2935,7 +3074,7 @@ export type Adrena = {
           type: {
             defined: "GetRemoveLiquidityAmountAndFeeParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "AmountAndFee";
@@ -2973,7 +3112,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -2981,7 +3120,7 @@ export type Adrena = {
           type: {
             defined: "GetEntryPriceAndFeeParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "NewPositionPricesAndFee";
@@ -3031,7 +3170,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [];
     },
@@ -3145,7 +3284,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#18"];
-        }
+        },
       ];
       args: [];
     },
@@ -3193,7 +3332,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [
         {
@@ -3201,7 +3340,7 @@ export type Adrena = {
           type: {
             defined: "GetOpenPositionWithSwapAmountAndFeesParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "OpenPositionWithSwapAmountAndFees";
@@ -3245,7 +3384,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -3253,7 +3392,7 @@ export type Adrena = {
           type: {
             defined: "GetExitPriceAndFeeParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "ExitPriceAndFee";
@@ -3297,7 +3436,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -3305,7 +3444,7 @@ export type Adrena = {
           type: {
             defined: "GetPnlParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "ProfitAndLoss";
@@ -3349,7 +3488,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -3357,7 +3496,7 @@ export type Adrena = {
           type: {
             defined: "GetLiquidationPriceParams";
           };
-        }
+        },
       ];
       returns: "u64";
     },
@@ -3399,7 +3538,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -3407,7 +3546,7 @@ export type Adrena = {
           type: {
             defined: "GetLiquidationStateParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -3443,7 +3582,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -3451,7 +3590,7 @@ export type Adrena = {
           type: {
             defined: "GetSwapAmountAndFeesParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "SwapAmountAndFees";
@@ -3477,7 +3616,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -3485,7 +3624,7 @@ export type Adrena = {
           type: {
             defined: "GetAssetsUnderManagementParams";
           };
-        }
+        },
       ];
       returns: "u128";
     },
@@ -3593,7 +3732,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#17"];
-        }
+        },
       ];
       args: [];
     },
@@ -3637,7 +3776,7 @@ export type Adrena = {
           isOptional: true;
           docs: [
             "#6",
-            "Apply this referrer to the user profile, If none, referrer_profile is set to default"
+            "Apply this referrer to the user profile, If none, referrer_profile is set to default",
           ];
         },
         {
@@ -3651,7 +3790,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#8"];
-        }
+        },
       ];
       args: [
         {
@@ -3659,7 +3798,7 @@ export type Adrena = {
           type: {
             defined: "InitUserProfileParams";
           };
-        }
+        },
       ];
     },
     {
@@ -3690,7 +3829,7 @@ export type Adrena = {
           isOptional: true;
           docs: [
             "#4",
-            "Apply this referrer to the user profile, If none, referrer_profile is set to default"
+            "Apply this referrer to the user profile, If none, referrer_profile is set to default",
           ];
         },
         {
@@ -3698,7 +3837,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -3706,7 +3845,7 @@ export type Adrena = {
           type: {
             defined: "EditUserProfileParams";
           };
-        }
+        },
       ];
     },
     {
@@ -3766,7 +3905,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#9"];
-        }
+        },
       ];
       args: [
         {
@@ -3774,7 +3913,7 @@ export type Adrena = {
           type: {
             defined: "EditUserProfileNicknameParams";
           };
-        }
+        },
       ];
     },
     {
@@ -3815,7 +3954,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [];
     },
@@ -3899,7 +4038,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#13"];
-        }
+        },
       ];
       args: [
         {
@@ -3907,7 +4046,7 @@ export type Adrena = {
           type: {
             defined: "InitStakingOneParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -3973,7 +4112,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [];
       returns: "u8";
@@ -4040,7 +4179,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#10"];
-        }
+        },
       ];
       args: [];
       returns: "u8";
@@ -4131,7 +4270,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
       ];
       args: [];
       returns: "u8";
@@ -4218,7 +4357,7 @@ export type Adrena = {
           docs: ["#14"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#15"];
@@ -4241,7 +4380,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#18",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -4256,7 +4395,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#20",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -4288,7 +4427,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#25"];
-        }
+        },
       ];
       args: [
         {
@@ -4296,7 +4435,7 @@ export type Adrena = {
           type: {
             defined: "AddLiquidStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -4380,7 +4519,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#13",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -4395,7 +4534,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#15",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -4427,7 +4566,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#20"];
-        }
+        },
       ];
       args: [
         {
@@ -4435,7 +4574,7 @@ export type Adrena = {
           type: {
             defined: "AddLockedStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -4520,7 +4659,7 @@ export type Adrena = {
           docs: ["#13"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#14"];
@@ -4537,7 +4676,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#16",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -4552,7 +4691,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#18",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -4590,7 +4729,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#24"];
-        }
+        },
       ];
       args: [
         {
@@ -4598,7 +4737,7 @@ export type Adrena = {
           type: {
             defined: "UpgradeLockedStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -4683,7 +4822,7 @@ export type Adrena = {
           docs: ["#13"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#14"];
@@ -4706,7 +4845,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#17",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -4721,7 +4860,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#19",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -4753,7 +4892,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#24"];
-        }
+        },
       ];
       args: [
         {
@@ -4761,7 +4900,7 @@ export type Adrena = {
           type: {
             defined: "RemoveLiquidStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -4846,7 +4985,7 @@ export type Adrena = {
           docs: ["#13"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#14"];
@@ -4875,7 +5014,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#18",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -4890,7 +5029,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#20",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -4922,7 +5061,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#25"];
-        }
+        },
       ];
       args: [
         {
@@ -4930,7 +5069,7 @@ export type Adrena = {
           type: {
             defined: "RemoveLockedStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5015,7 +5154,7 @@ export type Adrena = {
           docs: ["#13"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#14"];
@@ -5043,7 +5182,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#18"];
-        }
+        },
       ];
       args: [
         {
@@ -5051,7 +5190,7 @@ export type Adrena = {
           type: {
             defined: "ClaimStakesParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5098,7 +5237,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [];
     },
@@ -5122,7 +5261,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -5130,7 +5269,7 @@ export type Adrena = {
           type: {
             defined: "SetPoolLiquidityStateParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5190,7 +5329,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#9",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -5205,7 +5344,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#11",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -5237,7 +5376,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#16"];
-        }
+        },
       ];
       args: [
         {
@@ -5245,7 +5384,7 @@ export type Adrena = {
           type: {
             defined: "FinalizeLockedStakeParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5300,7 +5439,7 @@ export type Adrena = {
           docs: ["#8"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#9"];
@@ -5328,7 +5467,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#13"];
-        }
+        },
       ];
       args: [];
     },
@@ -5358,7 +5497,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -5366,7 +5505,7 @@ export type Adrena = {
           type: {
             defined: "GetLpTokenPriceParams";
           };
-        }
+        },
       ];
       returns: "u64";
     },
@@ -5396,7 +5535,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -5404,7 +5543,7 @@ export type Adrena = {
           type: {
             defined: "GetPoolInfoSnapshotParams";
           };
-        }
+        },
       ];
       returns: {
         defined: "PoolInfoSnapshot";
@@ -5438,7 +5577,7 @@ export type Adrena = {
           docs: ["#4"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#5"];
@@ -5448,7 +5587,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -5456,7 +5595,7 @@ export type Adrena = {
           type: {
             defined: "MintLmTokensFromBucketParams";
           };
-        }
+        },
       ];
       returns: "u8";
     },
@@ -5470,7 +5609,7 @@ export type Adrena = {
           docs: [
             "#1 Must be signer or not depending",
             "if the caller is the transfer_authority (internal call for limit order) or the owner",
-            ""
+            "",
           ];
         },
         {
@@ -5550,7 +5689,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#15"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
       ];
       args: [
         {
@@ -5558,7 +5711,7 @@ export type Adrena = {
           type: {
             defined: "IncreasePositionLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5605,7 +5758,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [];
     },
@@ -5619,7 +5772,7 @@ export type Adrena = {
           docs: [
             "#1 Must be signer or not depending",
             "if the caller is the transfer_authority (internal call for limit order) or the owner",
-            ""
+            "",
           ];
         },
         {
@@ -5705,7 +5858,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#15"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#17"];
+        },
       ];
       args: [
         {
@@ -5713,7 +5880,7 @@ export type Adrena = {
           type: {
             defined: "IncreasePositionShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5736,7 +5903,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#3"];
-        }
+        },
       ];
       args: [
         {
@@ -5744,7 +5911,7 @@ export type Adrena = {
           type: {
             defined: "SetStakingLmEmissionPotentiometersParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5761,7 +5928,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#2"];
-        }
+        },
       ];
       args: [
         {
@@ -5769,7 +5936,7 @@ export type Adrena = {
           type: {
             defined: "SetAdminParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5798,7 +5965,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [];
     },
@@ -5828,7 +5995,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [
         {
@@ -5836,7 +6003,7 @@ export type Adrena = {
           type: {
             defined: "SetCustodyMaxCumulativeShortPositionSizeUsdParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5871,7 +6038,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -5879,7 +6046,7 @@ export type Adrena = {
           type: {
             defined: "SetTakeProfitLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5914,7 +6081,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -5922,7 +6089,7 @@ export type Adrena = {
           type: {
             defined: "SetStopLossLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -5957,7 +6124,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -5965,7 +6132,7 @@ export type Adrena = {
           type: {
             defined: "SetTakeProfitShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6000,7 +6167,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -6008,7 +6175,7 @@ export type Adrena = {
           type: {
             defined: "SetStopLossShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6043,7 +6210,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [];
     },
@@ -6079,91 +6246,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "patchStakingRound";
-      accounts: [
-        {
-          name: "admin";
-          isMut: false;
-          isSigner: true;
-          docs: ["#1"];
         },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-          docs: ["#2"];
-        },
-        {
-          name: "fundingAccount";
-          isMut: true;
-          isSigner: false;
-          docs: ["#3"];
-        },
-        {
-          name: "stakingRewardTokenVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["#4"];
-        },
-        {
-          name: "stakingLmRewardTokenVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["#5"];
-        },
-        {
-          name: "transferAuthority";
-          isMut: false;
-          isSigner: false;
-          docs: ["#6"];
-        },
-        {
-          name: "staking";
-          isMut: true;
-          isSigner: false;
-          docs: ["#7"];
-        },
-        {
-          name: "cortex";
-          isMut: true;
-          isSigner: false;
-          docs: ["#8"];
-        },
-        {
-          name: "lmTokenMint";
-          isMut: true;
-          isSigner: false;
-          docs: ["#9"];
-        },
-        {
-          name: "feeRedistributionMint";
-          isMut: false;
-          isSigner: false;
-          docs: ["#10"];
-        },
-        {
-          name: "adrenaProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["#11"];
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["#12"];
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["#13"];
-        }
       ];
       args: [];
     },
@@ -6193,7 +6276,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [];
     },
@@ -6223,7 +6306,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#4"];
-        }
+        },
       ];
       args: [];
     },
@@ -6307,7 +6390,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#13"];
-        }
+        },
       ];
       args: [
         {
@@ -6315,7 +6398,7 @@ export type Adrena = {
           type: {
             defined: "AddLimitOrderParams";
           };
-        }
+        },
       ];
       returns: "u64";
     },
@@ -6393,7 +6476,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -6401,7 +6484,7 @@ export type Adrena = {
           type: {
             defined: "CancelLimitOrderParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6490,7 +6573,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#14"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#15"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
       ];
       args: [
         {
@@ -6498,7 +6595,7 @@ export type Adrena = {
           type: {
             defined: "ExecuteLimitOrderLongParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6593,7 +6690,21 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#15"];
-        }
+        },
+        {
+          name: "userProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#16"];
+        },
+        {
+          name: "referrerProfile";
+          isMut: true;
+          isSigner: false;
+          isOptional: true;
+          docs: ["#17"];
+        },
       ];
       args: [
         {
@@ -6601,7 +6712,7 @@ export type Adrena = {
           type: {
             defined: "ExecuteLimitOrderShortParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6720,7 +6831,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#19"];
-        }
+        },
       ];
       args: [
         {
@@ -6728,7 +6839,7 @@ export type Adrena = {
           type: {
             defined: "DistributeFeesParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6781,7 +6892,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#8"];
-        }
+        },
       ];
       args: [];
     },
@@ -6841,7 +6952,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#9"];
-        }
+        },
       ];
       args: [];
     },
@@ -6877,7 +6988,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#5"];
-        }
+        },
       ];
       args: [
         {
@@ -6885,7 +6996,7 @@ export type Adrena = {
           type: {
             defined: "GrantOrRemoveAchievementParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6926,7 +7037,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#6"];
-        }
+        },
       ];
       args: [
         {
@@ -6934,7 +7045,7 @@ export type Adrena = {
           type: {
             defined: "InitOracleParams";
           };
-        }
+        },
       ];
     },
     {
@@ -6981,7 +7092,7 @@ export type Adrena = {
           isMut: true;
           isSigner: false;
           docs: ["#7"];
-        }
+        },
       ];
       args: [];
     },
@@ -7061,7 +7172,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -7069,7 +7180,7 @@ export type Adrena = {
           type: {
             defined: "ResolvePositionBorrowFeesParams";
           };
-        }
+        },
       ];
     },
     {
@@ -7135,7 +7246,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#10",
-            "A realm represent one project within the governance program"
+            "A realm represent one project within the governance program",
           ];
         },
         {
@@ -7150,7 +7261,7 @@ export type Adrena = {
           isSigner: false;
           docs: [
             "#12",
-            "Token account owned by governance program holding user's locked tokens"
+            "Token account owned by governance program holding user's locked tokens",
           ];
         },
         {
@@ -7195,7 +7306,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#19"];
-        }
+        },
       ];
       args: [];
     },
@@ -7251,7 +7362,7 @@ export type Adrena = {
           docs: ["#8"];
         },
         {
-          name: "lmTokenMint";
+          name: "lmTokenTreasury";
           isMut: true;
           isSigner: false;
           docs: ["#9"];
@@ -7273,7 +7384,7 @@ export type Adrena = {
           isMut: false;
           isSigner: false;
           docs: ["#12"];
-        }
+        },
       ];
       args: [
         {
@@ -7281,13 +7392,96 @@ export type Adrena = {
           type: {
             defined: "MintStakedLmTokensFromBucketParams";
           };
-        }
+        },
       ];
-    }
+    },
+    {
+      name: "mintAllLmTokens";
+      accounts: [
+        {
+          name: "admin";
+          isMut: false;
+          isSigner: true;
+          docs: ["#1"];
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+          docs: ["#2"];
+        },
+        {
+          name: "lmTokenTreasury";
+          isMut: true;
+          isSigner: false;
+          docs: ["#3"];
+        },
+        {
+          name: "transferAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "cortex";
+          isMut: true;
+          isSigner: false;
+          docs: ["#4"];
+        },
+        {
+          name: "lmTokenMint";
+          isMut: true;
+          isSigner: false;
+          docs: ["#5"];
+        },
+        {
+          name: "lmTokenMintMetadata";
+          isMut: true;
+          isSigner: false;
+          docs: ["#6"];
+        },
+        {
+          name: "vestRegistry";
+          isMut: false;
+          isSigner: false;
+          docs: ["#7"];
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+          docs: ["#8"];
+        },
+        {
+          name: "mplTokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+          docs: ["#9"];
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+          docs: ["#10"];
+        },
+        {
+          name: "associatedTokenProgram";
+          isMut: false;
+          isSigner: false;
+          docs: ["#11"];
+        },
+        {
+          name: "sysvarInstructions";
+          isMut: false;
+          isSigner: false;
+          docs: ["#12"];
+        },
+      ];
+      args: [];
+    },
   ];
   accounts: [
     {
-      name: "cortex";
+      name: "Cortex";
       type: {
         kind: "struct";
         fields: [
@@ -7402,12 +7596,12 @@ export type Adrena = {
           {
             name: "uniquePositionIdCounter";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "custody";
+      name: "Custody";
       type: {
         kind: "struct";
         fields: [
@@ -7524,12 +7718,12 @@ export type Adrena = {
             type: {
               defined: "BorrowRateState";
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "genesisLock";
+      name: "GenesisLock";
       type: {
         kind: "struct";
         fields: [
@@ -7600,12 +7794,12 @@ export type Adrena = {
             type: {
               array: ["u8", 8];
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "limitOrderBook";
+      name: "LimitOrderBook";
       type: {
         kind: "struct";
         fields: [
@@ -7638,19 +7832,19 @@ export type Adrena = {
                 {
                   defined: "LimitOrder";
                 },
-                16
+                16,
               ];
             };
           },
           {
             name: "escrowedLamports";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "oracle";
+      name: "Oracle";
       type: {
         kind: "struct";
         fields: [
@@ -7675,15 +7869,15 @@ export type Adrena = {
                 {
                   defined: "OraclePrice";
                 },
-                20
+                20,
               ];
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "pool";
+      name: "Pool";
       type: {
         kind: "struct";
         fields: [
@@ -7758,7 +7952,7 @@ export type Adrena = {
                 {
                   defined: "TokenRatios";
                 },
-                8
+                8,
               ];
             };
           },
@@ -7783,12 +7977,12 @@ export type Adrena = {
           {
             name: "aumSoftCapUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "position";
+      name: "Position";
       type: {
         kind: "struct";
         fields: [
@@ -7905,12 +8099,12 @@ export type Adrena = {
           {
             name: "stopLossClosePositionPrice";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "staking";
+      name: "Staking";
       type: {
         kind: "struct";
         fields: [
@@ -8009,7 +8203,7 @@ export type Adrena = {
                 {
                   defined: "StakingRound";
                 },
-                32
+                32,
               ];
             };
           },
@@ -8044,12 +8238,12 @@ export type Adrena = {
           {
             name: "currentMonthEmissionAmountPerRound";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "userProfileV1";
+      name: "UserProfileV1";
       type: {
         kind: "struct";
         fields: [
@@ -8104,12 +8298,12 @@ export type Adrena = {
             type: {
               defined: "TradingStats";
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "userProfile";
+      name: "UserProfile";
       type: {
         kind: "struct";
         fields: [
@@ -8178,16 +8372,24 @@ export type Adrena = {
             type: "u64";
           },
           {
+            name: "rollingTradeWindowStart";
+            type: "i64";
+          },
+          {
+            name: "tradesInWindow";
+            type: "u16";
+          },
+          {
             name: "padding2";
             type: {
-              array: ["u8", 16];
+              array: ["u8", 6];
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "userStaking";
+      name: "UserStaking";
       type: {
         kind: "struct";
         fields: [
@@ -8228,15 +8430,15 @@ export type Adrena = {
                 {
                   defined: "LockedStake";
                 },
-                32
+                32,
               ];
             };
-          }
+          },
         ];
       };
     },
     {
-      name: "vestV1";
+      name: "VestV1";
       type: {
         kind: "struct";
         fields: [
@@ -8283,12 +8485,12 @@ export type Adrena = {
           {
             name: "owner";
             type: "publicKey";
-          }
+          },
         ];
       };
     },
     {
-      name: "vestRegistry";
+      name: "VestRegistry";
       type: {
         kind: "struct";
         fields: [
@@ -8309,12 +8511,12 @@ export type Adrena = {
           {
             name: "vestedTokenAmount";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
-      name: "vest";
+      name: "Vest";
       type: {
         kind: "struct";
         fields: [
@@ -8381,10 +8583,10 @@ export type Adrena = {
             type: {
               array: ["u8", 32];
             };
-          }
+          },
         ];
       };
-    }
+    },
   ];
   types: [
     {
@@ -8403,7 +8605,7 @@ export type Adrena = {
           {
             name: "reason";
             type: "string";
-          }
+          },
         ];
       };
     },
@@ -8427,7 +8629,7 @@ export type Adrena = {
           {
             name: "lockedDays";
             type: "u32";
-          }
+          },
         ];
       };
     },
@@ -8439,7 +8641,7 @@ export type Adrena = {
           {
             name: "newAdmin";
             type: "publicKey";
-          }
+          },
         ];
       };
     },
@@ -8485,7 +8687,7 @@ export type Adrena = {
                 {
                   defined: "TokenRatios";
                 },
-                8
+                8,
               ];
             };
           },
@@ -8500,7 +8702,7 @@ export type Adrena = {
             type: {
               defined: "LimitedString";
             };
-          }
+          },
         ];
       };
     },
@@ -8516,10 +8718,10 @@ export type Adrena = {
                 {
                   defined: "TokenRatios";
                 },
-                8
+                8,
               ];
             };
-          }
+          },
         ];
       };
     },
@@ -8531,7 +8733,7 @@ export type Adrena = {
           {
             name: "allowSwap";
             type: "bool";
-          }
+          },
         ];
       };
     },
@@ -8543,7 +8745,7 @@ export type Adrena = {
           {
             name: "allowTrade";
             type: "bool";
-          }
+          },
         ];
       };
     },
@@ -8593,10 +8795,10 @@ export type Adrena = {
                 {
                   defined: "TokenRatios";
                 },
-                8
+                8,
               ];
             };
-          }
+          },
         ];
       };
     },
@@ -8608,7 +8810,7 @@ export type Adrena = {
           {
             name: "maxCumulativeShortPositionSizeUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -8628,7 +8830,7 @@ export type Adrena = {
           {
             name: "ecosystemBucketAllocation";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -8646,7 +8848,7 @@ export type Adrena = {
           {
             name: "chaosLabsFeedId";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -8662,7 +8864,7 @@ export type Adrena = {
                 defined: "OraclePricesSetup";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8690,7 +8892,7 @@ export type Adrena = {
           {
             name: "lpTokenUri";
             type: "string";
-          }
+          },
         ];
       };
     },
@@ -8716,7 +8918,7 @@ export type Adrena = {
             type: {
               defined: "ReservedSpots";
             };
-          }
+          },
         ];
       };
     },
@@ -8736,7 +8938,7 @@ export type Adrena = {
           {
             name: "custodyThreeAmount";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -8748,7 +8950,7 @@ export type Adrena = {
           {
             name: "allowSwap";
             type: "bool";
-          }
+          },
         ];
       };
     },
@@ -8760,7 +8962,7 @@ export type Adrena = {
           {
             name: "allowTrade";
             type: "bool";
-          }
+          },
         ];
       };
     },
@@ -8772,7 +8974,7 @@ export type Adrena = {
           {
             name: "aumSoftCapUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -8784,7 +8986,7 @@ export type Adrena = {
           {
             name: "liquidityState";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -8796,7 +8998,7 @@ export type Adrena = {
           {
             name: "stakingType";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -8808,7 +9010,7 @@ export type Adrena = {
           {
             name: "lmEmissionPotentiometerBps";
             type: "u16";
-          }
+          },
         ];
       };
     },
@@ -8836,7 +9038,7 @@ export type Adrena = {
           {
             name: "voteMultiplier";
             type: "u32";
-          }
+          },
         ];
       };
     },
@@ -8860,7 +9062,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8884,7 +9086,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8908,7 +9110,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8928,7 +9130,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8948,7 +9150,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -8978,7 +9180,7 @@ export type Adrena = {
           {
             name: "leverage";
             type: "u32";
-          }
+          },
         ];
       };
     },
@@ -8990,7 +9192,7 @@ export type Adrena = {
           {
             name: "id";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9010,7 +9212,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9030,7 +9232,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9048,7 +9250,7 @@ export type Adrena = {
             type: {
               option: "u64";
             };
-          }
+          },
         ];
       };
     },
@@ -9066,7 +9268,7 @@ export type Adrena = {
             type: {
               option: "u64";
             };
-          }
+          },
         ];
       };
     },
@@ -9078,7 +9280,7 @@ export type Adrena = {
           {
             name: "takeProfitLimitPrice";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9090,7 +9292,7 @@ export type Adrena = {
           {
             name: "takeProfitLimitPrice";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9116,7 +9318,7 @@ export type Adrena = {
           {
             name: "percentage";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9142,7 +9344,7 @@ export type Adrena = {
           {
             name: "percentage";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9158,7 +9360,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9186,7 +9388,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9214,7 +9416,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9230,7 +9432,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9246,7 +9448,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9274,7 +9476,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9302,7 +9504,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9330,7 +9532,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9350,7 +9552,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9370,7 +9572,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9386,7 +9588,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9398,7 +9600,7 @@ export type Adrena = {
           {
             name: "amount";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9414,7 +9616,7 @@ export type Adrena = {
           {
             name: "lockedDays";
             type: "u32";
-          }
+          },
         ];
       };
     },
@@ -9428,7 +9630,7 @@ export type Adrena = {
             type: {
               option: "bytes";
             };
-          }
+          },
         ];
       };
     },
@@ -9444,7 +9646,7 @@ export type Adrena = {
           {
             name: "earlyExit";
             type: "bool";
-          }
+          },
         ];
       };
     },
@@ -9456,7 +9658,7 @@ export type Adrena = {
           {
             name: "amount";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9468,7 +9670,7 @@ export type Adrena = {
           {
             name: "lockedStakeIndex";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9492,7 +9694,7 @@ export type Adrena = {
             type: {
               option: "u32";
             };
-          }
+          },
         ];
       };
     },
@@ -9508,7 +9710,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9520,7 +9722,7 @@ export type Adrena = {
           {
             name: "nickname";
             type: "string";
-          }
+          },
         ];
       };
     },
@@ -9552,7 +9754,7 @@ export type Adrena = {
             type: {
               option: "u8";
             };
-          }
+          },
         ];
       };
     },
@@ -9568,7 +9770,7 @@ export type Adrena = {
           {
             name: "operation";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -9600,7 +9802,7 @@ export type Adrena = {
           {
             name: "continent";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -9612,7 +9814,7 @@ export type Adrena = {
           {
             name: "nickname";
             type: "string";
-          }
+          },
         ];
       };
     },
@@ -9626,7 +9828,7 @@ export type Adrena = {
             type: {
               option: "publicKey";
             };
-          }
+          },
         ];
       };
     },
@@ -9646,7 +9848,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9662,7 +9864,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9690,7 +9892,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9706,7 +9908,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9730,7 +9932,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9746,7 +9948,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9762,7 +9964,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9790,7 +9992,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9806,7 +10008,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9890,7 +10092,7 @@ export type Adrena = {
           {
             name: "cumulativeTradingVolumeUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9926,7 +10128,7 @@ export type Adrena = {
           {
             name: "cumulativeReferrerFeeUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -9942,7 +10144,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9962,7 +10164,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -9982,7 +10184,7 @@ export type Adrena = {
                 defined: "ChaosLabsBatchPrices";
               };
             };
-          }
+          },
         ];
       };
     },
@@ -10008,7 +10210,7 @@ export type Adrena = {
           {
             name: "recoveryId";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -10029,7 +10231,7 @@ export type Adrena = {
           {
             name: "timestamp";
             type: "i64";
-          }
+          },
         ];
       };
     },
@@ -10057,7 +10259,7 @@ export type Adrena = {
           {
             name: "lossUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10073,7 +10275,7 @@ export type Adrena = {
           {
             name: "fee";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10101,7 +10303,7 @@ export type Adrena = {
           {
             name: "size";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10137,7 +10339,7 @@ export type Adrena = {
           {
             name: "size";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10157,14 +10359,14 @@ export type Adrena = {
           {
             name: "feeOut";
             type: "u64";
-          }
+          },
         ];
       };
     },
     {
       name: "ProfitAndLoss";
       docs: [
-        "Specific to the codebase, this struct is used to store the profit and loss of a position."
+        "Specific to the codebase, this struct is used to store the profit and loss of a position.",
       ];
       type: {
         kind: "struct";
@@ -10188,7 +10390,7 @@ export type Adrena = {
           {
             name: "borrowFeeUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10242,7 +10444,7 @@ export type Adrena = {
           {
             name: "padding2";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10274,7 +10476,7 @@ export type Adrena = {
           {
             name: "borrowUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10306,7 +10508,7 @@ export type Adrena = {
           {
             name: "liquidationUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10330,7 +10532,7 @@ export type Adrena = {
           {
             name: "oiShortUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10350,7 +10552,7 @@ export type Adrena = {
           {
             name: "locked";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10374,7 +10576,7 @@ export type Adrena = {
           {
             name: "maxCumulativeShortPositionSizeUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10386,7 +10588,7 @@ export type Adrena = {
           {
             name: "maxHourlyBorrowInterestRate";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10408,7 +10610,7 @@ export type Adrena = {
             type: {
               defined: "U128Split";
             };
-          }
+          },
         ];
       };
     },
@@ -10446,14 +10648,14 @@ export type Adrena = {
             };
           },
           {
-            name: "cumulativeInterestUsd";
-            type: "u64";
-          },
-          {
-            name: "padding";
+            name: "padding1";
             type: {
               array: ["u8", 8];
             };
+          },
+          {
+            name: "collateralUsd";
+            type: "u64";
           },
           {
             name: "cumulativeInterestSnapshot";
@@ -10472,10 +10674,34 @@ export type Adrena = {
                 {
                   defined: "StableLockedAmountStat";
                 },
-                2
+                1,
               ];
             };
-          }
+          },
+          {
+            name: "prepaidInterestUsd";
+            type: "u64";
+          },
+          {
+            name: "tmpOffsetEndTs";
+            type: "u64";
+          },
+          {
+            name: "tmpOffset";
+            type: {
+              defined: "U128Split";
+            };
+          },
+          {
+            name: "unrealizedInterestUsd";
+            type: "u64";
+          },
+          {
+            name: "padding2";
+            type: {
+              array: ["u8", 8];
+            };
+          },
         ];
       };
     },
@@ -10497,7 +10723,7 @@ export type Adrena = {
             type: {
               array: ["u8", 8];
             };
-          }
+          },
         ];
       };
     },
@@ -10557,7 +10783,7 @@ export type Adrena = {
             type: {
               array: ["u8", 4];
             };
-          }
+          },
         ];
       };
     },
@@ -10597,7 +10823,7 @@ export type Adrena = {
             type: {
               defined: "LimitedString";
             };
-          }
+          },
         ];
       };
     },
@@ -10623,7 +10849,7 @@ export type Adrena = {
             type: {
               array: ["u8", 2];
             };
-          }
+          },
         ];
       };
     },
@@ -10663,7 +10889,7 @@ export type Adrena = {
           {
             name: "lmTotalClaim";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10685,7 +10911,7 @@ export type Adrena = {
           {
             name: "lmTotalStake";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10721,7 +10947,7 @@ export type Adrena = {
           {
             name: "feePaidUsd";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10749,7 +10975,7 @@ export type Adrena = {
           {
             name: "overlapAmount";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10843,7 +11069,7 @@ export type Adrena = {
           {
             name: "genesisClaimTime";
             type: "i64";
-          }
+          },
         ];
       };
     },
@@ -10861,7 +11087,7 @@ export type Adrena = {
           {
             name: "length";
             type: "u8";
-          }
+          },
         ];
       };
     },
@@ -10877,7 +11103,7 @@ export type Adrena = {
           {
             name: "low";
             type: "u64";
-          }
+          },
         ];
       };
     },
@@ -10894,7 +11120,7 @@ export type Adrena = {
           },
           {
             name: "Ecosystem";
-          }
+          },
         ];
       };
     },
@@ -10916,9 +11142,9 @@ export type Adrena = {
               {
                 name: "secondReservedSpot";
                 type: "publicKey";
-              }
+              },
             ];
-          }
+          },
         ];
       };
     },
@@ -10941,7 +11167,7 @@ export type Adrena = {
           },
           {
             name: "Initialized";
-          }
+          },
         ];
       };
     },
@@ -10958,7 +11184,7 @@ export type Adrena = {
           },
           {
             name: "Active";
-          }
+          },
         ];
       };
     },
@@ -10981,7 +11207,7 @@ export type Adrena = {
           },
           {
             name: "Liquidate";
-          }
+          },
         ];
       };
     },
@@ -10998,7 +11224,7 @@ export type Adrena = {
           },
           {
             name: "Short";
-          }
+          },
         ];
       };
     },
@@ -11012,7 +11238,7 @@ export type Adrena = {
           },
           {
             name: "LP";
-          }
+          },
         ];
       };
     },
@@ -11035,7 +11261,7 @@ export type Adrena = {
           },
           {
             name: "Initialized";
-          }
+          },
         ];
       };
     },
@@ -11043,21 +11269,309 @@ export type Adrena = {
       name: "Title";
       type: {
         kind: "enum";
-        variants: [{ name: "Zero" }];
+        variants: [
+          {
+            name: "Zero";
+          },
+          {
+            name: "GoldenHands";
+          },
+          {
+            name: "DiamondHands";
+          },
+          {
+            name: "AwakeningRank1";
+          },
+          {
+            name: "AwakeningChallenger";
+          },
+          {
+            name: "AwakeningContender";
+          },
+          {
+            name: "ExpanseRank1";
+          },
+          {
+            name: "ExpanseChallenger";
+          },
+          {
+            name: "ExpanseContender";
+          },
+          {
+            name: "Trader";
+          },
+          {
+            name: "EmergingTrader";
+          },
+          {
+            name: "TopTier";
+          },
+          {
+            name: "VolumeKing";
+          },
+          {
+            name: "FutureMcDonaldsEmployee";
+          },
+          {
+            name: "HighlyUnprofitableTrader";
+          },
+          {
+            name: "SeverelyWounded";
+          },
+          {
+            name: "DaddysMoney";
+          },
+          {
+            name: "AllInAllGone";
+          },
+          {
+            name: "HighlyProfitableTrader";
+          },
+          {
+            name: "CertifiedMoneyPrinter";
+          },
+          {
+            name: "WhaleAmongMen";
+          },
+          {
+            name: "ApexTrader";
+          },
+          {
+            name: "Unstoppable";
+          },
+          {
+            name: "FreeKebab";
+          },
+          {
+            name: "PassiveIncome";
+          },
+          {
+            name: "AdrenaStakeholder";
+          },
+          {
+            name: "BoardMember";
+          },
+          {
+            name: "LiquidityKing";
+          },
+          {
+            name: "BadLuckBrian";
+          },
+          {
+            name: "LeCramer";
+          },
+          {
+            name: "TheChameleon";
+          },
+          {
+            name: "SoldierS2";
+          },
+          {
+            name: "SergeantS2";
+          },
+          {
+            name: "LieutenantS2";
+          },
+          {
+            name: "GeneralS2";
+          },
+          {
+            name: "BonkOperative";
+          },
+          {
+            name: "JitoJuggernaut";
+          },
+          {
+            name: "Season2Champion";
+          },
+          {
+            name: "Season2Destroyer";
+          },
+          {
+            name: "CrownSniffer";
+          },
+          {
+            name: "CertifiedMenace";
+          },
+          {
+            name: "TombRaider";
+          },
+          {
+            name: "Saboteur";
+          },
+          {
+            name: "Traitor";
+          },
+          {
+            name: "Opportunist";
+          },
+          {
+            name: "Relentless";
+          },
+          {
+            name: "WetAndLosing";
+          },
+          {
+            name: "Underwater";
+          },
+          {
+            name: "BossMuncher";
+          },
+          {
+            name: "Scratcher";
+          },
+          {
+            name: "PaperBeatRock";
+          },
+          {
+            name: "ThePainmaker";
+          },
+          {
+            name: "ChickenWings";
+          },
+          {
+            name: "NiceGuy";
+          },
+        ];
       };
     },
     {
       name: "Wallpaper";
       type: {
         kind: "enum";
-        variants: [{ name: "Zero" }];
+        variants: [
+          {
+            name: "Zero";
+          },
+          {
+            name: "One";
+          },
+          {
+            name: "Two";
+          },
+          {
+            name: "Three";
+          },
+          {
+            name: "Four";
+          },
+          {
+            name: "VolumeKing";
+          },
+          {
+            name: "Streak5";
+          },
+          {
+            name: "SoldierS2";
+          },
+          {
+            name: "SergeantS2";
+          },
+          {
+            name: "LieutenantS2";
+          },
+          {
+            name: "GeneralS2";
+          },
+          {
+            name: "BonkOperative";
+          },
+          {
+            name: "JitoJuggernaut";
+          },
+          {
+            name: "Season2Champion";
+          },
+          {
+            name: "ThePainmaker";
+          },
+          {
+            name: "NiceGuy";
+          },
+        ];
       };
     },
     {
       name: "ProfilePicture";
       type: {
         kind: "enum";
-        variants: [{ name: "Zero" }];
+        variants: [
+          {
+            name: "Zero";
+          },
+          {
+            name: "One";
+          },
+          {
+            name: "Two";
+          },
+          {
+            name: "Three";
+          },
+          {
+            name: "Four";
+          },
+          {
+            name: "TopTier";
+          },
+          {
+            name: "WhaleAmongMen";
+          },
+          {
+            name: "Streak10";
+          },
+          {
+            name: "StakedHolder";
+          },
+          {
+            name: "SoldierS2";
+          },
+          {
+            name: "SergeantS2";
+          },
+          {
+            name: "LieutenantS2";
+          },
+          {
+            name: "GeneralS2";
+          },
+          {
+            name: "BonkOperative";
+          },
+          {
+            name: "JitoJuggernaut";
+          },
+          {
+            name: "Season2Champion";
+          },
+          {
+            name: "Season2Destroyer";
+          },
+          {
+            name: "Saboteur";
+          },
+          {
+            name: "Traitor";
+          },
+          {
+            name: "Relentless";
+          },
+          {
+            name: "BossMuncher";
+          },
+          {
+            name: "ThePainmaker";
+          },
+          {
+            name: "NiceGuy";
+          },
+          {
+            name: "GoldenHands";
+          },
+          {
+            name: "DiamondHands";
+          },
+        ];
       };
     },
     {
@@ -11070,7 +11584,10 @@ export type Adrena = {
           },
           {
             name: "V2";
-          }
+          },
+          {
+            name: "V3";
+          },
         ];
       };
     },
@@ -11087,7 +11604,7 @@ export type Adrena = {
           },
           {
             name: "Jito";
-          }
+          },
         ];
       };
     },
@@ -11119,7 +11636,7 @@ export type Adrena = {
           },
           {
             name: "Antarctica";
-          }
+          },
         ];
       };
     },
@@ -11127,7 +11644,242 @@ export type Adrena = {
       name: "Achievement";
       type: {
         kind: "enum";
-        variants: [{ name: "Zero" }];
+        variants: [
+          {
+            name: "FirstTrade";
+          },
+          {
+            name: "KeepADX50Percent";
+          },
+          {
+            name: "KeepADX90Percent";
+          },
+          {
+            name: "AwakeningRank1";
+          },
+          {
+            name: "AwakeningChallenger";
+          },
+          {
+            name: "AwakeningContender";
+          },
+          {
+            name: "ExpanseRank1";
+          },
+          {
+            name: "ExpanseChallenger";
+          },
+          {
+            name: "ExpanseContender";
+          },
+          {
+            name: "FirstProfitableTrade";
+          },
+          {
+            name: "Volume1M";
+          },
+          {
+            name: "Volume10M";
+          },
+          {
+            name: "Volume100M";
+          },
+          {
+            name: "Volume250M";
+          },
+          {
+            name: "Volume500M";
+          },
+          {
+            name: "Volume1B";
+          },
+          {
+            name: "Loss5K";
+          },
+          {
+            name: "Loss10K";
+          },
+          {
+            name: "Loss50K";
+          },
+          {
+            name: "Loss200K";
+          },
+          {
+            name: "Loss500K";
+          },
+          {
+            name: "Loss1M";
+          },
+          {
+            name: "Profit5K";
+          },
+          {
+            name: "Profit10K";
+          },
+          {
+            name: "Profit50K";
+          },
+          {
+            name: "Profit200K";
+          },
+          {
+            name: "Profit500K";
+          },
+          {
+            name: "Profit1M";
+          },
+          {
+            name: "Streak5";
+          },
+          {
+            name: "Streak10";
+          },
+          {
+            name: "Streak20";
+          },
+          {
+            name: "StakedEarnings10";
+          },
+          {
+            name: "StakedEarnings1K";
+          },
+          {
+            name: "StakedEarnings5K";
+          },
+          {
+            name: "StakedEarnings10K";
+          },
+          {
+            name: "StakedEarnings50K";
+          },
+          {
+            name: "StakedEarnings100K";
+          },
+          {
+            name: "StakedHoldings1M";
+          },
+          {
+            name: "StakedHoldings3M";
+          },
+          {
+            name: "StakedHoldings6M";
+          },
+          {
+            name: "StakedHoldings10M";
+          },
+          {
+            name: "StakedHoldings20M";
+          },
+          {
+            name: "StakedHoldings50M";
+          },
+          {
+            name: "Liquidity1K";
+          },
+          {
+            name: "Liquidity50K";
+          },
+          {
+            name: "Liquidity100K";
+          },
+          {
+            name: "Liquidity250K";
+          },
+          {
+            name: "Liquidity500K";
+          },
+          {
+            name: "Liquidity1M";
+          },
+          {
+            name: "TradeOpen30Days";
+          },
+          {
+            name: "Liquidated1";
+          },
+          {
+            name: "Liquidated25";
+          },
+          {
+            name: "Liquidated50";
+          },
+          {
+            name: "Liquidated100";
+          },
+          {
+            name: "ChangeUsername10";
+          },
+          {
+            name: "Soldier";
+          },
+          {
+            name: "Sergeant";
+          },
+          {
+            name: "Lieutenant";
+          },
+          {
+            name: "General";
+          },
+          {
+            name: "BonkOperative";
+          },
+          {
+            name: "JitoJuggernaut";
+          },
+          {
+            name: "Season2Champion";
+          },
+          {
+            name: "Season2Destroyer";
+          },
+          {
+            name: "CrownSniffer";
+          },
+          {
+            name: "CertifiedMenace";
+          },
+          {
+            name: "TombRaider";
+          },
+          {
+            name: "Saboteur";
+          },
+          {
+            name: "Traitor";
+          },
+          {
+            name: "Opportunist";
+          },
+          {
+            name: "Relentless";
+          },
+          {
+            name: "WetAndLosing";
+          },
+          {
+            name: "Underwater";
+          },
+          {
+            name: "BossMuncher";
+          },
+          {
+            name: "Scratcher";
+          },
+          {
+            name: "PaperBeatRock";
+          },
+          {
+            name: "ThePainmaker";
+          },
+          {
+            name: "ChickenWings";
+          },
+          {
+            name: "NiceGuy";
+          },
+        ];
       };
     },
     {
@@ -11140,10 +11892,10 @@ export type Adrena = {
           },
           {
             name: "V2";
-          }
+          },
         ];
       };
-    }
+    },
   ];
   events: [
     {
@@ -11193,7 +11945,7 @@ export type Adrena = {
           name: "positionId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11243,7 +11995,7 @@ export type Adrena = {
           name: "positionId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11313,7 +12065,7 @@ export type Adrena = {
           name: "percentage";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11358,7 +12110,7 @@ export type Adrena = {
           name: "positionId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11403,7 +12155,7 @@ export type Adrena = {
           name: "positionId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11463,7 +12215,7 @@ export type Adrena = {
           name: "positionId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11493,7 +12245,7 @@ export type Adrena = {
           name: "lockedDays";
           type: "u32";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11527,7 +12279,7 @@ export type Adrena = {
             option: "u32";
           };
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11552,7 +12304,7 @@ export type Adrena = {
           name: "earlyExit";
           type: "bool";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11572,7 +12324,7 @@ export type Adrena = {
           name: "lockedStakeId";
           type: "u64";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11599,7 +12351,7 @@ export type Adrena = {
           name: "positionSide";
           type: "u8";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11619,7 +12371,7 @@ export type Adrena = {
           name: "positionSide";
           type: "u8";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11634,7 +12386,7 @@ export type Adrena = {
           name: "positionSide";
           type: "u8";
           index: false;
-        }
+        },
       ];
     },
     {
@@ -11649,9 +12401,9 @@ export type Adrena = {
           name: "positionSide";
           type: "u8";
           index: false;
-        }
+        },
       ];
-    }
+    },
   ];
   errors: [
     {
@@ -11987,7 +12739,7 @@ export type Adrena = {
     {
       code: 6066;
       name: "PositionTooYoung";
-      msg: "A position cannot be close right after open, a slight delay is enforced";
+      msg: "A position cannot be close right after open or update, a slight delay is enforced";
     },
     {
       code: 6067;
@@ -12083,12 +12835,17 @@ export type Adrena = {
       code: 6085;
       name: "InvalidOracleSignature";
       msg: "Invalid oracle signature";
-    }
+    },
+    {
+      code: 6086;
+      name: "CustodyBelowMinimum";
+      msg: "Custody amount is below minimum required";
+    },
   ];
 };
 
 export const IDL: Adrena = {
-  version: "1.3.2",
+  version: "1.4.3",
   name: "adrena",
   instructions: [
     {
@@ -12434,6 +13191,47 @@ export const IDL: Adrena = {
       returns: "u8",
     },
     {
+      name: "cancelVest",
+      accounts: [
+        {
+          name: "admin",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "owner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "cortex",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vestRegistry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vest",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
       name: "setVestDelegate",
       accounts: [
         {
@@ -12643,7 +13441,7 @@ export const IDL: Adrena = {
           docs: ["#8"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#9"],
@@ -13823,6 +14621,20 @@ export const IDL: Adrena = {
           isSigner: false,
           docs: ["#14"],
         },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#15"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
+        },
       ],
       args: [
         {
@@ -13929,6 +14741,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#14"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#15"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
         },
       ],
       args: [
@@ -14038,6 +14864,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#16"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#17"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#18"],
         },
       ],
       args: [
@@ -14159,6 +14999,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#18"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#19"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#20"],
         },
       ],
       args: [
@@ -14893,6 +15747,48 @@ export const IDL: Adrena = {
           },
         },
       ],
+    },
+    {
+      name: "additionalProtectionFee",
+      accounts: [
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: true,
+          docs: ["#1"],
+        },
+        {
+          name: "cortex",
+          isMut: false,
+          isSigner: false,
+          docs: ["#2"],
+        },
+        {
+          name: "pool",
+          isMut: false,
+          isSigner: false,
+          docs: ["#3"],
+        },
+        {
+          name: "position",
+          isMut: true,
+          isSigner: false,
+          docs: ["#4"],
+        },
+        {
+          name: "custody",
+          isMut: true,
+          isSigner: false,
+          docs: ["#5"],
+        },
+        {
+          name: "collateralCustody",
+          isMut: true,
+          isSigner: false,
+          docs: ["#6"],
+        },
+      ],
+      args: [],
     },
     {
       name: "updatePoolAum",
@@ -16307,7 +17203,7 @@ export const IDL: Adrena = {
           docs: ["#14"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#15"],
@@ -16609,7 +17505,7 @@ export const IDL: Adrena = {
           docs: ["#13"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#14"],
@@ -16772,7 +17668,7 @@ export const IDL: Adrena = {
           docs: ["#13"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#14"],
@@ -16935,7 +17831,7 @@ export const IDL: Adrena = {
           docs: ["#13"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#14"],
@@ -17104,7 +18000,7 @@ export const IDL: Adrena = {
           docs: ["#13"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#14"],
@@ -17389,7 +18285,7 @@ export const IDL: Adrena = {
           docs: ["#8"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#9"],
@@ -17527,7 +18423,7 @@ export const IDL: Adrena = {
           docs: ["#4"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#5"],
@@ -17639,6 +18535,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#14"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#15"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
         },
       ],
       args: [
@@ -17794,6 +18704,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#15"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#17"],
         },
       ],
       args: [
@@ -18173,90 +19097,6 @@ export const IDL: Adrena = {
       args: [],
     },
     {
-      name: "patchStakingRound",
-      accounts: [
-        {
-          name: "admin",
-          isMut: false,
-          isSigner: true,
-          docs: ["#1"],
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-          docs: ["#2"],
-        },
-        {
-          name: "fundingAccount",
-          isMut: true,
-          isSigner: false,
-          docs: ["#3"],
-        },
-        {
-          name: "stakingRewardTokenVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["#4"],
-        },
-        {
-          name: "stakingLmRewardTokenVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["#5"],
-        },
-        {
-          name: "transferAuthority",
-          isMut: false,
-          isSigner: false,
-          docs: ["#6"],
-        },
-        {
-          name: "staking",
-          isMut: true,
-          isSigner: false,
-          docs: ["#7"],
-        },
-        {
-          name: "cortex",
-          isMut: true,
-          isSigner: false,
-          docs: ["#8"],
-        },
-        {
-          name: "lmTokenMint",
-          isMut: true,
-          isSigner: false,
-          docs: ["#9"],
-        },
-        {
-          name: "feeRedistributionMint",
-          isMut: false,
-          isSigner: false,
-          docs: ["#10"],
-        },
-        {
-          name: "adrenaProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["#11"],
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["#12"],
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["#13"],
-        },
-      ],
-      args: [],
-    },
-    {
       name: "setPoolWhitelistedSwapper",
       accounts: [
         {
@@ -18580,6 +19420,20 @@ export const IDL: Adrena = {
           isSigner: false,
           docs: ["#14"],
         },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#15"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
+        },
       ],
       args: [
         {
@@ -18682,6 +19536,20 @@ export const IDL: Adrena = {
           isMut: false,
           isSigner: false,
           docs: ["#15"],
+        },
+        {
+          name: "userProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#16"],
+        },
+        {
+          name: "referrerProfile",
+          isMut: true,
+          isSigner: false,
+          isOptional: true,
+          docs: ["#17"],
         },
       ],
       args: [
@@ -19340,7 +20208,7 @@ export const IDL: Adrena = {
           docs: ["#8"],
         },
         {
-          name: "lmTokenMint",
+          name: "lmTokenTreasury",
           isMut: true,
           isSigner: false,
           docs: ["#9"],
@@ -19373,10 +20241,93 @@ export const IDL: Adrena = {
         },
       ],
     },
+    {
+      name: "mintAllLmTokens",
+      accounts: [
+        {
+          name: "admin",
+          isMut: false,
+          isSigner: true,
+          docs: ["#1"],
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+          docs: ["#2"],
+        },
+        {
+          name: "lmTokenTreasury",
+          isMut: true,
+          isSigner: false,
+          docs: ["#3"],
+        },
+        {
+          name: "transferAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "cortex",
+          isMut: true,
+          isSigner: false,
+          docs: ["#4"],
+        },
+        {
+          name: "lmTokenMint",
+          isMut: true,
+          isSigner: false,
+          docs: ["#5"],
+        },
+        {
+          name: "lmTokenMintMetadata",
+          isMut: true,
+          isSigner: false,
+          docs: ["#6"],
+        },
+        {
+          name: "vestRegistry",
+          isMut: false,
+          isSigner: false,
+          docs: ["#7"],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["#8"],
+        },
+        {
+          name: "mplTokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["#9"],
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["#10"],
+        },
+        {
+          name: "associatedTokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["#11"],
+        },
+        {
+          name: "sysvarInstructions",
+          isMut: false,
+          isSigner: false,
+          docs: ["#12"],
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
-      name: "cortex",
+      name: "Cortex",
       type: {
         kind: "struct",
         fields: [
@@ -19496,7 +20447,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "custody",
+      name: "Custody",
       type: {
         kind: "struct",
         fields: [
@@ -19618,7 +20569,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "genesisLock",
+      name: "GenesisLock",
       type: {
         kind: "struct",
         fields: [
@@ -19694,7 +20645,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "limitOrderBook",
+      name: "LimitOrderBook",
       type: {
         kind: "struct",
         fields: [
@@ -19739,7 +20690,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "oracle",
+      name: "Oracle",
       type: {
         kind: "struct",
         fields: [
@@ -19772,7 +20723,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "pool",
+      name: "Pool",
       type: {
         kind: "struct",
         fields: [
@@ -19877,7 +20828,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "position",
+      name: "Position",
       type: {
         kind: "struct",
         fields: [
@@ -19999,7 +20950,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "staking",
+      name: "Staking",
       type: {
         kind: "struct",
         fields: [
@@ -20138,7 +21089,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "userProfileV1",
+      name: "UserProfileV1",
       type: {
         kind: "struct",
         fields: [
@@ -20198,7 +21149,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "userProfile",
+      name: "UserProfile",
       type: {
         kind: "struct",
         fields: [
@@ -20267,16 +21218,24 @@ export const IDL: Adrena = {
             type: "u64",
           },
           {
+            name: "rollingTradeWindowStart",
+            type: "i64",
+          },
+          {
+            name: "tradesInWindow",
+            type: "u16",
+          },
+          {
             name: "padding2",
             type: {
-              array: ["u8", 16],
+              array: ["u8", 6],
             },
           },
         ],
       },
     },
     {
-      name: "userStaking",
+      name: "UserStaking",
       type: {
         kind: "struct",
         fields: [
@@ -20325,7 +21284,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "vestV1",
+      name: "VestV1",
       type: {
         kind: "struct",
         fields: [
@@ -20377,7 +21336,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "vestRegistry",
+      name: "VestRegistry",
       type: {
         kind: "struct",
         fields: [
@@ -20403,7 +21362,7 @@ export const IDL: Adrena = {
       },
     },
     {
-      name: "vest",
+      name: "Vest",
       type: {
         kind: "struct",
         fields: [
@@ -22535,14 +23494,14 @@ export const IDL: Adrena = {
             },
           },
           {
-            name: "cumulativeInterestUsd",
-            type: "u64",
-          },
-          {
-            name: "padding",
+            name: "padding1",
             type: {
               array: ["u8", 8],
             },
+          },
+          {
+            name: "collateralUsd",
+            type: "u64",
           },
           {
             name: "cumulativeInterestSnapshot",
@@ -22561,8 +23520,32 @@ export const IDL: Adrena = {
                 {
                   defined: "StableLockedAmountStat",
                 },
-                2,
+                1,
               ],
+            },
+          },
+          {
+            name: "prepaidInterestUsd",
+            type: "u64",
+          },
+          {
+            name: "tmpOffsetEndTs",
+            type: "u64",
+          },
+          {
+            name: "tmpOffset",
+            type: {
+              defined: "U128Split",
+            },
+          },
+          {
+            name: "unrealizedInterestUsd",
+            type: "u64",
+          },
+          {
+            name: "padding2",
+            type: {
+              array: ["u8", 8],
             },
           },
         ],
@@ -23132,21 +24115,309 @@ export const IDL: Adrena = {
       name: "Title",
       type: {
         kind: "enum",
-        variants: [{ name: "Zero" }],
+        variants: [
+          {
+            name: "Zero",
+          },
+          {
+            name: "GoldenHands",
+          },
+          {
+            name: "DiamondHands",
+          },
+          {
+            name: "AwakeningRank1",
+          },
+          {
+            name: "AwakeningChallenger",
+          },
+          {
+            name: "AwakeningContender",
+          },
+          {
+            name: "ExpanseRank1",
+          },
+          {
+            name: "ExpanseChallenger",
+          },
+          {
+            name: "ExpanseContender",
+          },
+          {
+            name: "Trader",
+          },
+          {
+            name: "EmergingTrader",
+          },
+          {
+            name: "TopTier",
+          },
+          {
+            name: "VolumeKing",
+          },
+          {
+            name: "FutureMcDonaldsEmployee",
+          },
+          {
+            name: "HighlyUnprofitableTrader",
+          },
+          {
+            name: "SeverelyWounded",
+          },
+          {
+            name: "DaddysMoney",
+          },
+          {
+            name: "AllInAllGone",
+          },
+          {
+            name: "HighlyProfitableTrader",
+          },
+          {
+            name: "CertifiedMoneyPrinter",
+          },
+          {
+            name: "WhaleAmongMen",
+          },
+          {
+            name: "ApexTrader",
+          },
+          {
+            name: "Unstoppable",
+          },
+          {
+            name: "FreeKebab",
+          },
+          {
+            name: "PassiveIncome",
+          },
+          {
+            name: "AdrenaStakeholder",
+          },
+          {
+            name: "BoardMember",
+          },
+          {
+            name: "LiquidityKing",
+          },
+          {
+            name: "BadLuckBrian",
+          },
+          {
+            name: "LeCramer",
+          },
+          {
+            name: "TheChameleon",
+          },
+          {
+            name: "SoldierS2",
+          },
+          {
+            name: "SergeantS2",
+          },
+          {
+            name: "LieutenantS2",
+          },
+          {
+            name: "GeneralS2",
+          },
+          {
+            name: "BonkOperative",
+          },
+          {
+            name: "JitoJuggernaut",
+          },
+          {
+            name: "Season2Champion",
+          },
+          {
+            name: "Season2Destroyer",
+          },
+          {
+            name: "CrownSniffer",
+          },
+          {
+            name: "CertifiedMenace",
+          },
+          {
+            name: "TombRaider",
+          },
+          {
+            name: "Saboteur",
+          },
+          {
+            name: "Traitor",
+          },
+          {
+            name: "Opportunist",
+          },
+          {
+            name: "Relentless",
+          },
+          {
+            name: "WetAndLosing",
+          },
+          {
+            name: "Underwater",
+          },
+          {
+            name: "BossMuncher",
+          },
+          {
+            name: "Scratcher",
+          },
+          {
+            name: "PaperBeatRock",
+          },
+          {
+            name: "ThePainmaker",
+          },
+          {
+            name: "ChickenWings",
+          },
+          {
+            name: "NiceGuy",
+          },
+        ],
       },
     },
     {
       name: "Wallpaper",
       type: {
         kind: "enum",
-        variants: [{ name: "Zero" }],
+        variants: [
+          {
+            name: "Zero",
+          },
+          {
+            name: "One",
+          },
+          {
+            name: "Two",
+          },
+          {
+            name: "Three",
+          },
+          {
+            name: "Four",
+          },
+          {
+            name: "VolumeKing",
+          },
+          {
+            name: "Streak5",
+          },
+          {
+            name: "SoldierS2",
+          },
+          {
+            name: "SergeantS2",
+          },
+          {
+            name: "LieutenantS2",
+          },
+          {
+            name: "GeneralS2",
+          },
+          {
+            name: "BonkOperative",
+          },
+          {
+            name: "JitoJuggernaut",
+          },
+          {
+            name: "Season2Champion",
+          },
+          {
+            name: "ThePainmaker",
+          },
+          {
+            name: "NiceGuy",
+          },
+        ],
       },
     },
     {
       name: "ProfilePicture",
       type: {
         kind: "enum",
-        variants: [{ name: "Zero" }],
+        variants: [
+          {
+            name: "Zero",
+          },
+          {
+            name: "One",
+          },
+          {
+            name: "Two",
+          },
+          {
+            name: "Three",
+          },
+          {
+            name: "Four",
+          },
+          {
+            name: "TopTier",
+          },
+          {
+            name: "WhaleAmongMen",
+          },
+          {
+            name: "Streak10",
+          },
+          {
+            name: "StakedHolder",
+          },
+          {
+            name: "SoldierS2",
+          },
+          {
+            name: "SergeantS2",
+          },
+          {
+            name: "LieutenantS2",
+          },
+          {
+            name: "GeneralS2",
+          },
+          {
+            name: "BonkOperative",
+          },
+          {
+            name: "JitoJuggernaut",
+          },
+          {
+            name: "Season2Champion",
+          },
+          {
+            name: "Season2Destroyer",
+          },
+          {
+            name: "Saboteur",
+          },
+          {
+            name: "Traitor",
+          },
+          {
+            name: "Relentless",
+          },
+          {
+            name: "BossMuncher",
+          },
+          {
+            name: "ThePainmaker",
+          },
+          {
+            name: "NiceGuy",
+          },
+          {
+            name: "GoldenHands",
+          },
+          {
+            name: "DiamondHands",
+          },
+        ],
       },
     },
     {
@@ -23159,6 +24430,9 @@ export const IDL: Adrena = {
           },
           {
             name: "V2",
+          },
+          {
+            name: "V3",
           },
         ],
       },
@@ -23216,7 +24490,242 @@ export const IDL: Adrena = {
       name: "Achievement",
       type: {
         kind: "enum",
-        variants: [{ name: "Zero" }],
+        variants: [
+          {
+            name: "FirstTrade",
+          },
+          {
+            name: "KeepADX50Percent",
+          },
+          {
+            name: "KeepADX90Percent",
+          },
+          {
+            name: "AwakeningRank1",
+          },
+          {
+            name: "AwakeningChallenger",
+          },
+          {
+            name: "AwakeningContender",
+          },
+          {
+            name: "ExpanseRank1",
+          },
+          {
+            name: "ExpanseChallenger",
+          },
+          {
+            name: "ExpanseContender",
+          },
+          {
+            name: "FirstProfitableTrade",
+          },
+          {
+            name: "Volume1M",
+          },
+          {
+            name: "Volume10M",
+          },
+          {
+            name: "Volume100M",
+          },
+          {
+            name: "Volume250M",
+          },
+          {
+            name: "Volume500M",
+          },
+          {
+            name: "Volume1B",
+          },
+          {
+            name: "Loss5K",
+          },
+          {
+            name: "Loss10K",
+          },
+          {
+            name: "Loss50K",
+          },
+          {
+            name: "Loss200K",
+          },
+          {
+            name: "Loss500K",
+          },
+          {
+            name: "Loss1M",
+          },
+          {
+            name: "Profit5K",
+          },
+          {
+            name: "Profit10K",
+          },
+          {
+            name: "Profit50K",
+          },
+          {
+            name: "Profit200K",
+          },
+          {
+            name: "Profit500K",
+          },
+          {
+            name: "Profit1M",
+          },
+          {
+            name: "Streak5",
+          },
+          {
+            name: "Streak10",
+          },
+          {
+            name: "Streak20",
+          },
+          {
+            name: "StakedEarnings10",
+          },
+          {
+            name: "StakedEarnings1K",
+          },
+          {
+            name: "StakedEarnings5K",
+          },
+          {
+            name: "StakedEarnings10K",
+          },
+          {
+            name: "StakedEarnings50K",
+          },
+          {
+            name: "StakedEarnings100K",
+          },
+          {
+            name: "StakedHoldings1M",
+          },
+          {
+            name: "StakedHoldings3M",
+          },
+          {
+            name: "StakedHoldings6M",
+          },
+          {
+            name: "StakedHoldings10M",
+          },
+          {
+            name: "StakedHoldings20M",
+          },
+          {
+            name: "StakedHoldings50M",
+          },
+          {
+            name: "Liquidity1K",
+          },
+          {
+            name: "Liquidity50K",
+          },
+          {
+            name: "Liquidity100K",
+          },
+          {
+            name: "Liquidity250K",
+          },
+          {
+            name: "Liquidity500K",
+          },
+          {
+            name: "Liquidity1M",
+          },
+          {
+            name: "TradeOpen30Days",
+          },
+          {
+            name: "Liquidated1",
+          },
+          {
+            name: "Liquidated25",
+          },
+          {
+            name: "Liquidated50",
+          },
+          {
+            name: "Liquidated100",
+          },
+          {
+            name: "ChangeUsername10",
+          },
+          {
+            name: "Soldier",
+          },
+          {
+            name: "Sergeant",
+          },
+          {
+            name: "Lieutenant",
+          },
+          {
+            name: "General",
+          },
+          {
+            name: "BonkOperative",
+          },
+          {
+            name: "JitoJuggernaut",
+          },
+          {
+            name: "Season2Champion",
+          },
+          {
+            name: "Season2Destroyer",
+          },
+          {
+            name: "CrownSniffer",
+          },
+          {
+            name: "CertifiedMenace",
+          },
+          {
+            name: "TombRaider",
+          },
+          {
+            name: "Saboteur",
+          },
+          {
+            name: "Traitor",
+          },
+          {
+            name: "Opportunist",
+          },
+          {
+            name: "Relentless",
+          },
+          {
+            name: "WetAndLosing",
+          },
+          {
+            name: "Underwater",
+          },
+          {
+            name: "BossMuncher",
+          },
+          {
+            name: "Scratcher",
+          },
+          {
+            name: "PaperBeatRock",
+          },
+          {
+            name: "ThePainmaker",
+          },
+          {
+            name: "ChickenWings",
+          },
+          {
+            name: "NiceGuy",
+          },
+        ],
       },
     },
     {
@@ -24076,7 +25585,7 @@ export const IDL: Adrena = {
     {
       code: 6066,
       name: "PositionTooYoung",
-      msg: "A position cannot be close right after open, a slight delay is enforced",
+      msg: "A position cannot be close right after open or update, a slight delay is enforced",
     },
     {
       code: 6067,
@@ -24172,6 +25681,11 @@ export const IDL: Adrena = {
       code: 6085,
       name: "InvalidOracleSignature",
       msg: "Invalid oracle signature",
+    },
+    {
+      code: 6086,
+      name: "CustodyBelowMinimum",
+      msg: "Custody amount is below minimum required",
     },
   ],
 };
