@@ -90,6 +90,11 @@ pub struct UpdateOracleParams {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct AutonomMarketOpeningParams {
+    pub opening_data: crate::autonom_market_opening_data::AutonomMarketOpeningData,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct DistributeFeesParams {
     pub oracle_prices: Option<BatchPrices>,
     pub multi_oracle_prices: Option<MultiBatchPrices>,

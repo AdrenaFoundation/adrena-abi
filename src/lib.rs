@@ -155,6 +155,20 @@ mod adrena_abi {
     ) -> Result<()> {
         Ok(())
     }
+
+    pub fn update_oracle(
+        ctx: Context<UpdateOracle>,
+        params: UpdateOracleParams,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    pub fn autonom_market_opening<'info>(
+        ctx: Context<'_, '_, '_, 'info, AutonomMarketOpening<'info>>,
+        params: AutonomMarketOpeningParams,
+    ) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -254,6 +268,9 @@ pub struct ClosePositionShort<'info> {
     /// #15
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #16
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
@@ -299,6 +316,9 @@ pub struct LiquidateShort<'info> {
     /// #14
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #15
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
@@ -328,19 +348,25 @@ pub struct LiquidateLong<'info> {
     pub oracle: AccountLoader<'info, Oracle>,
     /// #9
     #[account(mut)]
-    pub custody_token_account: AccountInfo<'info>,
+    pub collateral_custody: AccountLoader<'info, Custody>,
     /// #10
     #[account(mut)]
-    pub user_profile: Option<AccountInfo<'info>>,
+    pub collateral_custody_token_account: AccountInfo<'info>,
     /// #11
     #[account(mut)]
-    pub referrer_profile: Option<AccountInfo<'info>>,
+    pub user_profile: Option<AccountInfo<'info>>,
     /// #12
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
+    /// #13
     #[account(address = SPL_TOKEN_PROGRAM_ID)]
     pub token_program: AccountInfo<'info>,
-    /// #13
+    /// #14
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #15
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
@@ -377,7 +403,7 @@ pub(crate) struct ResolveStakingRound<'info> {
     /// #9
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #10
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
@@ -446,7 +472,7 @@ pub(crate) struct ClaimStakes<'info> {
     /// #14
     /// CHECKS: only for CPI
     #[account(mut)]
-    pub lm_token_mint: UncheckedAccount<'info>,
+    pub lm_token_treasury: UncheckedAccount<'info>,
     /// #15
     /// CHECKS: only for CPI
     pub fee_redistribution_mint: UncheckedAccount<'info>,
@@ -662,39 +688,42 @@ pub struct ExecuteLimitOrderLong<'info> {
     /// #4
     #[account(mut)]
     pub custody: AccountLoader<'info, Custody>,
-    /// #5  
+    /// #5
     #[account(mut)]
     pub oracle: AccountLoader<'info, Oracle>,
     /// #6
     #[account(mut)]
-    pub custody_token_account: AccountInfo<'info>,
+    pub collateral_custody: AccountLoader<'info, Custody>,
     /// #7
-    pub transfer_authority: AccountInfo<'info>,
-    /// #8
     #[account(mut)]
-    pub cortex: AccountLoader<'info, Cortex>,
+    pub collateral_custody_token_account: AccountInfo<'info>,
+    /// #8
+    pub transfer_authority: AccountInfo<'info>,
     /// #9
     #[account(mut)]
-    pub pool: AccountLoader<'info, Pool>,
+    pub cortex: AccountLoader<'info, Cortex>,
     /// #10
     #[account(mut)]
-    pub position: UncheckedAccount<'info>,
+    pub pool: AccountLoader<'info, Pool>,
     /// #11
     #[account(mut)]
-    pub limit_order_book: AccountLoader<'info, LimitOrderBook>,
+    pub position: UncheckedAccount<'info>,
     /// #12
+    #[account(mut)]
+    pub limit_order_book: AccountLoader<'info, LimitOrderBook>,
+    /// #13
     #[account(address = solana_sdk::system_program::ID)]
     pub system_program: AccountInfo<'info>,
-    /// #13
+    /// #14
     #[account(address = SPL_TOKEN_PROGRAM_ID)]
     pub token_program: AccountInfo<'info>,
-    /// #14
+    /// #15
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
-    /// #15
+    /// #16
     #[account(mut)]
     pub user_profile: Option<AccountInfo<'info>>,
-    /// #16
+    /// #17
     #[account(mut)]
     pub referrer_profile: Option<AccountInfo<'info>>,
 }
@@ -893,4 +922,26 @@ pub struct RemoveLiquidity<'info> {
     //
     // remaining accounts:
     //   pool.tokens.len() custody accounts (read-only, unsigned)
+}
+
+#[derive(Accounts)]
+pub struct UpdateOracle<'info> {
+    /// #1
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #2
+    #[account(mut)]
+    pub oracle: AccountLoader<'info, Oracle>,
+}
+
+#[derive(Accounts)]
+pub struct AutonomMarketOpening<'info> {
+    /// #1
+    #[account(mut)]
+    pub caller: Signer<'info>,
+    /// #2
+    #[account(mut)]
+    pub pool: AccountLoader<'info, Pool>,
+    //
+    // remaining accounts:
+    //   pool.synthetic_custodies.len() synthetic custody accounts (read-only, unsigned)
 }
