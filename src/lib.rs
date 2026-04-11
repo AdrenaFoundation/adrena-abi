@@ -5,6 +5,7 @@ pub use {
 };
 use {anchor_client::solana_sdk, oracle::Oracle};
 
+pub mod autonom_market_opening_data;
 pub mod limited_string;
 pub mod liquidation_price;
 pub mod math;
@@ -186,19 +187,25 @@ pub struct ClosePositionLong<'info> {
     pub oracle: AccountLoader<'info, Oracle>,
     /// #10
     #[account(mut)]
-    pub custody_token_account: AccountInfo<'info>,
+    pub collateral_custody: AccountLoader<'info, Custody>,
     /// #11
     #[account(mut)]
-    pub user_profile: Option<AccountInfo<'info>>,
+    pub collateral_custody_token_account: AccountInfo<'info>,
     /// #12
     #[account(mut)]
-    pub referrer_profile: Option<AccountInfo<'info>>,
+    pub user_profile: Option<AccountInfo<'info>>,
     /// #13
+    #[account(mut)]
+    pub referrer_profile: Option<AccountInfo<'info>>,
+    /// #14
     #[account(address = SPL_TOKEN_PROGRAM_ID)]
     pub token_program: AccountInfo<'info>,
-    /// #14
+    /// #15
     #[account(address = ADRENA_PROGRAM_ID)]
     pub adrena_program: AccountInfo<'info>,
+    /// #16
+    #[account(address = solana_sdk::system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
