@@ -494,8 +494,9 @@ impl OraclePrice {
 
 // Apply a policy confidence band (not provider-reported confidence) to protect LPs from MEV.
 pub fn get_confidence_from_price(price: u64, feed_id: u8) -> Result<u64> {
-    // USDC feed ids: ChaosLabs=5, Autonom=37, Switchboard=145
-    if feed_id == 5 || feed_id == 37 || feed_id == 145 {
+    // USDC feed ids per release/39 canonical layout (offset +5 in each provider range):
+    // ChaosLabs=5, Autonom=35, Switchboard=147
+    if feed_id == 5 || feed_id == 35 || feed_id == 147 {
         return Ok(0);
     }
 
