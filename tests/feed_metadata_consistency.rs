@@ -138,6 +138,118 @@ fn symbols_at_same_canonical_offset_are_identical_across_providers() {
 }
 
 #[test]
+fn every_sessioned_symbol_is_present_in_at_least_one_provider_map() {
+    // The previous test goes one direction (every map symbol must have a
+    // sessioned entry). This goes the OTHER direction: every symbol that's
+    // declared sessioned in feed_metadata.json must also appear in at least
+    // one per-provider feed map. This catches the case where feed_metadata
+    // lists a symbol the deployment expects but no provider has been wired
+    // up to serve it — the failure mode that bit us with autonom 36..46 not
+    // being in autonom.mainnet.json while feed_metadata listed AAPL/.../XAG.
+
+    let metadata = parse("feed_metadata", FEED_METADATA_JSON);
+    let sessioned = metadata["sessioned"]
+        .as_object()
+        .expect("feed_metadata.sessioned must be an object");
+
+    let mut all_provider_symbols: BTreeSet<String> = BTreeSet::new();
+    for (name, json_str) in [
+        ("chaoslabs.mainnet",   CHAOSLABS_MAINNET_JSON),
+        ("autonom.mainnet",     AUTONOM_MAINNET_JSON),
+        ("switchboard.mainnet", SWITCHBOARD_MAINNET_JSON),
+        ("switchboard.devnet",  SWITCHBOARD_DEVNET_JSON),
+    ] {
+        let parsed = parse(name, json_str);
+        for (_id, symbol) in extract_entries(name, &parsed) {
+            all_provider_symbols.insert(symbol);
+        }
+    }
+
+    let mut orphans: Vec<String> = Vec::new();
+    for symbol in sessioned.keys() {
+        if !all_provider_symbols.contains(symbol) {
+            orphans.push(symbol.clone());
+        }
+    }
+
+    assert!(
+        orphans.is_empty(),
+        "feed_metadata.sessioned lists symbols that no provider feed map carries: {:?}\n\
+         Either remove them from feed_metadata.sessioned or add the corresponding entry\n\
+         to chaoslabs.mainnet.json / autonom.mainnet.json / switchboard.mainnet.json.",
+        orphans
+    );
+}
+
+#[test]
+fn autonom_map_covers_full_canonical_layout() {
+    // Locks the Autonom map to the current launch layout: 30..46 inclusive,
+    // 17 entries, all symbols present in feed_metadata.sessioned. If the
+    // launch layout grows, this test must be updated in the same PR that
+    // adds the new alias — that's the point: it forces a deliberate update
+    // instead of a silent drift.
+    //
+    // Why this exists: the previous round of audit caught a state where
+    // feed_metadata listed AAPL/GOOGL/.../XAG but autonom.mainnet.json only
+    // had 30..35, so MrAutonom failed at boot with "feed_id 36 not present".
+    // This test makes that failure mode impossible to ship.
+
+    let parsed = parse("autonom.mainnet", AUTONOM_MAINNET_JSON);
+    let entries = extract_entries("autonom.mainnet", &parsed);
+    let by_id: BTreeMap<u8, String> = entries.into_iter().collect();
+
+    let expected: BTreeMap<u8, &str> = [
+        (30u8, "SOLUSD"),
+        (31, "JITOSOLUSD"),
+        (32, "BTCUSD"),
+        (33, "WBTCUSD"),
+        (34, "BONKUSD"),
+        (35, "USDCUSD"),
+        (36, "AAPL"),
+        (37, "GOOGL"),
+        (38, "TSLA"),
+        (39, "MSFT"),
+        (40, "LMT"),
+        (41, "META"),
+        (42, "NVDA"),
+        (43, "CHE"),
+        (44, "LH1"),
+        (45, "XAU"),
+        (46, "XAG"),
+    ]
+    .into_iter()
+    .collect();
+
+    let mut errors = Vec::new();
+    for (id, sym) in &expected {
+        match by_id.get(id) {
+            Some(actual) if actual == sym => {}
+            Some(actual) => errors.push(format!(
+                "autonom.mainnet.json: adrena_feed_id={id} expected symbol={sym} but got {actual}",
+            )),
+            None => errors.push(format!(
+                "autonom.mainnet.json: missing adrena_feed_id={id} ({sym})",
+            )),
+        }
+    }
+    for id in by_id.keys() {
+        if !expected.contains_key(id) {
+            errors.push(format!(
+                "autonom.mainnet.json: adrena_feed_id={id} present but not in the expected launch layout",
+            ));
+        }
+    }
+
+    assert!(
+        errors.is_empty(),
+        "autonom.mainnet.json doesn't match the canonical launch layout:\n{}\n\
+         If the launch scope changed, update both this test's `expected` map AND \
+         the autonom backend's feed_id_aliases.json in the same PR.",
+        errors.join("\n")
+    );
+}
+
+#[test]
 fn stablecoin_feed_ids_match_canonical_usdc_slots() {
     use adrena_abi::feed_ids::{AUTONOM_USDC, CHAOSLABS_USDC, SWITCHBOARD_USDC};
 
