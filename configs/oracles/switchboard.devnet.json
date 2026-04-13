@@ -1,0 +1,44 @@
+{
+  "_schema_version": "3",
+  "_cluster": "devnet",
+  "_provider": "switchboard",
+  "_note": "release/39 canonical Switchboard on-demand DEVNET feed map. Mirrors mainnet layout. Queue EYiAmGSdsQTuCw413V5BzaruWuCCSDgTPtBGvLkXHbe7 is the on-demand devnet default. Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. Slots 143 (jitoSOL) and 144 (BTC) currently use DUMMY feed hashes - they MUST be replaced with real Switchboard devnet hashes before Switchboard is enabled for those feeds in any pool's multi_oracle_config on devnet. Devnet hashes for SOL/WBTC/BONK/USDC verified end-to-end in providers-testing on 2026-04-11.",
+  "_queue": "EYiAmGSdsQTuCw413V5BzaruWuCCSDgTPtBGvLkXHbe7",
+  "switchboard_feed_map": [
+    {
+      "adrena_feed_id": 142,
+      "symbol": "SOLUSD",
+      "switchboard_feed_hash": "822512ee9add93518eca1c105a38422841a76c590db079eebb283deb2c14caa9"
+    },
+    {
+      "adrena_feed_id": 143,
+      "symbol": "JITOSOLUSD",
+      "switchboard_feed_hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      "_DUMMY": true,
+      "_comment": "PLACEHOLDER - replace with real Switchboard devnet jitoSOL feed hash."
+    },
+    {
+      "adrena_feed_id": 144,
+      "symbol": "BTCUSD",
+      "switchboard_feed_hash": "cafebabecafebabecafebabecafebabecafebabecafebabecafebabecafebabe",
+      "_DUMMY": true,
+      "_comment": "PLACEHOLDER - replace with real Switchboard devnet BTC feed hash."
+    },
+    {
+      "adrena_feed_id": 145,
+      "symbol": "WBTCUSD",
+      "switchboard_feed_hash": "4cd1cad962425681af07b9254b7d804de3ca3446fbfd1371bb258d2c75059812",
+      "_comment": "Devnet uses BTC/USD WEIGHTED Surge stream as WBTC proxy."
+    },
+    {
+      "adrena_feed_id": 146,
+      "symbol": "BONKUSD",
+      "switchboard_feed_hash": "f4ab6ab42006c41089ecd1f49f0c0124c323fdf5e6b97d36e9767c4029e0db7d"
+    },
+    {
+      "adrena_feed_id": 147,
+      "symbol": "USDCUSD",
+      "switchboard_feed_hash": "883ea8295f70ae506e894679d124196bb07064ea530cefd835b58c33a5ab6549"
+    }
+  ]
+}

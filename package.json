@@ -1,0 +1,28 @@
+{
+  "name": "@adrena/abi",
+  "version": "2.1.0-release39",
+  "description": "Canonical Adrena program IDL + oracle feed maps. Pinned by every offchain consumer via github commit ref.",
+  "private": false,
+  "type": "commonjs",
+  "exports": {
+    "./idl/adrena.json":                          "./idl/adrena.json",
+    "./idl/adrena":                               { "types": "./idl/adrena.d.ts" },
+    "./idl/adrena.ts":                            "./idl/adrena.ts",
+    "./configs/artifact_manifest.json":           "./configs/artifact_manifest.json",
+    "./configs/oracles/chaoslabs.mainnet.json":   "./configs/oracles/chaoslabs.mainnet.json",
+    "./configs/oracles/autonom.mainnet.json":     "./configs/oracles/autonom.mainnet.json",
+    "./configs/oracles/switchboard.mainnet.json": "./configs/oracles/switchboard.mainnet.json",
+    "./configs/oracles/switchboard.devnet.json":  "./configs/oracles/switchboard.devnet.json",
+    "./configs/oracles/feed_metadata.json":       "./configs/oracles/feed_metadata.json"
+  },
+  "files": [
+    "idl",
+    "configs",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdrenaFoundation/adrena-abi.git"
+  },
+  "license": "Apache-2.0"
+}

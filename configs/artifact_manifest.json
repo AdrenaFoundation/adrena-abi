@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "_note": "Canonical adrena-abi artifact manifest. Every consumer of this package should log these hashes at startup so drift is visible. The artifact is generated from the adrena program at adrena_source_commit; if any of these hashes change without the source commit changing, something is corrupt.",
+  "adrena_program_id": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
+  "adrena_program_version": "2.1.0",
+  "adrena_release": "release/39-postaudit",
+  "adrena_source_commit": "09ef7bcc573b5eb8f335a0891e9b2615d4e50c24",
+  "idl_sha256": "17e7a7c6f5f6ce7409e901018ac52bf0a6254b330d38a49ba54758623d608b6a",
+  "feed_maps": {
+    "chaoslabs.mainnet":   "1015f2e411aa04388f309e87ca7859dc01b4ade026ff3901ae55d38d8dfeb2e7",
+    "autonom.mainnet":     "644bc4a8bea5c225cedd1334f648cf87910e20104d08126b8a1a35561de6c1d9",
+    "switchboard.mainnet": "b7483371caf8d7f455e39acf8b9cec2001c07c966fb0d5a71c4a74a3ff44c374",
+    "switchboard.devnet":  "09385e714d6125a1d3edfac6e914719d1edf13719e22823c53a9c9618415bf66",
+    "feed_metadata":       "c7a32e256122d5d6f0fa66345a109443e8603310ff698262258e51599af73013"
+  }
+}

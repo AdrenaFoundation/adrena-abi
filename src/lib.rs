@@ -6,6 +6,8 @@ pub use {
 use {anchor_client::solana_sdk, oracle::Oracle};
 
 pub mod autonom_market_opening_data;
+pub mod feed_ids;
+pub mod feed_maps;
 pub mod limited_string;
 pub mod liquidation_price;
 pub mod math;

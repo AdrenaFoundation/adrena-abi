@@ -1,0 +1,47 @@
+{
+  "_schema_version": "3",
+  "_cluster": "mainnet",
+  "_provider": "switchboard",
+  "_note": "release/39 canonical Switchboard on-demand MAINNET feed map. adrena_feed_id range 142..255 reserved for Switchboard (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. Slots 143 (jitoSOL) and 144 (BTC) currently use DUMMY feed hashes - they MUST be replaced with real Switchboard mainnet hashes from the explorer before Switchboard ingestion can serve those feeds. The dummy entries exist so the canonical layout is in place and the on-chain hardcode (Switchboard USDC = 147) lines up. Queue A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w is the on-demand mainnet default.",
+  "_queue": "A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w",
+  "switchboard_feed_map": [
+    {
+      "adrena_feed_id": 142,
+      "symbol": "SOLUSD",
+      "switchboard_feed_hash": "f9e1c461c1b2e4304f23fe537655f65691537d37813fe97566dc3137c1165fbf",
+      "_feed_address": "Ceveqpim1FJZfx9DPeFDVDSz2HJavUqPPEJtZ2osNEmS"
+    },
+    {
+      "adrena_feed_id": 143,
+      "symbol": "JITOSOLUSD",
+      "switchboard_feed_hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      "_DUMMY": true,
+      "_comment": "PLACEHOLDER - replace with real Switchboard mainnet jitoSOL feed hash before enabling Switchboard for jitoSOL on-chain."
+    },
+    {
+      "adrena_feed_id": 144,
+      "symbol": "BTCUSD",
+      "switchboard_feed_hash": "cafebabecafebabecafebabecafebabecafebabecafebabecafebabecafebabe",
+      "_DUMMY": true,
+      "_comment": "PLACEHOLDER - replace with real Switchboard mainnet BTC feed hash before enabling Switchboard for BTC on-chain."
+    },
+    {
+      "adrena_feed_id": 145,
+      "symbol": "WBTCUSD",
+      "switchboard_feed_hash": "88dbaf544a2a692eda2107e3cc1d46d6ca0111b748b6d9faec73c71c41f5199d",
+      "_feed_address": "5a5DHgdv8KoRW9tGcePNao1QNJhsh9ZDnJDCBftGoTMk"
+    },
+    {
+      "adrena_feed_id": 146,
+      "symbol": "BONKUSD",
+      "switchboard_feed_hash": "d0885cda2c57d64dde7deae79c7ee8e0d3e60edaa1f99b44c7570e0290378eaf",
+      "_feed_address": "8isKDqLnizBoL5Khp2G3onSktAgP747mnh94gYDmNsBL"
+    },
+    {
+      "adrena_feed_id": 147,
+      "symbol": "USDCUSD",
+      "switchboard_feed_hash": "3cce51230dc42453b58db084774b5c5f4f888e93a071230ac099f64881a4e6fb",
+      "_feed_address": "ExncBfFE2Nxv3gtp8sJM5yDdcpRE2fuYu7g5dUEr8E2D"
+    }
+  ]
+}
