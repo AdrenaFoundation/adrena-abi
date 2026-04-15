@@ -144,8 +144,8 @@ fn every_sessioned_symbol_is_present_in_at_least_one_provider_map() {
     // declared sessioned in feed_metadata.json must also appear in at least
     // one per-provider feed map. This catches the case where feed_metadata
     // lists a symbol the deployment expects but no provider has been wired
-    // up to serve it — the failure mode that bit us with autonom 36..46 not
-    // being in autonom.mainnet.json while feed_metadata listed AAPL/.../XAG.
+    // up to serve it — the failure mode that previously bit us when the
+    // autonom map drifted out of sync with feed_metadata.sessioned.
 
     let metadata = parse("feed_metadata", FEED_METADATA_JSON);
     let sessioned = metadata["sessioned"]
@@ -183,16 +183,20 @@ fn every_sessioned_symbol_is_present_in_at_least_one_provider_map() {
 
 #[test]
 fn autonom_map_covers_full_canonical_layout() {
-    // Locks the Autonom map to the current launch layout: 30..46 inclusive,
-    // 17 entries, all symbols present in feed_metadata.sessioned. If the
-    // launch layout grows, this test must be updated in the same PR that
-    // adds the new alias — that's the point: it forces a deliberate update
-    // instead of a silent drift.
+    // Locks the Autonom map to the current launch layout: 30..39 inclusive,
+    // 10 entries (6 crypto + 4 commodities), all symbols present in
+    // feed_metadata.sessioned. If the launch layout grows, this test must be
+    // updated in the same PR that adds the new alias — that's the point: it
+    // forces a deliberate update instead of a silent drift.
+    //
+    // Launch layout:
+    //   30..35 crypto block  (SOL, jitoSOL, BTC, WBTC, BONK, USDC) — unsessioned
+    //   36..39 commodities   (XAU, XAG, WTI, XBR)                  — sessioned
     //
     // Why this exists: the previous round of audit caught a state where
-    // feed_metadata listed AAPL/GOOGL/.../XAG but autonom.mainnet.json only
-    // had 30..35, so MrAutonom failed at boot with "feed_id 36 not present".
-    // This test makes that failure mode impossible to ship.
+    // feed_metadata listed symbols that autonom.mainnet.json didn't carry,
+    // causing MrAutonom to fail at boot with "feed_id N not present". This
+    // test makes that failure mode impossible to ship.
 
     let parsed = parse("autonom.mainnet", AUTONOM_MAINNET_JSON);
     let entries = extract_entries("autonom.mainnet", &parsed);
@@ -205,17 +209,10 @@ fn autonom_map_covers_full_canonical_layout() {
         (33, "WBTCUSD"),
         (34, "BONKUSD"),
         (35, "USDCUSD"),
-        (36, "AAPL"),
-        (37, "GOOGL"),
-        (38, "TSLA"),
-        (39, "MSFT"),
-        (40, "LMT"),
-        (41, "META"),
-        (42, "NVDA"),
-        (43, "CHE"),
-        (44, "LH1"),
-        (45, "XAU"),
-        (46, "XAG"),
+        (36, "XAU"),
+        (37, "XAG"),
+        (38, "WTI"),
+        (39, "XBR"),
     ]
     .into_iter()
     .collect();

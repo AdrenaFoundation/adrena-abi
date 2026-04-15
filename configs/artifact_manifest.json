@@ -8,9 +8,9 @@
   "idl_sha256": "17e7a7c6f5f6ce7409e901018ac52bf0a6254b330d38a49ba54758623d608b6a",
   "feed_maps": {
     "chaoslabs.mainnet":   "1015f2e411aa04388f309e87ca7859dc01b4ade026ff3901ae55d38d8dfeb2e7",
-    "autonom.mainnet":     "e1d66999fa6210183432cae0325e41b1ef86c0be9a0d0aa0f4cc420aef0b92f9",
+    "autonom.mainnet":     "ec7dd093c4e681712ee6c991d9efaa8637a50fa2fd8182cdcb88df7a6f0ddf18",
     "switchboard.mainnet": "b7483371caf8d7f455e39acf8b9cec2001c07c966fb0d5a71c4a74a3ff44c374",
     "switchboard.devnet":  "09385e714d6125a1d3edfac6e914719d1edf13719e22823c53a9c9618415bf66",
-    "feed_metadata":       "c7a32e256122d5d6f0fa66345a109443e8603310ff698262258e51599af73013"
+    "feed_metadata":       "eecb44e0d067a7eff95aa1014b3c6cdf94feb7793fd3b470f5418cd6004d2eb9"
   }
 }

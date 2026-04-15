@@ -14,16 +14,9 @@
     "WBTCUSD":    false,
     "BONKUSD":    false,
     "USDCUSD":    false,
-    "AAPL":       true,
-    "GOOGL":      true,
-    "TSLA":       true,
-    "MSFT":       true,
-    "LMT":        true,
-    "META":       true,
-    "NVDA":       true,
-    "CHE":        true,
-    "LH1":        true,
     "XAU":        true,
-    "XAG":        true
+    "XAG":        true,
+    "WTI":        true,
+    "XBR":        true
   }
 }
