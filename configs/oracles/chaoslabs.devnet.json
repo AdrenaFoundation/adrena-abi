@@ -1,0 +1,44 @@
+{
+  "_schema_version": "1",
+  "_cluster": "devnet",
+  "_provider": "chaoslabs",
+  "_note": "Devnet ChaosLabs feed map. Same feed structure as mainnet \u2014 replace chaoslabs_feed_id values if devnet ChaosLabs uses different IDs.",
+  "chaoslabs_feed_map": [
+    {
+      "adrena_feed_id": 0,
+      "symbol": "SOLUSD",
+      "chaoslabs_asset": "solusd",
+      "chaoslabs_feed_id": 0
+    },
+    {
+      "adrena_feed_id": 1,
+      "symbol": "JITOSOLUSD",
+      "chaoslabs_asset": "jitosolusd",
+      "chaoslabs_feed_id": 1
+    },
+    {
+      "adrena_feed_id": 2,
+      "symbol": "BTCUSD",
+      "chaoslabs_asset": "btcusd",
+      "chaoslabs_feed_id": 2
+    },
+    {
+      "adrena_feed_id": 3,
+      "symbol": "WBTCUSD",
+      "chaoslabs_asset": "wbtcusd",
+      "chaoslabs_feed_id": 3
+    },
+    {
+      "adrena_feed_id": 4,
+      "symbol": "BONKUSD",
+      "chaoslabs_asset": "bonkusd",
+      "chaoslabs_feed_id": 4
+    },
+    {
+      "adrena_feed_id": 5,
+      "symbol": "USDCUSD",
+      "chaoslabs_asset": "usdcusd",
+      "chaoslabs_feed_id": 5
+    }
+  ]
+}
