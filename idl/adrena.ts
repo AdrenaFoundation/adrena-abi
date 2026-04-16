@@ -26064,6 +26064,10 @@ export type Adrena = {
           {
             "name": "poolType",
             "type": "u8"
+          },
+          {
+            "name": "confiscatedCollateralUsd",
+            "type": "u64"
           }
         ]
       }

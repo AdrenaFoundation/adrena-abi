@@ -26058,6 +26058,10 @@
           {
             "name": "pool_type",
             "type": "u8"
+          },
+          {
+            "name": "confiscated_collateral_usd",
+            "type": "u64"
           }
         ]
       }
