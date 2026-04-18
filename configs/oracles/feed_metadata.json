@@ -14,9 +14,6 @@
     "WBTCUSD":    false,
     "BONKUSD":    false,
     "USDCUSD":    false,
-    "XAU":        true,
-    "XAG":        true,
-    "WTI":        true,
-    "XBR":        true
+    "XAU":        true
   }
 }

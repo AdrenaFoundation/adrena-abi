@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "mainnet",
   "_provider": "autonom",
-  "_note": "release/39 canonical Autonom mainnet feed map. adrena_feed_id range 30..141 reserved for Autonom (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 30-35 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. WBTC reuses Autonom BTC canonical (3001) as proxy until a dedicated WBTC product exists — two adrena aliases (32, 33) intentionally point at the same canonical, the autonom backend signs each requested alias separately so on-chain receives feed_id=32 and feed_id=33 with the same price. Commodities block 36-39: Gold (XAU), Silver (XAG), WTI Crude (WTI), Brent Crude (XBR) — the launch commodity set for Adrena Autonom pools. The autonom backend at autonom/src/operator/web2/products/config/feed_id_aliases.json must mirror these adrena_feed_id -> autonom_feed_id pairs.",
+  "_note": "release/39 canonical Autonom mainnet feed map. adrena_feed_id range 30..141 reserved for Autonom (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 30-35 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. WBTC reuses Autonom BTC canonical (3001) as proxy until a dedicated WBTC product exists — two adrena aliases (32, 33) intentionally point at the same canonical, the autonom backend signs each requested alias separately so on-chain receives feed_id=32 and feed_id=33 with the same price. Autonom launches with XAU (Gold) only at slot 36 — the single launch commodity. Future commodities append at 37+ in coordinated releases. The autonom backend at autonom/src/operator/web2/products/config/feed_id_aliases.json must mirror these adrena_feed_id -> autonom_feed_id pairs.",
   "autonom_feed_map": [
     {
       "adrena_feed_id": 30,
@@ -39,21 +39,6 @@
       "adrena_feed_id": 36,
       "symbol": "XAU",
       "autonom_feed_id": 2056
-    },
-    {
-      "adrena_feed_id": 37,
-      "symbol": "XAG",
-      "autonom_feed_id": 2069
-    },
-    {
-      "adrena_feed_id": 38,
-      "symbol": "WTI",
-      "autonom_feed_id": 2035
-    },
-    {
-      "adrena_feed_id": 39,
-      "symbol": "XBR",
-      "autonom_feed_id": 2059
     }
   ]
 }

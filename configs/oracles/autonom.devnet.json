@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "devnet",
   "_provider": "autonom",
-  "_note": "Devnet Autonom feed map. Same feed structure as mainnet \u2014 replace API URL/key if devnet Autonom endpoint differs.",
+  "_note": "Devnet Autonom feed map. Same feed structure as mainnet \u2014 XAU-only launch commodity set. Replace API URL/key if devnet Autonom endpoint differs.",
   "autonom_feed_map": [
     {
       "adrena_feed_id": 30,
@@ -39,21 +39,6 @@
       "adrena_feed_id": 36,
       "symbol": "XAU",
       "autonom_feed_id": 2056
-    },
-    {
-      "adrena_feed_id": 37,
-      "symbol": "XAG",
-      "autonom_feed_id": 2069
-    },
-    {
-      "adrena_feed_id": 38,
-      "symbol": "WTI",
-      "autonom_feed_id": 2035
-    },
-    {
-      "adrena_feed_id": 39,
-      "symbol": "XBR",
-      "autonom_feed_id": 2059
     }
   ]
 }

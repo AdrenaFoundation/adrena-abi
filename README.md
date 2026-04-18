@@ -76,14 +76,18 @@ USDC is the only feed where the on-chain code hardcodes the slot — see
 USDC slot of any provider requires editing both the feed map AND those two
 on-chain constants in lockstep.
 
-After the crypto block, Autonom continues with the commodities launch set at
-36-39 (XAU, XAG, WTI, XBR — Gold, Silver, WTI Crude, Brent Crude). This is the
-canonical launch layout for Adrena Autonom pools. MrAutonom only manages market
-hours for **sessioned** symbols (the 4 commodities); the crypto block is 24/7
-and is filtered out at boot via `feed_metadata.sessioned[symbol]`. Any new feed
-appended to this map must also land in the autonom backend's
-`feed_id_aliases.json` in lockstep — see the `_note` field in
-`autonom.mainnet.json` for the exact mirror path.
+After the crypto block, Autonom launches with a single commodity — XAU (Gold)
+at slot 36. This is the canonical launch layout for Adrena Autonom pools.
+Future commodities (Silver, Crude, Brent, etc.) append at 37+ in coordinated
+releases that bump `autonom.mainnet.json`, `feed_metadata.sessioned`, the
+adrena program bootstrap ix (`register_oracle_feeds_v38_to_v39`), the CLI
+verify-migration expected set, and the Autonom backend's
+`feed_id_aliases.json` in lockstep. MrAutonom only manages market hours for
+**sessioned** symbols (XAU today); the crypto block is 24/7 and is filtered
+out at boot via `feed_metadata.sessioned[symbol]`. Any new feed appended to
+this map must also land in the autonom backend's `feed_id_aliases.json` in
+lockstep — see the `_note` field in `autonom.mainnet.json` for the exact
+mirror path.
 
 ---
 
@@ -283,7 +287,7 @@ cp adrena-abi/idl/adrena.ts        adrena-abi/idl/adrena.d.ts
 ### 2. Update feed maps if the canonical layout changed
 
 If new feeds got added (e.g. a future release appends a new commodity at slot
-40 — the first free Autonom slot after the launch commodities block 36-39),
+37 — the first free Autonom slot after the launch commodity XAU at 36),
 add the entries to:
 
 - `configs/oracles/chaoslabs.mainnet.json` (if ChaosLabs has the feed)

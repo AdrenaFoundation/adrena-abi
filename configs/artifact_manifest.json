@@ -5,12 +5,12 @@
   "adrena_program_version": "2.1.0",
   "adrena_release": "release/39-postaudit",
   "adrena_source_commit": "09ef7bcc573b5eb8f335a0891e9b2615d4e50c24",
-  "idl_sha256": "17e7a7c6f5f6ce7409e901018ac52bf0a6254b330d38a49ba54758623d608b6a",
+  "idl_sha256": "3a3f8c98339d9039e31c8aa5198e043ca9d3cc6cc73c658cf9d0f2724594b200",
   "feed_maps": {
     "chaoslabs.mainnet":   "1015f2e411aa04388f309e87ca7859dc01b4ade026ff3901ae55d38d8dfeb2e7",
-    "autonom.mainnet":     "ec7dd093c4e681712ee6c991d9efaa8637a50fa2fd8182cdcb88df7a6f0ddf18",
+    "autonom.mainnet":     "a3c23059c154403c617a933acca92c2d9ad79a1344b6bd26530acf301c1fd02b",
     "switchboard.mainnet": "b7483371caf8d7f455e39acf8b9cec2001c07c966fb0d5a71c4a74a3ff44c374",
     "switchboard.devnet":  "09385e714d6125a1d3edfac6e914719d1edf13719e22823c53a9c9618415bf66",
-    "feed_metadata":       "eecb44e0d067a7eff95aa1014b3c6cdf94feb7793fd3b470f5418cd6004d2eb9"
+    "feed_metadata":       "aa8d06d1ae2bb2acb141dd3b882ca34211431fc56eecad635809aaca4abf0ce1"
   }
 }
