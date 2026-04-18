@@ -26,5 +26,14 @@ pub const SWITCHBOARD_DEVNET_JSON: &str =
 pub const FEED_METADATA_JSON: &str =
     include_str!("../configs/oracles/feed_metadata.json");
 
+// Offchain-only Switchboard feed maps — ADX / ALP spot prices consumed by
+// adrena-data for database/analytics pricing. Not tied to any adrena_feed_id,
+// never submitted to the on-chain oracle via update_oracle.
+pub const SWITCHBOARD_OTHER_MAINNET_JSON: &str =
+    include_str!("../configs/oracles/switchboard_other.mainnet.json");
+
+pub const SWITCHBOARD_OTHER_DEVNET_JSON: &str =
+    include_str!("../configs/oracles/switchboard_other.devnet.json");
+
 pub const POOLS_MANIFEST_JSON: &str =
     include_str!("../configs/pools_manifest.json");

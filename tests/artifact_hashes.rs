@@ -5,7 +5,8 @@
 use adrena_abi::feed_maps::{
     ARTIFACT_MANIFEST_JSON, AUTONOM_MAINNET_JSON, CHAOSLABS_MAINNET_JSON,
     FEED_METADATA_JSON, POOLS_MANIFEST_JSON, SWITCHBOARD_DEVNET_JSON,
-    SWITCHBOARD_MAINNET_JSON,
+    SWITCHBOARD_MAINNET_JSON, SWITCHBOARD_OTHER_DEVNET_JSON,
+    SWITCHBOARD_OTHER_MAINNET_JSON,
 };
 use sha2::{Digest, Sha256};
 
@@ -39,13 +40,15 @@ fn manifest_hashes_match_embedded_files() {
     };
 
     let cases: &[(&str, &str, &str)] = &[
-        ("idl",                 IDL_JSON,                 "idl/adrena.json"),
-        ("chaoslabs.mainnet",   CHAOSLABS_MAINNET_JSON,   "configs/oracles/chaoslabs.mainnet.json"),
-        ("autonom.mainnet",     AUTONOM_MAINNET_JSON,     "configs/oracles/autonom.mainnet.json"),
-        ("switchboard.mainnet", SWITCHBOARD_MAINNET_JSON, "configs/oracles/switchboard.mainnet.json"),
-        ("switchboard.devnet",  SWITCHBOARD_DEVNET_JSON,  "configs/oracles/switchboard.devnet.json"),
-        ("feed_metadata",       FEED_METADATA_JSON,       "configs/oracles/feed_metadata.json"),
-        ("pools_manifest",      POOLS_MANIFEST_JSON,      "configs/pools_manifest.json"),
+        ("idl",                     IDL_JSON,                     "idl/adrena.json"),
+        ("chaoslabs.mainnet",       CHAOSLABS_MAINNET_JSON,       "configs/oracles/chaoslabs.mainnet.json"),
+        ("autonom.mainnet",         AUTONOM_MAINNET_JSON,         "configs/oracles/autonom.mainnet.json"),
+        ("switchboard.mainnet",     SWITCHBOARD_MAINNET_JSON,     "configs/oracles/switchboard.mainnet.json"),
+        ("switchboard.devnet",      SWITCHBOARD_DEVNET_JSON,      "configs/oracles/switchboard.devnet.json"),
+        ("switchboard_other.mainnet", SWITCHBOARD_OTHER_MAINNET_JSON, "configs/oracles/switchboard_other.mainnet.json"),
+        ("switchboard_other.devnet",  SWITCHBOARD_OTHER_DEVNET_JSON,  "configs/oracles/switchboard_other.devnet.json"),
+        ("feed_metadata",           FEED_METADATA_JSON,           "configs/oracles/feed_metadata.json"),
+        ("pools_manifest",          POOLS_MANIFEST_JSON,          "configs/pools_manifest.json"),
     ];
 
     let mut failures = Vec::new();

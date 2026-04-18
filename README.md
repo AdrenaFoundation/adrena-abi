@@ -38,8 +38,10 @@ adrena-abi/
 │   └── oracles/
 │       ├── chaoslabs.mainnet.json      # ChaosLabs feed map (slots 0..29)
 │       ├── autonom.mainnet.json        # Autonom feed map (slots 30..141)
-│       ├── switchboard.mainnet.json    # Switchboard feed map (slots 142..255)
-│       ├── switchboard.devnet.json     # Switchboard feed map for devnet
+│       ├── switchboard.mainnet.json    # Switchboard feed map (slots 142..255), on-chain bound
+│       ├── switchboard.devnet.json     # Switchboard feed map for devnet, on-chain bound
+│       ├── switchboard_other.mainnet.json  # OFFCHAIN-ONLY Switchboard map (ADX/ALP spot pricing for adrena-data)
+│       ├── switchboard_other.devnet.json   # OFFCHAIN-ONLY Switchboard map (devnet placeholder)
 │       └── feed_metadata.json          # Cross-provider metadata: ranges, stables, sessioned[symbol]
 ├── src/
 │   ├── lib.rs                          # crate entrypoint, public re-exports

@@ -1,0 +1,8 @@
+{
+  "_schema_version": "1",
+  "_cluster": "devnet",
+  "_provider": "switchboard",
+  "_note": "Devnet placeholder \u2014 no Adrena-owned ADX/ALP Switchboard feeds on devnet yet. Empty feed_map means adrena-data's ADX/ALP pricers skip the embedded primary and go straight to the legacy hardcoded paths (retries + on-chain simulation). Populate this file when Adrena ships devnet ADX/ALP feeds and the consumers will start using them automatically via the pin bump.",
+  "_queue": null,
+  "feed_map": []
+}

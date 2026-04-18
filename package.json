@@ -14,6 +14,8 @@
     "./configs/oracles/switchboard.mainnet.json": "./configs/oracles/switchboard.mainnet.json",
     "./configs/oracles/switchboard.devnet.json":  "./configs/oracles/switchboard.devnet.json",
     "./configs/oracles/feed_metadata.json":       "./configs/oracles/feed_metadata.json",
+    "./configs/oracles/switchboard_other.mainnet.json": "./configs/oracles/switchboard_other.mainnet.json",
+    "./configs/oracles/switchboard_other.devnet.json":  "./configs/oracles/switchboard_other.devnet.json",
     "./configs/pools_manifest.json":              "./configs/pools_manifest.json",
     "./configs/pools_manifest_loader":            "./configs/pools_manifest_loader.ts",
     "./configs/pools_manifest_loader.ts":         "./configs/pools_manifest_loader.ts"

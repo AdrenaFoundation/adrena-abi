@@ -1,17 +1,22 @@
 //! Locks down which Switchboard slots are allowed to carry placeholder
-//! ("dummy") feed hashes. The current allowlist is `[143, 144]` (jitoSOL and
-//! BTC) — those are placeholders waiting on real Switchboard mainnet hashes.
+//! ("dummy") feed hashes. Allowlists are per-cluster because mainnet and
+//! devnet ship with different real-feed coverage.
 //!
-//! Any new dummy slot must be added to this allowlist deliberately. Any old
-//! dummy slot that gets a real hash must be removed from this allowlist.
-//! This makes "accidentally activate dummy 143 in production" impossible
-//! without explicitly editing this test file in the same PR.
+//!   mainnet: [] — every slot must carry a real hash post launch
+//!   devnet:  [143, 144] — jitoSOL + BTC still awaiting Adrena-owned
+//!                         Switchboard devnet feeds
+//!
+//! Any new dummy slot must be added to the relevant allowlist deliberately.
+//! Any old dummy slot that gets a real hash must be removed from the
+//! allowlist. This makes "accidentally activate a dummy slot in production"
+//! impossible without explicitly editing this test file in the same PR.
 
 use adrena_abi::feed_maps::{SWITCHBOARD_DEVNET_JSON, SWITCHBOARD_MAINNET_JSON};
 use serde_json::Value;
 use std::collections::BTreeSet;
 
-const ALLOWED_DUMMY_FEED_IDS: &[u8] = &[143, 144];
+const ALLOWED_DUMMY_FEED_IDS_MAINNET: &[u8] = &[];
+const ALLOWED_DUMMY_FEED_IDS_DEVNET: &[u8] = &[143, 144];
 
 fn dummy_ids(name: &str, json: &str) -> BTreeSet<u8> {
     let parsed: Value = serde_json::from_str(json)
@@ -33,20 +38,20 @@ fn dummy_ids(name: &str, json: &str) -> BTreeSet<u8> {
 #[test]
 fn switchboard_mainnet_dummy_slots_match_allowlist() {
     let actual = dummy_ids("switchboard.mainnet", SWITCHBOARD_MAINNET_JSON);
-    let expected: BTreeSet<u8> = ALLOWED_DUMMY_FEED_IDS.iter().copied().collect();
+    let expected: BTreeSet<u8> = ALLOWED_DUMMY_FEED_IDS_MAINNET.iter().copied().collect();
     assert_eq!(
         actual, expected,
-        "switchboard.mainnet dummy slots changed.\n  allowed: {ALLOWED_DUMMY_FEED_IDS:?}\n  actual:  {actual:?}\nIf you added a new dummy, update ALLOWED_DUMMY_FEED_IDS in tests/no_dummy_in_production.rs.\nIf you replaced a dummy with a real hash, remove that id from the allowlist.",
+        "switchboard.mainnet dummy slots changed.\n  allowed: {ALLOWED_DUMMY_FEED_IDS_MAINNET:?}\n  actual:  {actual:?}\nIf you added a new dummy, update ALLOWED_DUMMY_FEED_IDS_MAINNET in tests/no_dummy_in_production.rs.\nIf you replaced a dummy with a real hash, remove that id from the allowlist.",
     );
 }
 
 #[test]
 fn switchboard_devnet_dummy_slots_match_allowlist() {
     let actual = dummy_ids("switchboard.devnet", SWITCHBOARD_DEVNET_JSON);
-    let expected: BTreeSet<u8> = ALLOWED_DUMMY_FEED_IDS.iter().copied().collect();
+    let expected: BTreeSet<u8> = ALLOWED_DUMMY_FEED_IDS_DEVNET.iter().copied().collect();
     assert_eq!(
         actual, expected,
-        "switchboard.devnet dummy slots changed.\n  allowed: {ALLOWED_DUMMY_FEED_IDS:?}\n  actual:  {actual:?}",
+        "switchboard.devnet dummy slots changed.\n  allowed: {ALLOWED_DUMMY_FEED_IDS_DEVNET:?}\n  actual:  {actual:?}",
     );
 }
 
