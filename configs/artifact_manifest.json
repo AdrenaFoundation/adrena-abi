@@ -11,6 +11,7 @@
     "autonom.mainnet":     "a3c23059c154403c617a933acca92c2d9ad79a1344b6bd26530acf301c1fd02b",
     "switchboard.mainnet": "b7483371caf8d7f455e39acf8b9cec2001c07c966fb0d5a71c4a74a3ff44c374",
     "switchboard.devnet":  "09385e714d6125a1d3edfac6e914719d1edf13719e22823c53a9c9618415bf66",
-    "feed_metadata":       "aa8d06d1ae2bb2acb141dd3b882ca34211431fc56eecad635809aaca4abf0ce1"
+    "feed_metadata":       "aa8d06d1ae2bb2acb141dd3b882ca34211431fc56eecad635809aaca4abf0ce1",
+    "pools_manifest":      "09a447ce916500294f372104492826af72a898cef77943a10d7fdce02655e56b"
   }
 }

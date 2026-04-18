@@ -6,6 +6,9 @@ services need to talk to the on-chain program:
 - The Adrena IDL (Anchor 0.30+ format)
 - Oracle feed maps for ChaosLabs, Autonom, Switchboard (mainnet + devnet)
 - Cross-provider feed metadata (provider ranges, sessioned flags, stablecoin slots)
+- The canonical pool manifest + loader (pool names, feed IDs, automation flags)
+  shared by every offchain service (MrSablier, MrSablierStaking, MrAutonom,
+  adrena-data/*)
 - A signed artifact manifest with sha256 hashes of every shipped file
 - Rust constants and `include_str!`'d JSON for native consumers
 - An npm package (`@adrena/abi`) that ships the same artifacts to TS consumers
@@ -30,6 +33,8 @@ adrena-abi/
 │   └── adrena.ts                       # legacy const-style export (deprecated, kept for transition)
 ├── configs/
 │   ├── artifact_manifest.json          # signed manifest with sha256s of every shipped file
+│   ├── pools_manifest.json             # canonical pool manifest (names, feedIds, automation flags)
+│   ├── pools_manifest_loader.ts        # typed TS loader (types + validation + PDA derivation helpers)
 │   └── oracles/
 │       ├── chaoslabs.mainnet.json      # ChaosLabs feed map (slots 0..29)
 │       ├── autonom.mainnet.json        # Autonom feed map (slots 30..141)

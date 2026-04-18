@@ -25,3 +25,6 @@ pub const SWITCHBOARD_DEVNET_JSON: &str =
 
 pub const FEED_METADATA_JSON: &str =
     include_str!("../configs/oracles/feed_metadata.json");
+
+pub const POOLS_MANIFEST_JSON: &str =
+    include_str!("../configs/pools_manifest.json");

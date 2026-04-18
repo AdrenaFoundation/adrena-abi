@@ -4,7 +4,8 @@
 
 use adrena_abi::feed_maps::{
     ARTIFACT_MANIFEST_JSON, AUTONOM_MAINNET_JSON, CHAOSLABS_MAINNET_JSON,
-    FEED_METADATA_JSON, SWITCHBOARD_DEVNET_JSON, SWITCHBOARD_MAINNET_JSON,
+    FEED_METADATA_JSON, POOLS_MANIFEST_JSON, SWITCHBOARD_DEVNET_JSON,
+    SWITCHBOARD_MAINNET_JSON,
 };
 use sha2::{Digest, Sha256};
 
@@ -44,6 +45,7 @@ fn manifest_hashes_match_embedded_files() {
         ("switchboard.mainnet", SWITCHBOARD_MAINNET_JSON, "configs/oracles/switchboard.mainnet.json"),
         ("switchboard.devnet",  SWITCHBOARD_DEVNET_JSON,  "configs/oracles/switchboard.devnet.json"),
         ("feed_metadata",       FEED_METADATA_JSON,       "configs/oracles/feed_metadata.json"),
+        ("pools_manifest",      POOLS_MANIFEST_JSON,      "configs/pools_manifest.json"),
     ];
 
     let mut failures = Vec::new();

@@ -13,7 +13,10 @@
     "./configs/oracles/autonom.mainnet.json":     "./configs/oracles/autonom.mainnet.json",
     "./configs/oracles/switchboard.mainnet.json": "./configs/oracles/switchboard.mainnet.json",
     "./configs/oracles/switchboard.devnet.json":  "./configs/oracles/switchboard.devnet.json",
-    "./configs/oracles/feed_metadata.json":       "./configs/oracles/feed_metadata.json"
+    "./configs/oracles/feed_metadata.json":       "./configs/oracles/feed_metadata.json",
+    "./configs/pools_manifest.json":              "./configs/pools_manifest.json",
+    "./configs/pools_manifest_loader":            "./configs/pools_manifest_loader.ts",
+    "./configs/pools_manifest_loader.ts":         "./configs/pools_manifest_loader.ts"
   },
   "files": [
     "idl",

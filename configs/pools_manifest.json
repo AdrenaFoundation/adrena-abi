@@ -1,0 +1,40 @@
+{
+  "_comment": "Canonical pool manifest for all Adrena offchain services (MrOracle, MrSablier, MrSablierStaking, MrAutonom, adrena-data/*). Every consumer pins this file via @adrena/abi (TS) or adrena-abi (Rust) and reads it at startup. Pool addresses, custody pubkeys, and lp mint are populated post-deploy; before deploy the pubkey slots are empty strings. When pools are added/removed or pool feed IDs change, bump this file here, regenerate configs/artifact_manifest.json, push a new adrena-abi commit, and bump the pin in every consumer repo. Consumers accept --manifest-path as a runtime override for ops flexibility; the embedded default is the source of truth otherwise.",
+  "pools": [
+    {
+      "name": "main-pool",
+      "type": "gmx",
+      "oracleProviders": ["switchboard", "chaoslabs", "autonom"],
+      "custodies": [],
+      "syntheticCustodies": [],
+      "lpMint": "",
+      "feedIds": [],
+      "automation": {
+        "liquidations": true,
+        "slTp": true,
+        "limitOrders": true,
+        "marketOpening": false,
+        "distributeFees": true,
+        "resolveStakingRound": true
+      }
+    },
+    {
+      "name": "commodities-pool",
+      "type": "autonom",
+      "oracleProviders": ["autonom", "switchboard", "chaoslabs"],
+      "custodies": [],
+      "syntheticCustodies": [],
+      "lpMint": "",
+      "_feedIds_comment": "release/39 canonical. Autonom range: 30-35 crypto (SOL/jitoSOL/BTC/WBTC/BONK/USDC, unsessioned), 36 XAU (sessioned launch commodity). USDC at 35 is listed because the pool's USDC stable custody needs pricing for AUM; MrAutonom's sessioned-only filter drops it from market-hours requests automatically. Future commodities append at 37+ in lockstep with configs/oracles/autonom.mainnet.json and feed_metadata.sessioned.",
+      "feedIds": [35, 36],
+      "automation": {
+        "liquidations": true,
+        "slTp": true,
+        "limitOrders": true,
+        "marketOpening": true,
+        "distributeFees": true,
+        "resolveStakingRound": true
+      }
+    }
+  ]
+}

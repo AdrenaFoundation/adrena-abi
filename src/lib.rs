@@ -13,6 +13,7 @@ pub mod liquidation_price;
 pub mod math;
 pub mod oracle;
 pub mod pda;
+pub mod pools_manifest;
 pub mod types;
 
 declare_id!("13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet");
