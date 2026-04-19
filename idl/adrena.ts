@@ -16741,6 +16741,155 @@ export type Adrena = {
       ]
     },
     {
+      "name": "registerOracleFeed",
+      "discriminator": [
+        87,
+        251,
+        248,
+        255,
+        188,
+        177,
+        69,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1",
+            "Admin authority (DAO controlled via cortex.has_one = admin)."
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "registerOracleFeedParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "registerOracleFeedsV38ToV39",
+      "discriminator": [
+        104,
+        198,
+        152,
+        9,
+        214,
+        247,
+        48,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1",
+            "Admin authority (DAO controlled via cortex.has_one = admin)."
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "removeCollateralLong",
       "discriminator": [
         179,
@@ -20356,6 +20505,29 @@ export type Adrena = {
               }
             ]
           }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#4",
+            "Read-only. Used to verify that the proposed multi_oracle_config is",
+            "satisfiable given the currently-registered provider slots."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
         }
       ],
       "args": [
@@ -23360,6 +23532,16 @@ export type Adrena = {
       "code": 6108,
       "name": "liquidationPausedCircuitBreaker",
       "msg": "Liquidation paused: backup oracle infrastructure is down"
+    },
+    {
+      "code": 6109,
+      "name": "insufficientOracleCoverage",
+      "msg": "Insufficient oracle coverage for pool custodies under proposed multi_oracle_config"
+    },
+    {
+      "code": 6110,
+      "name": "oracleAccountCapacityExhausted",
+      "msg": "Oracle account does not have enough empty slots for the requested registrations"
     }
   ],
   "types": [
@@ -27630,6 +27812,40 @@ export type Adrena = {
           {
             "name": "newAdmin",
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "registerOracleFeedParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "docs": [
+              "`OracleProvider as u8`. Must agree with `feed_id`'s range."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "feedId",
+            "docs": [
+              "Global feed id. Must lie within `provider.feed_id_range()`."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Human-readable feed name used by `custody.oracle` / `custody.trade_oracle`",
+              "lookups (e.g. \"BTCUSD\"). Must be non-default."
+            ],
+            "type": {
+              "defined": {
+                "name": "limitedString"
+              }
+            }
           }
         ]
       }
