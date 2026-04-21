@@ -44,6 +44,12 @@ pub struct PoolManifestEntry {
     pub name: String,
     #[serde(rename = "type")]
     pub pool_type: String, // "gmx" | "autonom"
+    /// Pool PDA as base58. Redundant with `name` (the PDA is fully derived
+    /// via `get_pool_pda(name)`) but kept as a first-class field for human
+    /// readability — log correlation, grep, and operator confidence.
+    /// `parse_and_validate` asserts `get_pool_pda(name).0 == address` at load
+    /// time so any typo is caught before any RPC.
+    pub address: String,
     #[serde(rename = "oracleProviders")]
     pub oracle_providers: Vec<String>,
     pub custodies: Vec<String>, // pubkey strings
@@ -161,6 +167,32 @@ fn parse_and_validate(raw: &str, source: &str) -> anyhow::Result<PoolsManifestFi
             return Err(anyhow!(
                 "autonom pool `{}` in {source} has no feedIds — required for MrAutonom market opening + adrena-data filtering",
                 entry.name
+            ));
+        }
+
+        // Consistency guard: `address` is redundant with `name` (the PDA is
+        // derived from the name via get_pool_pda), but operators commit it so
+        // pubkeys are visible in grep/logs. Assert the two agree so a typo in
+        // one never ships unnoticed.
+        if entry.address.is_empty() {
+            return Err(anyhow!(
+                "pool `{}` in {source} has empty address — declare the PDA (derivable via get_pool_pda)",
+                entry.name
+            ));
+        }
+        let declared = Pubkey::from_str(&entry.address).with_context(|| {
+            format!(
+                "pool `{}` in {source} has invalid address `{}`",
+                entry.name, entry.address
+            )
+        })?;
+        let derived = pda::get_pool_pda(&entry.name).0;
+        if declared != derived {
+            return Err(anyhow!(
+                "pool `{}` in {source} address mismatch: declared={} derived={} — either the name was renamed without updating address, or the address was typo'd",
+                entry.name,
+                declared,
+                derived
             ));
         }
     }
@@ -338,6 +370,27 @@ mod tests {
           ]
         }"#;
         assert!(parse_and_validate(raw, "<test>").is_err());
+    }
+
+    #[test]
+    fn parse_and_validate_rejects_address_name_mismatch() {
+        // main-pool's true PDA is 4bQRutgDJs6vuh6ZcWaPVXiQaBzbHketjbCDjL4oRN34.
+        // Feed a plausible-looking but wrong pubkey and confirm the guard fires.
+        let raw = r#"
+        {
+          "pools": [
+            {"name":"main-pool","type":"gmx",
+             "address":"11111111111111111111111111111111",
+             "oracleProviders":["chaoslabs"],"custodies":[],
+             "syntheticCustodies":[],"lpMint":"","feedIds":[],
+             "automation":{"liquidations":false,"slTp":false,"limitOrders":false,"marketOpening":false,"distributeFees":false,"resolveStakingRound":false}}
+          ]
+        }"#;
+        let err = parse_and_validate(raw, "<test>").unwrap_err().to_string();
+        assert!(
+            err.contains("address mismatch"),
+            "expected 'address mismatch' in error, got: {err}"
+        );
     }
 
     #[test]

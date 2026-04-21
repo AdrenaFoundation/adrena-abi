@@ -41,6 +41,14 @@ export interface AutomationFlags {
 export interface PoolManifestEntry {
   name: string;
   type: "gmx" | "autonom";
+  /**
+   * Pool PDA as base58. Redundant with `name` (the PDA is fully derived
+   * via `PublicKey.findProgramAddressSync([b"pool", name], ADRENA_PROGRAM_ID)`)
+   * but kept as a first-class field for human readability — log correlation,
+   * grep, and operator confidence. `validatePoolsManifest` asserts
+   * `getPoolPda(name) === address` so any typo is caught before any RPC.
+   */
+  address: string;
   oracleProviders: string[];
   custodies: string[];           // pubkey strings (base58)
   syntheticCustodies: string[];  // pubkey strings
@@ -149,6 +157,34 @@ function validatePoolsManifest(
           `pool '${entry.name}' feedIds contains non-u8 value ${fid}`
         );
       }
+    }
+
+    // Consistency guard: `address` is redundant with `name` (the PDA is
+    // derived from the name via getPoolPda). Operators commit it so pubkeys
+    // are visible in grep/logs; assert the two agree so a typo in one never
+    // ships unnoticed. Matches the equivalent guard in the Rust loader.
+    if (typeof entry.address !== "string" || entry.address.length === 0) {
+      throw new Error(
+        `pool '${entry.name}' in ${source} has empty address — ` +
+          `declare the PDA (derivable via getPoolPda)`
+      );
+    }
+    let declared: PublicKey;
+    try {
+      declared = new PublicKey(entry.address);
+    } catch (e) {
+      throw new Error(
+        `pool '${entry.name}' in ${source} has invalid address ` +
+          `'${entry.address}': ${(e as Error).message}`
+      );
+    }
+    const derived = getPoolPda(entry.name);
+    if (!declared.equals(derived)) {
+      throw new Error(
+        `pool '${entry.name}' in ${source} address mismatch: ` +
+          `declared=${declared.toBase58()} derived=${derived.toBase58()} — ` +
+          `either the name was renamed without updating address, or the address was typo'd`
+      );
     }
   }
 }

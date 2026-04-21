@@ -1,13 +1,21 @@
 {
-  "_comment": "Canonical pool manifest for all Adrena offchain services (MrOracle, MrSablier, MrSablierStaking, MrAutonom, adrena-data/*). Every consumer pins this file via @adrena/abi (TS) or adrena-abi (Rust) and reads it at startup. Pool addresses, custody pubkeys, and lp mint are populated post-deploy; before deploy the pubkey slots are empty strings. When pools are added/removed or pool feed IDs change, bump this file here, regenerate configs/artifact_manifest.json, push a new adrena-abi commit, and bump the pin in every consumer repo. Consumers accept --manifest-path as a runtime override for ops flexibility; the embedded default is the source of truth otherwise.",
+  "_comment": "Canonical pool manifest for all Adrena offchain services (MrOracle, MrSablier, MrSablierStaking, MrAutonom, adrena-data/*). Every consumer pins this file via @adrena/abi (TS) or adrena-abi (Rust) and reads it at startup. Pool addresses are derived from `name` via get_pool_pda; custodies, syntheticCustodies and lpMint are populated post-deploy from chain reads and committed here. Consumers accept --manifest-path as a runtime override for ops flexibility; the embedded default is the source of truth otherwise. When pools are added/removed or pool feed IDs change, re-read from chain, bump this file here, regenerate configs/artifact_manifest.json, push a new adrena-abi commit, and bump the pin in every consumer repo.",
   "pools": [
     {
       "name": "main-pool",
       "type": "gmx",
+      "_address_note": "Pool PDA is fully derived from `name` via get_pool_pda — this field is redundant and kept purely for human readability (grep, log correlation). The loader asserts get_pool_pda(name).0 == address at startup so any typo is caught loudly before any RPC.",
+      "address": "4bQRutgDJs6vuh6ZcWaPVXiQaBzbHketjbCDjL4oRN34",
       "oracleProviders": ["switchboard", "chaoslabs", "autonom"],
-      "custodies": [],
+      "_custodies_comment": "On-chain order from pool.custodies[]: USDC, BONK, jitoSOL, WBTC. Read from mainnet Pool account 2026-04-21 at offset 48 with registered_custody_count=4.",
+      "custodies": [
+        "Dk523LZeDQbZtUwPEBjFXCd2Au1tD7mWZBJJmcgHktNk",
+        "8aJuzsgjxBnvRhDcfQBD7z4CUj7QoPEpaNwVd7KqsSk5",
+        "GZ9XfWwgTRhkma2Y91Q9r1XKotNXYjBnKKabj19rhT71",
+        "GFu3qS22mo6bAjg4Lr5R7L8pPgHq6GvbjJPKEHkbbs2c"
+      ],
       "syntheticCustodies": [],
-      "lpMint": "",
+      "lpMint": "4yCLi5yWGzpTWMQ1iWHG5CrGYAdBkhyEdsuSugjDUqwj",
       "feedIds": [],
       "automation": {
         "liquidations": true,
@@ -21,6 +29,8 @@
     {
       "name": "commodities-pool",
       "type": "autonom",
+      "_status": "TEMPLATE — pool account at the PDA below is undeployed as of 2026-04-21. Once deployed, re-run providers-testing/service/read_pools.js to populate custodies, syntheticCustodies, lpMint. Until then every MrOracle/MrSablier startup cleanly quarantines this pool (expected + loud so drift is visible).",
+      "address": "GN2hyBVHcUitWETeDfAoeXDMqow1x8StqdRFnGaUB2vb",
       "oracleProviders": ["autonom", "switchboard", "chaoslabs"],
       "custodies": [],
       "syntheticCustodies": [],
