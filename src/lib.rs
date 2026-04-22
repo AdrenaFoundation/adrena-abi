@@ -1,11 +1,26 @@
 pub use {
-    crate::{pda::*, types::*},
-    anchor_lang::{prelude::*, system_program::System, AnchorDeserialize, AnchorSerialize},
+    crate::{
+        error::*, events::*, genesis_lock::*, pda::*, pool_info_snapshot::*, types::*,
+        user_profile_enums::*, vest::*,
+    },
+    anchor_lang::{
+        prelude::*, system_program::System, AnchorDeserialize, AnchorSerialize,
+    },
     std::str::FromStr,
 };
+
+// Re-export borsh's BorshDeserialize on the EXACT same version anchor-lang's
+// `#[event]` / `#[derive(AnchorDeserialize)]` macros expand against. Off-chain
+// consumers (MrNotification, indexers) import this instead of adding a direct
+// `borsh = "1.x"` dep to Cargo.toml — otherwise `try_from_slice` resolves to
+// the wrong trait version and fails with a cryptic "associated item not found".
+pub use anchor_lang::prelude::borsh::BorshDeserialize;
 use {anchor_client::solana_sdk, oracle::Oracle};
 
 pub mod autonom_market_opening_data;
+pub mod error;
+pub mod events;
+pub mod genesis_lock;
 pub mod feed_ids;
 pub mod feed_maps;
 pub mod limited_string;
@@ -13,8 +28,11 @@ pub mod liquidation_price;
 pub mod math;
 pub mod oracle;
 pub mod pda;
+pub mod pool_info_snapshot;
 pub mod pools_manifest;
 pub mod types;
+pub mod user_profile_enums;
+pub mod vest;
 
 declare_id!("13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet");
 

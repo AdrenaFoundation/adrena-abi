@@ -1595,3 +1595,40 @@ impl LimitOrder {
         }
     }
 }
+
+// =============================================================================
+// Additional r39 types ported from adrena/programs/adrena/src/state/*.rs
+// so off-chain consumers don't re-declare them.
+// =============================================================================
+
+// Source: adrena/programs/adrena/src/state/pool.rs (release/39).
+// Returned by close_position / liquidate paths. Not an on-chain account; this
+// is a plain calculation output consumed by event handlers and indexers.
+#[derive(Debug)]
+pub struct ExitPositionNumbers {
+    pub close_amount: u64,
+    pub exit_fee: u64,
+    pub exit_fee_usd: u64,
+    pub borrow_fee: u64,
+    pub borrow_fee_usd: u64,
+    pub profit_usd: u64,
+    pub loss_usd: u64,
+    // The amount of USD that the user can't pay for the fees
+    pub deficit_fee_usd: u64,
+    // The amount of loss in USD the user can't cover - net loss for the pool
+    pub deficit_pool_usd: u64,
+    pub total_fee: u64,     // borrow_fee + exit_fee
+    pub total_fee_usd: u64, // borrow_fee_usd + exit_fee_usd
+}
+
+// Source: adrena/programs/adrena/src/state/user_staking.rs (release/39).
+// The on-chain LOCKED_LM_STAKING_OPTIONS + LOCKED_LP_STAKING_OPTIONS tables
+// are defined against this shape. Off-chain consumers (UI, indexers) need
+// it to render multiplier tiers.
+#[derive(Copy, Clone, PartialEq, Debug, AnchorSerialize, AnchorDeserialize)]
+pub struct LockedStakingOption {
+    pub locked_days: u32,
+    pub reward_multiplier: u32,
+    pub lm_reward_multiplier: u32,
+    pub vote_multiplier: u32,
+}
