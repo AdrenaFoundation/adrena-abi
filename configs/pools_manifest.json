@@ -29,12 +29,18 @@
     {
       "name": "commodities-pool",
       "type": "autonom",
-      "_status": "TEMPLATE — pool account at the PDA below is undeployed as of 2026-04-21. Once deployed, re-run providers-testing/service/read_pools.js to populate custodies, syntheticCustodies, lpMint. Until then every MrOracle/MrSablier startup cleanly quarantines this pool (expected + loud so drift is visible).",
+      "_deployment_note": "Deployed on mainnet 2026-04-23 via DAO bootstrap (6 proposals: add_pool_part_one, add_pool_part_two, set_pool_fee_config, finalize_genesis_lock_campaign permissionless, add_custody USDC, add_synthetic_custody XAU, set_pool_liquidity_state Active + set_pool_allow_trade). pool_type=Autonom(1), oracle_provider=Autonom(1), multi_oracle_config=[Autonom,Switchboard,ChaosLabs] min_agree=1 all flags off. Manager fee recipient = cortex.admin (DAO treasury). allow_swap=false (synthetic pool; users open/close positions directly).",
       "address": "GN2hyBVHcUitWETeDfAoeXDMqow1x8StqdRFnGaUB2vb",
       "oracleProviders": ["autonom", "switchboard", "chaoslabs"],
-      "custodies": [],
-      "syntheticCustodies": [],
-      "lpMint": "",
+      "_custodies_comment": "On-chain order from pool.custodies[]: USDC. Read from mainnet Pool account 2026-04-23 at offset 48 with registered_custody_count=1. USDC custody derived from seed 0xea5930d76d5f59abb8d71d4acc31827425e6b89c77ba1d016183eeec25c8c463 (NOT the mint bytes — custom pool-unique seed).",
+      "custodies": [
+        "woVG8fmrUzFJhWa6mRjiYC2qFCY73oAnQeioYK1m1JX"
+      ],
+      "_syntheticCustodies_comment": "On-chain order from pool.synthetic_custodies[]: XAU. XAU synthetic derived from seed 0x8ae6d4e3a1126e3b8a93fc20e232da3efdcb8e7a1a593ca7d4b9426e47ae21d4. trade_oracle='XAU', trade_oracle_feed_id=36 (Autonom). allow_trade=true, allow_swap=false, max_cumulative_{long,short}_position_size_usd=$500k each side.",
+      "syntheticCustodies": [
+        "JB86ouHXGYgF4UbPs8yxYdaHudrdsintf5EbBfMydzYt"
+      ],
+      "lpMint": "GMZ7hCGeHyDr1giM4dyP2eTkj9GQ2T1G9cBDridLz5Cx",
       "_feedIds_comment": "release/39 canonical. Autonom range: 30-35 crypto (SOL/jitoSOL/BTC/WBTC/BONK/USDC, unsessioned), 36 XAU (sessioned launch commodity). USDC at 35 is listed because the pool's USDC stable custody needs pricing for AUM; MrAutonom's sessioned-only filter drops it from market-hours requests automatically. Future commodities append at 37+ in lockstep with configs/oracles/autonom.mainnet.json and feed_metadata.sessioned.",
       "feedIds": [35, 36],
       "automation": {
