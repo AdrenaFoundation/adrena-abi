@@ -26,6 +26,13 @@ pub fn get_lm_token_mint_pda() -> (Pubkey, u8) {
     Pubkey::find_program_address(&["lm_token_mint".as_ref()], &crate::id())
 }
 
+pub fn get_lm_token_treasury_pda(lm_token_mint: &Pubkey) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &["lm_token_treasury".as_ref(), lm_token_mint.as_ref()],
+        &crate::id(),
+    )
+}
+
 pub fn get_governance_token_mint_pda() -> (Pubkey, u8) {
     Pubkey::find_program_address(&["governance_token_mint".as_ref()], &crate::id())
 }

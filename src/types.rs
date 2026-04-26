@@ -2,10 +2,10 @@ use {
     crate::{
         limited_string::LimitedString,
         math,
-        oracle::{ChaosLabsBatchPrices, OraclePrice},
+        oracle::{BatchPrices, MultiBatchPrices, OraclePrice, SwitchboardUpdateParams},
     },
     anchor_lang::prelude::*,
-    anyhow::{anyhow, Result},
+    anyhow::Result,
     bytemuck::{Pod, Zeroable},
 };
 
@@ -19,38 +19,49 @@ pub const SECONDS_PER_MONTH: i64 = 30 * SECONDS_PER_HOURS * 24;
 pub const MAX_ROUNDS_PER_MONTH: u64 = SECONDS_PER_MONTH as u64 / ROUND_MIN_DURATION_SECONDS as u64;
 
 pub const MAX_CUSTODIES: usize = 8;
+pub const MAX_SYNTHETIC_CUSTODIES: usize = 32;
+pub const MAX_AUTONOM_STOCKS_CUSTODIES: usize = 32;
 
-pub const MAX_STABLE_CUSTODY: usize = 2;
+pub const MAX_STABLE_CUSTODY: usize = 1;
 pub const MIN_INITIAL_LEVERAGE: u32 = 11_000; // BPS
 
 pub const MAX_LOCKED_STAKE_COUNT: usize = 32;
+
+// When the genesis lock ends for main_pool on mainnet (used as AUM vampire breakpoint)
+pub const FULLY_ALP_LIQUID_BREAKPOINT_TIMESTAMP: i64 = 1742385600;
+
+// =============================================================================
+// Instruction param structs (release/39-postaudit shape)
+// =============================================================================
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ClosePositionLongParams {
     pub price: Option<u64>,
     // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
+    // Amount of size to close in bps, 10000 = 1%, 1000000 = 100%
     pub percentage: u64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ClosePositionShortParams {
     pub price: Option<u64>,
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
     pub percentage: u64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct LiquidateLongParams {
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct LiquidateShortParams {
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone)]
@@ -66,14 +77,27 @@ pub struct ClaimStakesParams {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct UpdatePoolAumParams {
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
+    pub switchboard_oracle_prices: Option<SwitchboardUpdateParams>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct UpdateOracleParams {
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
+    pub switchboard_oracle_prices: Option<SwitchboardUpdateParams>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct AutonomMarketOpeningParams {
+    pub opening_data: crate::autonom_market_opening_data::AutonomMarketOpeningData,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct DistributeFeesParams {
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
@@ -82,41 +106,46 @@ pub struct OpenPositionWithSwapParams {
     pub collateral: u64,
     pub leverage: u32, // in BPS
     pub referrer: Option<Pubkey>,
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ExecuteLimitOrderLongParams {
     pub id: u64,
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct ExecuteLimitOrderShortParams {
     pub id: u64,
-    // Do not do that, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub struct AddLiquidityParams {
     pub amount_in: u64,
     pub min_lp_amount_out: u64,
-    // Always use, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct RemoveLiquidityParams {
     pub lp_amount_in: u64,
     pub min_amount_out: u64,
-    // Always use, except if you know the onchain price is fresh (i.e you did just update the price in a prior instruction or this is CPI)
-    pub oracle_prices: Option<ChaosLabsBatchPrices>,
+    pub oracle_prices: Option<BatchPrices>,
+    pub multi_oracle_prices: Option<MultiBatchPrices>,
 }
 
+// =============================================================================
+// Deprecated legacy user profile (release/37)
+// =============================================================================
+
 #[deprecated]
+#[allow(deprecated)]
 #[derive(
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
 )]
@@ -130,7 +159,9 @@ pub struct TradingStats {
     pub losses_usd: u64,
     pub fee_paid_usd: u64,
 }
+
 #[deprecated]
+#[allow(deprecated)]
 #[account(zero_copy)]
 #[derive(Default, Debug)]
 #[repr(C)]
@@ -151,9 +182,14 @@ pub struct UserProfileV1 {
     pub long_stats: TradingStats,
 }
 
+#[allow(deprecated)]
 impl UserProfileV1 {
     pub const LEN: usize = 8 + std::mem::size_of::<UserProfileV1>();
 }
+
+// =============================================================================
+// UserProfile (release/39-postaudit layout)
+// =============================================================================
 
 #[account(zero_copy)]
 #[derive(Debug)]
@@ -164,7 +200,9 @@ pub struct UserProfile {
     pub profile_picture: u8, // Enum of profile pictures
     pub wallpaper: u8,       // Enum of wallpapers
     pub title: u8,           // Enum of title
-    pub _padding: [u8; 3],
+    pub team: u8,
+    pub continent: u8,
+    pub _padding: u8,
     pub nickname: LimitedString,
     pub created_at: i64,
     pub owner: Pubkey,
@@ -172,8 +210,18 @@ pub struct UserProfile {
     pub referrer_profile: Pubkey, // Pubkey of the referrer profile (not the wallet!)
     pub claimable_referral_fee_usd: u64, // Referral fee that can be claimed by the referrer right now
     pub total_referral_fee_usd: u64,     // Total referral fee earned by the referrer
-    pub _padding2: [u8; 16],
+    pub rolling_trade_window_start: i64,
+    pub trades_in_window: u16,
+    pub _padding2: [u8; 6],
 }
+
+impl UserProfile {
+    pub const LEN: usize = 8 + std::mem::size_of::<UserProfile>();
+}
+
+// =============================================================================
+// Staking rounds and Staking account
+// =============================================================================
 
 #[derive(
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
@@ -188,6 +236,16 @@ pub struct StakingRound {
     pub lm_rate: u64,
     pub lm_total_stake: u64,
     pub lm_total_claim: u64,
+}
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct NextStakingRound {
+    pub total_stake: u64,
+    pub _padding1: [u8; 16],
+    pub lm_total_stake: u64,
 }
 
 #[account(zero_copy)]
@@ -210,16 +268,24 @@ pub struct Staking {
     pub resolved_lm_reward_token_amount: u64,
     pub resolved_lm_staked_token_amount: u64,
     pub current_staking_round: StakingRound,
-    pub next_staking_round: StakingRound,
+    #[deprecated]
+    pub current_staking_round_liquid_rewards_usd: u64,
+    pub _padding1: [u8; 16],
+    pub next_staking_round: NextStakingRound,
+    pub _padding2: [u8; 8],
     pub resolved_staking_rounds: [StakingRound; MAX_RESOLVED_ROUNDS],
     pub registered_resolved_staking_round_count: u8,
-    pub _padding: [u8; 3],
+    pub _padding3: [u8; 3],
     pub lm_emission_potentiometer_bps: u16,
     pub months_elapsed_since_inception: u16,
     pub _padding_unsafe: [u8; 8],
     pub emission_amount_per_round_last_update: i64,
     pub current_month_emission_amount_per_round: u64,
 }
+
+// =============================================================================
+// Cortex (release/39-postaudit layout with admin timelock)
+// =============================================================================
 
 #[account(zero_copy)]
 #[derive(Default, Debug)]
@@ -252,11 +318,17 @@ pub struct Cortex {
     pub ecosystem_bucket_minted_amount: u64,
     pub genesis_liquidity_alp_amount: u64,
     pub unique_position_id_counter: u64,
+    // Two-step admin transfer with timelock (Fidesium C1)
+    pub pending_admin: Pubkey,
+    pub admin_transfer_request_time: i64,
+    // Unused — delay is hardcoded to DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS
+    pub admin_transfer_min_delay_seconds: i64,
 }
 
 impl Cortex {
+    pub const LEN: usize = 8 + std::mem::size_of::<Cortex>();
     // Lamports
-    pub const AUTOMATION_EXECUTION_FEE: u64 = 100_000;
+    pub const AUTOMATION_EXECUTION_FEE: u64 = 300_000;
     // BPS
     pub const BPS_DECIMALS: u8 = 4;
     pub const BPS_POWER: u128 = 10u64.pow(Self::BPS_DECIMALS as u32) as u128;
@@ -268,11 +340,17 @@ impl Cortex {
     pub const LP_DECIMALS: u8 = Self::USD_DECIMALS;
     pub const LM_DECIMALS: u8 = Cortex::USD_DECIMALS;
     pub const GOVERNANCE_SHADOW_TOKEN_DECIMALS: u8 = Cortex::USD_DECIMALS;
+    // Admin transfer timelock (48 hours)
+    pub const DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS: i64 = 172800;
 
     pub fn is_empty_account(account_info: &AccountInfo) -> Result<bool> {
         Ok(account_info.try_data_is_empty()? || account_info.try_lamports()? == 0)
     }
 }
+
+// =============================================================================
+// Shared helpers: TokenRatios, U128Split
+// =============================================================================
 
 #[derive(
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
@@ -294,8 +372,268 @@ pub struct U128Split {
     pub low: u64,
 }
 
+// =============================================================================
+// Pool-related enums (release/39 additions)
+// =============================================================================
+
+#[derive(PartialEq, Copy, Clone, Default, Debug)]
+#[repr(u8)]
+pub enum PoolLiquidityState {
+    #[default]
+    GenesisLiquidity = 0,
+    Idle = 1,
+    Active = 2,
+}
+
+impl From<PoolLiquidityState> for u8 {
+    fn from(val: PoolLiquidityState) -> Self {
+        match val {
+            PoolLiquidityState::GenesisLiquidity => 0,
+            PoolLiquidityState::Idle => 1,
+            PoolLiquidityState::Active => 2,
+        }
+    }
+}
+
+impl TryFrom<u8> for PoolLiquidityState {
+    type Error = anyhow::Error;
+
+    fn try_from(value: u8) -> std::result::Result<Self, Self::Error> {
+        Ok(match value {
+            0 => PoolLiquidityState::GenesisLiquidity,
+            1 => PoolLiquidityState::Idle,
+            2 => PoolLiquidityState::Active,
+            _ => anyhow::bail!("Invalid pool liquidity state: {}", value),
+        })
+    }
+}
+
+#[derive(PartialEq, Copy, Clone, Default, Debug)]
+#[repr(u8)]
+pub enum PoolType {
+    #[default]
+    GMX = 0,
+    Autonom = 1,
+}
+
+impl From<PoolType> for u8 {
+    fn from(val: PoolType) -> Self {
+        match val {
+            PoolType::GMX => 0,
+            PoolType::Autonom => 1,
+        }
+    }
+}
+
+impl TryFrom<u8> for PoolType {
+    type Error = anyhow::Error;
+
+    fn try_from(value: u8) -> std::result::Result<Self, Self::Error> {
+        Ok(match value {
+            0 => PoolType::GMX,
+            1 => PoolType::Autonom,
+            _ => anyhow::bail!("Invalid pool type: {}", value),
+        })
+    }
+}
+
+impl PoolType {
+    pub const fn supports_synthetics(&self) -> bool {
+        matches!(self, PoolType::Autonom)
+    }
+
+    pub const fn has_market_hours(&self) -> bool {
+        matches!(self, PoolType::Autonom)
+    }
+
+    pub const fn uses_split_fees(&self) -> bool {
+        matches!(self, PoolType::Autonom)
+    }
+}
+
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum PoolVersion {
+    V1 = 0,
+    V2 = 2,
+}
+
+impl PoolVersion {
+    pub const fn latest() -> Self {
+        PoolVersion::V2
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum LeverageCheckType {
+    Initial,
+    AddCollateral,
+    RemoveCollateral,
+    IncreasePosition,
+    Liquidate,
+}
+
+// =============================================================================
+// MultiOracleConfig (release/39, Fidesium H2: 16 -> 80 bytes)
+// =============================================================================
+
+#[derive(Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Debug, Pod, Zeroable)]
+#[repr(C)]
+pub struct MultiOracleConfig {
+    // [primary, secondary, tertiary]
+    pub providers: [u8; 3],
+    pub min_agree: u8,
+    // Price difference threshold in BPS (e.g., 100 = 1%)
+    pub price_diff_threshold_bps: u16,
+    // Staleness threshold in seconds
+    pub staleness_seconds: u16,
+    // Fidesium H2 (release/39): togglable asymmetric liquidation defense
+    pub asymmetric_liquidation: u8,
+    // Fidesium H2 (release/39): togglable circuit breaker defense
+    pub circuit_breaker_enabled: u8,
+    pub circuit_breaker_seconds: u16,
+    pub _padding: [u8; 68],
+}
+
+impl Default for MultiOracleConfig {
+    fn default() -> Self {
+        Self::default_for_gmx_pool()
+    }
+}
+
+impl MultiOracleConfig {
+    pub fn default_for_gmx_pool() -> Self {
+        Self {
+            providers: [
+                crate::oracle::OracleProvider::Switchboard as u8,
+                crate::oracle::OracleProvider::ChaosLabs as u8,
+                crate::oracle::OracleProvider::Autonom as u8,
+            ],
+            min_agree: 2,
+            price_diff_threshold_bps: 100,
+            staleness_seconds: 7,
+            asymmetric_liquidation: 1,
+            circuit_breaker_enabled: 1,
+            circuit_breaker_seconds: 300,
+            _padding: [0u8; 68],
+        }
+    }
+
+    pub fn default_for_autonom_pool() -> Self {
+        Self {
+            providers: [
+                crate::oracle::OracleProvider::Autonom as u8,
+                crate::oracle::OracleProvider::Switchboard as u8,
+                crate::oracle::OracleProvider::ChaosLabs as u8,
+            ],
+            min_agree: 1,
+            price_diff_threshold_bps: 100,
+            staleness_seconds: 7,
+            asymmetric_liquidation: 0,
+            circuit_breaker_enabled: 0,
+            circuit_breaker_seconds: 0,
+            _padding: [0u8; 68],
+        }
+    }
+
+    pub fn is_valid(&self) -> bool {
+        let min_agree_ok = self.min_agree >= 1 && self.min_agree <= 3;
+        let providers_ok = {
+            let a = self.providers[0];
+            let b = self.providers[1];
+            let c = self.providers[2];
+            a != b && a != c && b != c
+        };
+        let staleness_ok = self.staleness_seconds > 0;
+        let circuit_breaker_ok =
+            self.circuit_breaker_enabled != 1 || self.circuit_breaker_seconds > 0;
+        min_agree_ok && providers_ok && staleness_ok && circuit_breaker_ok
+    }
+
+    pub fn primary(&self) -> Result<crate::oracle::OracleProvider> {
+        crate::oracle::OracleProvider::try_from(self.providers[0])
+    }
+
+    pub fn secondary(&self) -> Result<crate::oracle::OracleProvider> {
+        crate::oracle::OracleProvider::try_from(self.providers[1])
+    }
+
+    pub fn tertiary(&self) -> Result<crate::oracle::OracleProvider> {
+        crate::oracle::OracleProvider::try_from(self.providers[2])
+    }
+}
+
+// =============================================================================
+// PositionExitFeeConfig (release/38+)
+// =============================================================================
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Zeroable, Pod,
+)]
+#[repr(C)]
+pub struct PositionExitFeeConfig {
+    // 0 = disabled, 1 = enabled
+    pub enabled: u8,
+    pub _padding0: [u8; 7],
+
+    // Hard errors when closing positions
+    pub min_position_open_time_seconds: u64,
+    pub min_position_update_time_before_close_seconds: u64,
+
+    // Age thresholds for multiplier tiers (in seconds)
+    pub age_tier_1_seconds: u64,
+    pub age_tier_2_seconds: u64,
+    pub age_tier_3_seconds: u64,
+
+    // Fee multipliers in BPS (10_000 = 1.0x)
+    pub multiplier_tier_1_bps: u32,
+    pub multiplier_tier_2_bps: u32,
+    pub multiplier_tier_3_bps: u32,
+    pub multiplier_after_tier_3_bps: u32,
+}
+
+impl PositionExitFeeConfig {
+    pub const MULTIPLIER_BPS_BASE: u32 = 10_000;
+
+    pub fn default_for_release_38() -> Self {
+        Self {
+            enabled: 1,
+            _padding0: [0u8; 7],
+            min_position_open_time_seconds: 240,
+            min_position_update_time_before_close_seconds: 120,
+            age_tier_1_seconds: 7 * 60,
+            age_tier_2_seconds: 15 * 60,
+            age_tier_3_seconds: 30 * 60,
+            multiplier_tier_1_bps: 150_000,
+            multiplier_tier_2_bps: 30_000,
+            multiplier_tier_3_bps: 15_000,
+            multiplier_after_tier_3_bps: Self::MULTIPLIER_BPS_BASE,
+        }
+    }
+
+    pub fn get_exit_fee_multiplier_bps(&self, position_age_seconds: u64) -> u32 {
+        if self.enabled == 0 {
+            return Self::MULTIPLIER_BPS_BASE;
+        }
+
+        if position_age_seconds <= self.age_tier_1_seconds {
+            self.multiplier_tier_1_bps
+        } else if position_age_seconds <= self.age_tier_2_seconds {
+            self.multiplier_tier_2_bps
+        } else if position_age_seconds <= self.age_tier_3_seconds {
+            self.multiplier_tier_3_bps
+        } else {
+            self.multiplier_after_tier_3_bps
+        }
+    }
+}
+
+// =============================================================================
+// Pool (release/39-postaudit layout)
+// =============================================================================
+
 #[account(zero_copy)]
-#[derive(Default, Debug)]
+#[derive(Debug)]
 #[repr(C)]
 pub struct Pool {
     pub bump: u8,
@@ -304,7 +642,7 @@ pub struct Pool {
     pub initialized: u8,
     pub allow_trade: u8,
     pub allow_swap: u8,
-    pub liquidity_state: u8,
+    pub liquidity_state: u8, // PoolLiquidityState
     pub registered_custody_count: u8,
     pub name: LimitedString,
     pub custodies: [Pubkey; MAX_CUSTODIES],
@@ -319,7 +657,64 @@ pub struct Pool {
     pub aum_usd: U128Split,
     pub inception_time: i64,
     pub aum_soft_cap_usd: u64,
+    //
+    // Exit fee multiplier for positions that are open and closed aggressively
+    pub position_exit_fee_config: PositionExitFeeConfig,
+    //
+    // Timestamp of the last LP deposit - prevents same-second LP sandwich attacks
+    pub last_lp_deposit_time: i64,
+    //
+    // release/39 (Autonom) fields - consumes release/38 pool reserved bytes
+    pub pool_type: u8, // PoolType
+    pub oracle_provider: u8, // OracleProvider
+    pub registered_synthetic_custody_count: u8,
+    pub version: u8, // PoolVersion
+    pub _padding1: [u8; 4],
+    //
+    // Autonom stock market window (only relevant for Autonom pools)
+    pub market_open_timestamp: i64,
+    pub market_close_timestamp: i64,
+    pub market_close_event_timestamp: i64,
+    pub market_close_affected_feeds: [u8; MAX_AUTONOM_STOCKS_CUSTODIES],
+    //
+    // Autonom fee split (BPS, 10_000 = 100%)
+    pub lp_fee_share_bps: u16,
+    pub lm_fee_share_bps: u16,
+    pub referrer_fee_share_bps: u16,
+    pub protocol_fee_share_bps: u16,
+    pub manager_fee_share_bps: u16,
+    pub _padding2: [u8; 6],
+    //
+    pub manager_fee_recipient: Pubkey,
+    pub manager_fee_debt_usd: u64,
+    pub lm_fee_debt_usd: u64,
+    pub protocol_fee_debt_usd: u64,
+    //
+    pub cumulative_protocol_fee_usd: u64,
+    pub cumulative_lm_fee_usd: u64,
+    pub cumulative_manager_fee_usd: u64,
+    pub cumulative_lp_fee_usd: u64,
+    //
+    // release/39 multi-oracle config
+    pub multi_oracle_config: MultiOracleConfig,
+    //
+    pub synthetic_custodies: [Pubkey; MAX_SYNTHETIC_CUSTODIES],
+    //
+    // Fidesium H2: reduced from 768 to 704 (MultiOracleConfig grew by 64 bytes: 16 -> 80)
+    pub _reserved: [u8; 704],
 }
+
+impl Default for Pool {
+    fn default() -> Self {
+        // Pool is too large to derive Default without hitting array-default
+        // trait-bound issues; use the zeroed form for off-chain defaulting.
+        unsafe { std::mem::zeroed() }
+    }
+}
+
+// =============================================================================
+// Position (release/39-postaudit with VFR fields)
+// =============================================================================
 
 #[account(zero_copy)]
 #[derive(Default, Debug)]
@@ -352,12 +747,19 @@ pub struct Position {
     pub paid_interest_usd: u64,
     pub stop_loss_limit_price: u64,
     pub stop_loss_close_position_price: u64,
+    // Virtual Funding Rate tracking (release/39)
+    pub cumulative_long_to_short_snapshot: U128Split,
+    pub cumulative_short_to_long_snapshot: U128Split,
+    pub unrealized_funding_paid_usd: u64,
+    pub unrealized_funding_received_usd: u64,
+    // Reserved space for future upgrades
+    pub _reserved: [[u8; 32]; 4],
 }
 
 impl Position {
     pub const LEN: usize = 8 + std::mem::size_of::<Position>();
+
     pub fn get_side(&self) -> Side {
-        // Consider value in the struct always good
         Side::try_from(self.side).unwrap()
     }
 
@@ -394,7 +796,6 @@ impl Position {
     }
 
     pub fn stop_loss_slippage_ok(&self, price: u64) -> bool {
-        // 0 means no slippage
         if self.stop_loss_close_position_price == 0 {
             return true;
         }
@@ -407,6 +808,10 @@ impl Position {
     }
 }
 
+// =============================================================================
+// Custody sub-structures (release/39-postaudit)
+// =============================================================================
+
 #[derive(
     Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
 )]
@@ -416,6 +821,7 @@ pub struct PricingParams {
     pub max_leverage: u32,
     pub max_position_locked_usd: u64,
     pub max_cumulative_short_position_size_usd: u64,
+    pub max_cumulative_long_position_size_usd: u64,
 }
 
 #[derive(
@@ -512,11 +918,19 @@ pub struct PositionsAccounting {
     pub locked_amount: u64,
     pub weighted_price: U128Split,
     pub total_quantity: U128Split,
-    pub cumulative_interest_usd: u64,
-    pub _padding: [u8; 8],
+    // Fidesium H2: Aggregate VFR funding across all open positions on this side
+    // (materialized from release/38's _padding1: [u8; 8])
+    pub cumulative_funding_paid_usd: u64,
+    pub collateral_usd: u64, // Stat only used for long positions
     pub cumulative_interest_snapshot: U128Split,
     pub exit_fee_usd: u64,
     pub stable_locked_amount: [StableLockedAmountStat; MAX_STABLE_CUSTODY],
+    pub prepaid_interest_usd: u64,
+    pub tmp_offset_end_ts: u64,
+    pub tmp_offset: U128Split,
+    pub unrealized_interest_usd: u64,
+    // Fidesium H2: (materialized from release/38's _padding2: [u8; 8])
+    pub cumulative_funding_received_usd: u64,
 }
 
 #[derive(
@@ -529,8 +943,38 @@ pub struct BorrowRateState {
     pub cumulative_interest: U128Split,
 }
 
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct VirtualFundingParams {
+    // Max hourly funding rate in RATE_DECIMALS
+    pub max_hourly_funding_rate: u64,
+    // Below this total OI, funding is paused to avoid noise
+    pub min_total_oi_usd: u64,
+    // Sensitivity multiplier in BPS (10_000 = 1.0x)
+    pub imbalance_sensitivity_bps: u16,
+    pub _padding: [u8; 6],
+}
+
+#[derive(
+    Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Default, Debug, Pod, Zeroable,
+)]
+#[repr(C)]
+pub struct VirtualFundingState {
+    // Signed: >0 means Longs pay Shorts, <0 means Shorts pay Longs.
+    pub current_rate_long_to_short: i64,
+    pub last_update: i64,
+    pub cumulative_long_to_short: U128Split,
+    pub cumulative_short_to_long: U128Split,
+}
+
+// =============================================================================
+// Custody (release/39-postaudit)
+// =============================================================================
+
 #[account(zero_copy)]
-#[derive(Default, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Default, Debug, PartialEq)]
 #[repr(C)]
 pub struct Custody {
     pub bump: u8,
@@ -555,11 +999,34 @@ pub struct Custody {
     pub long_positions: PositionsAccounting,
     pub short_positions: PositionsAccounting,
     pub borrow_rate_state: BorrowRateState,
+    // Optimal utilization in BPS for the two-slope borrow rate model
+    pub optimal_utilization_bps: u64,
+    // Virtual funding rate configuration and state (release/38+)
+    pub virtual_funding: VirtualFundingParams,
+    pub virtual_funding_state: VirtualFundingState,
+    //
+    // release/39 (Autonom) fields
+    pub is_synthetic: u8,
+    pub version: u8,
+    pub oracle_feed_id: u8,
+    pub trade_oracle_feed_id: u8,
+    pub seed: [u8; 32],
+    pub _padding_autonom0: [u8; 4],
+    pub _padding_autonom1: [u8; 24],
+    //
+    // Remaining reserved space for future releases (release/40+)
+    pub _reserved: [[u8; 32]; 6],
 }
 
 impl Custody {
+    pub const LEN: usize = 8 + std::mem::size_of::<Custody>();
+
     pub fn is_stable(&self) -> bool {
         self.is_stable == 1
+    }
+
+    pub fn is_synthetic(&self) -> bool {
+        self.is_synthetic == 1
     }
 
     // Returns the interest amount that has accrued since the last position cumulative interest snapshot update
@@ -619,10 +1086,13 @@ impl Custody {
                 },
                 size_usd: accounting.size_usd,
                 borrow_size_usd: accounting.borrow_size_usd,
-                unrealized_interest_usd: accounting.cumulative_interest_usd,
+                unrealized_interest_usd: accounting.unrealized_interest_usd,
                 cumulative_interest_snapshot: accounting.cumulative_interest_snapshot,
                 locked_amount: accounting.locked_amount,
                 exit_fee_usd: accounting.exit_fee_usd,
+                // Surface aggregate VFR funding so AUM includes funding obligations
+                unrealized_funding_paid_usd: accounting.cumulative_funding_paid_usd,
+                unrealized_funding_received_usd: accounting.cumulative_funding_received_usd,
                 ..Position::default()
             })
         } else {
@@ -630,6 +1100,10 @@ impl Custody {
         }
     }
 }
+
+// =============================================================================
+// Side enum
+// =============================================================================
 
 #[derive(PartialEq, Copy, Clone, Default, Debug)]
 pub enum Side {
@@ -662,6 +1136,10 @@ impl TryFrom<u8> for Side {
     }
 }
 
+// =============================================================================
+// StakingType, UserStaking, Stake structs
+// =============================================================================
+
 #[derive(PartialEq, Copy, Clone, Debug, Default)]
 pub enum StakingType {
     #[default]
@@ -685,14 +1163,13 @@ impl TryFrom<u8> for StakingType {
         Ok(match value {
             1 => StakingType::LM,
             2 => StakingType::LP,
-            // Return an error if unknown value
             _ => anyhow::bail!("Invalid staking type"),
         })
     }
 }
 
 #[account(zero_copy)]
-#[derive(Default, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Default, Debug, PartialEq)]
 #[repr(C)]
 pub struct UserStaking {
     pub bump: u8,
@@ -740,7 +1217,6 @@ pub struct LockedStake {
     pub amount_with_lm_reward_multiplier: u64,
     pub resolved: u8,
     pub _padding2: [u8; 7],
-    // History: was a thread id before while using Sablier, now used as a unique random id for each stake
     pub id: u64,
     pub early_exit: u8,
     pub _padding3: [u8; 7],
@@ -755,7 +1231,6 @@ pub struct LockedStake {
 pub struct ProfitAndLoss {
     pub profit_usd: u64,
     pub loss_usd: u64,
-    // Unrealized
     pub exit_fee: u64,
     pub exit_fee_usd: u64,
     pub borrow_fee_usd: u64,
@@ -810,6 +1285,10 @@ impl LockedStake {
     }
 }
 
+// =============================================================================
+// LeverageCheckStatus and consumer-oriented Pool helpers
+// =============================================================================
+
 pub enum LeverageCheckStatus {
     Ok(u64),
     MaxLeverageExceeded(u64),
@@ -830,6 +1309,14 @@ impl Pool {
         custodies
     }
 
+    pub fn is_autonom(&self) -> bool {
+        self.pool_type == PoolType::Autonom as u8
+    }
+
+    pub fn is_gmx(&self) -> bool {
+        self.pool_type == PoolType::GMX as u8
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn get_leverage(
         &self,
@@ -838,11 +1325,8 @@ impl Pool {
         collateral_token_price: &OraclePrice,
         collateral_custody: &Custody,
         current_time: i64,
-        // true: calculate the PnL with liquidation_fee_usd
-        // false: calculate the PnL with exit_fee_usd
         liquidation: bool,
     ) -> Result<u64> {
-        // Do not accept 0 price
         if position.price == 0 {
             return Ok(u64::MAX);
         }
@@ -857,22 +1341,18 @@ impl Pool {
         )?;
 
         let current_margin_usd = (|| {
-            // Nor profits or losses
             if pnl.profit_usd == 0 && pnl.loss_usd == 0 {
                 return position.collateral_usd;
             }
 
-            // Profit
             if pnl.profit_usd > 0 {
                 return position.collateral_usd + pnl.profit_usd;
             }
 
-            // Partial loss
             if pnl.loss_usd <= position.collateral_usd {
                 return position.collateral_usd - pnl.loss_usd;
             }
 
-            // Total loss
             0
         })();
 
@@ -885,7 +1365,6 @@ impl Pool {
         }
     }
 
-    /// Checks if leverage is within the limits (and return the value for events)
     #[allow(clippy::too_many_arguments)]
     pub fn check_leverage(
         &self,
@@ -895,11 +1374,8 @@ impl Pool {
         collateral_token_price: &OraclePrice,
         collateral_custody: &Custody,
         current_time: i64,
-        // Every time position manually changes, use true
         initial: bool,
     ) -> Result<LeverageCheckStatus> {
-        // Idea is to check the leverage considering the highest fee when not creating a new position
-        // Position should always be able to pay liquidation fee
         let use_liquidation_fee_usd_for_pnl_calculation =
             !initial && position.liquidation_fee_usd > position.exit_fee_usd;
 
@@ -926,68 +1402,15 @@ impl Pool {
         collateral_custody: &Custody,
         current_time: i64,
     ) -> Result<u64> {
-        // liq_price = pos_price +- (collateral + unreal_profit - unreal_loss - exit_fee - interest - size/max_leverage) * pos_price / size
-
-        if position.size_usd == 0 || position.price == 0 {
-            return Ok(0);
-        }
-
-        let total_unrealized_interest_usd = collateral_custody
-            .get_interest_amount_usd(position, current_time)?
-            + position.unrealized_interest_usd;
-        let unrealized_loss_usd = position.liquidation_fee_usd + total_unrealized_interest_usd;
-
-        let mut max_loss_usd = math::checked_as_u64(
-            (position.size_usd as u128 * Cortex::BPS_POWER) / custody.pricing.max_leverage as u128,
-        )?;
-
-        max_loss_usd += unrealized_loss_usd;
-
-        let margin_usd = position.collateral_usd;
-
-        let max_price_diff = if max_loss_usd >= margin_usd {
-            max_loss_usd - margin_usd
-        } else {
-            margin_usd - max_loss_usd
-        };
-
-        let max_price_diff = math::scale_to_exponent(
-            max_price_diff,
-            -(Cortex::USD_DECIMALS as i32),
-            -(Cortex::PRICE_DECIMALS as i32),
-        )?;
-
-        let position_size_usd = math::scale_to_exponent(
-            position.size_usd,
-            -(Cortex::USD_DECIMALS as i32),
-            -(Cortex::PRICE_DECIMALS as i32),
-        )?;
-
-        let max_price_diff = math::checked_as_u64(
-            (max_price_diff as u128 * position.price as u128) / position_size_usd as u128,
-        )?;
-
-        if position.get_side() == Side::Long {
-            if max_loss_usd >= margin_usd {
-                Ok(position.price + max_price_diff)
-            } else if position.price > max_price_diff {
-                Ok(position.price - max_price_diff)
-            } else {
-                Ok(0)
-            }
-        } else if max_loss_usd >= margin_usd {
-            if position.price > max_price_diff {
-                Ok(position.price - max_price_diff)
-            } else {
-                Ok(0)
-            }
-        } else {
-            Ok(position.price + max_price_diff)
-        }
+        crate::liquidation_price::get_liquidation_price(
+            position,
+            custody,
+            collateral_custody,
+            current_time,
+        )
     }
 
-    // Note: PnL is a unrealized PnL
-    // Note that the PnL is an estimation and can be different when the position is closed due to exact fees not known until actual close (this estimation is calculated conservatively)
+    // Note: PnL is an unrealized PnL and is an estimation
     #[allow(clippy::too_many_arguments)]
     pub fn get_pnl_usd(
         &self,
@@ -1002,11 +1425,10 @@ impl Pool {
             return Ok(ProfitAndLoss::default());
         }
 
-        // Use High/Low price to protect the pool
         let exit_price = match Side::try_from(position.side)? {
             Side::Long => token_trade_price.price,
             Side::Short => token_trade_price.price,
-            Side::None => return Err(anyhow::anyhow!("Invalid position state")),
+            Side::None => anyhow::bail!("Invalid position state"),
         };
 
         let exit_fee_usd: u64 = if liquidation {
@@ -1015,7 +1437,6 @@ impl Pool {
             position.exit_fee_usd
         };
 
-        // Marginal but uses low price for safety
         let exit_fee = collateral_token_price
             .low()
             .get_token_amount(exit_fee_usd, collateral_custody.decimals)?;
@@ -1091,6 +1512,10 @@ impl Pool {
     }
 }
 
+// =============================================================================
+// Limit order book
+// =============================================================================
+
 pub const MAX_LIMIT_ORDERS: usize = 16;
 
 #[derive(
@@ -1119,7 +1544,7 @@ pub struct LimitOrderBook {
     pub initialized: u8,
     pub bump: u8,
     pub registered_limit_order_count: u8,
-    pub _padding: [u8; 5], // Adjusted padding to match the size
+    pub _padding: [u8; 5],
     pub owner: Pubkey,
     pub limit_orders: [LimitOrder; MAX_LIMIT_ORDERS],
     pub escrowed_lamports: u64,
@@ -1127,7 +1552,6 @@ pub struct LimitOrderBook {
 
 impl LimitOrder {
     pub fn get_side(&self) -> Side {
-        // Consider value in the struct always good
         Side::try_from(self.side).unwrap()
     }
 
@@ -1139,7 +1563,6 @@ impl LimitOrder {
         self.limit_price != 0
     }
 
-    // Returns yes if the order can be executed as it meets the conditions
     pub fn is_executable(&self, token_trade_price: &OraclePrice, custody: &Pubkey) -> bool {
         if self.custody != *custody {
             return false;
@@ -1171,4 +1594,41 @@ impl LimitOrder {
             _ => false,
         }
     }
+}
+
+// =============================================================================
+// Additional r39 types ported from adrena/programs/adrena/src/state/*.rs
+// so off-chain consumers don't re-declare them.
+// =============================================================================
+
+// Source: adrena/programs/adrena/src/state/pool.rs (release/39).
+// Returned by close_position / liquidate paths. Not an on-chain account; this
+// is a plain calculation output consumed by event handlers and indexers.
+#[derive(Debug)]
+pub struct ExitPositionNumbers {
+    pub close_amount: u64,
+    pub exit_fee: u64,
+    pub exit_fee_usd: u64,
+    pub borrow_fee: u64,
+    pub borrow_fee_usd: u64,
+    pub profit_usd: u64,
+    pub loss_usd: u64,
+    // The amount of USD that the user can't pay for the fees
+    pub deficit_fee_usd: u64,
+    // The amount of loss in USD the user can't cover - net loss for the pool
+    pub deficit_pool_usd: u64,
+    pub total_fee: u64,     // borrow_fee + exit_fee
+    pub total_fee_usd: u64, // borrow_fee_usd + exit_fee_usd
+}
+
+// Source: adrena/programs/adrena/src/state/user_staking.rs (release/39).
+// The on-chain LOCKED_LM_STAKING_OPTIONS + LOCKED_LP_STAKING_OPTIONS tables
+// are defined against this shape. Off-chain consumers (UI, indexers) need
+// it to render multiplier tiers.
+#[derive(Copy, Clone, PartialEq, Debug, AnchorSerialize, AnchorDeserialize)]
+pub struct LockedStakingOption {
+    pub locked_days: u32,
+    pub reward_multiplier: u32,
+    pub lm_reward_multiplier: u32,
+    pub vote_multiplier: u32,
 }

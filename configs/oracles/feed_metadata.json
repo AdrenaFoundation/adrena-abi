@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "_note": "Cross-provider feed metadata. Thin: only carries facts that don't fit in a single per-provider file. Provider-specific per-feed_id details (canonical IDs, hashes) live in chaoslabs.mainnet.json / autonom.mainnet.json / switchboard.mainnet.json + .devnet.json. The `sessioned` map is the source of truth for whether a symbol needs market-hours management - MrAutonom uses it to filter the /hours/batch/adrena request to non-crypto feeds only.",
+  "providers": {
+    "chaoslabs":   { "id": 0, "range": [0, 29] },
+    "autonom":     { "id": 1, "range": [30, 141] },
+    "switchboard": { "id": 2, "range": [142, 255] }
+  },
+  "stablecoin_feed_ids": [5, 35, 147],
+  "sessioned": {
+    "SOLUSD":     false,
+    "JITOSOLUSD": false,
+    "BTCUSD":     false,
+    "WBTCUSD":    false,
+    "BONKUSD":    false,
+    "USDCUSD":    false,
+    "XAU":        true
+  }
+}

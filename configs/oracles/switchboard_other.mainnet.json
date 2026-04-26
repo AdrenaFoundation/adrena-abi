@@ -1,0 +1,23 @@
+{
+  "_schema_version": "1",
+  "_cluster": "mainnet",
+  "_provider": "switchboard",
+  "_note": "Offchain-only Switchboard feed map for Adrena tokens that are NOT registered in the on-chain oracle account and NOT tied to any adrena_feed_id slot. These prices are consumed by adrena-data (cron/process/processAdxTokenPrice.ts, cron/process/processLpTokenPrice.ts) for database/analytics pricing (ADX governance token, ALP LP token spot value) and are never submitted to the Adrena program via update_oracle. Separated from switchboard.mainnet.json to prevent schema confusion: switchboard.mainnet.json entries carry `adrena_feed_id` and drive on-chain oracle state; entries here are pure symbol\u2192hash lookups for offchain pricing. Consumers should use the embedded hash as the primary pricing attempt, falling back to any legacy hardcoded feed or on-chain simulation paths for liveness. Queue A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w is the on-demand mainnet default.",
+  "_queue": "A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w",
+  "feed_map": [
+    {
+      "symbol": "ADX",
+      "switchboard_feed_hash": "a5b5cf3e6e6cc111c71ad244e57bd88a0cee19149079ecc8a50cbbc736407bbe",
+      "_feed_address": "9vVup1kuxCXg3NeXb7Ld5iZQTnTzox1WioSfbZ44ehKN",
+      "_cid": "bafkreiffwxht43tmyei4ogwsitsxxwekbtxbsfeqphwmrjimxpdtmqd3xy",
+      "_description": "Adrena governance token (ADX) mainnet on-demand feed."
+    },
+    {
+      "symbol": "ALP",
+      "switchboard_feed_hash": "1307c50e39b5974f41ba2e2d7e48dfcdf7dc551baad7aebdb2884d4390c0e724",
+      "_feed_address": "CRE9ndoD6hhCidEXf8DhWzDnsXxT5kfU8S5zGfWMSo8f",
+      "_cid": "bafkreiata7cq4onvs5hudorofv7erx6n67ofkg5k26xl3muijvbzbqhheq",
+      "_description": "Adrena LP token (ALP) mainnet on-demand feed. Spot-price view of ALP; offchain consumers should still fall back to on-chain get_lp_token_price simulation when this feed is unavailable."
+    }
+  ]
+}

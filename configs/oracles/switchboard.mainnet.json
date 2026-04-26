@@ -1,0 +1,53 @@
+{
+  "_schema_version": "3",
+  "_cluster": "mainnet",
+  "_provider": "switchboard",
+  "_note": "release/39 canonical Switchboard on-demand MAINNET feed map. adrena_feed_id range 142..255 reserved for Switchboard (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. All six slots are now Adrena-owned feeds on the mainnet on-demand queue. Slots 142 (SOLUSD) and 145 (WBTCUSD) were migrated 2026-04-19 from borrowed public-queue feeds to Adrena-owned definitions pinned via providers-testing/service/src/build-mainnet-feeds.ts (source JSON under providers-testing/service/config/solusd_mainnet.json and wbtcusd_mainnet.json). Queue A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w is the on-demand mainnet default.",
+  "_queue": "A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w",
+  "switchboard_feed_map": [
+    {
+      "adrena_feed_id": 142,
+      "symbol": "SOLUSD",
+      "switchboard_feed_hash": "8f4f7b277e2593bdf04c5adba0b2a302793645de9326a7dcd6c332070846d52b",
+      "_feed_address": "GFm6k5LstKWEcCuZYPbmEWW8Uf3PgrqVM1XQB3yUKToU",
+      "_cid": "bafkreiepj55so7rfso67atc23oqlfiycpe3elxute2t5zvwdgidqqrwvfm",
+      "_feed_name": "Adrena SOL/USD Price Feed",
+      "_pinned_on": ["https://crossbar.switchboard.xyz", "https://crossbar.autonom.cc"],
+      "_source_jobs": "providers-testing/service/config/solusd_mainnet.json \u2014 medianTask over Kraken solusd + Coinbase Exchange SOL-USD + Coinbase retail SOL-USD, minSuccessfulRequired=2, maxRangePercent=1.5. Mirrors the proven public BTC/USD Redesigned Price Feed (45bd1d1...) shape."
+    },
+    {
+      "adrena_feed_id": 143,
+      "symbol": "JITOSOLUSD",
+      "switchboard_feed_hash": "cfa7308a1bf3291226c8df6eb288812c3beaffc614fce15146096d318dd1f3a6",
+      "_feed_address": "8uTYSufNFNUsjhBQ9bzX4GVBesPbP73eJnoRyUGepxy1"
+    },
+    {
+      "adrena_feed_id": 144,
+      "symbol": "BTCUSD",
+      "switchboard_feed_hash": "45bd1d1666cf259c85e890f59b4abb64504567d2d4d973ca417554a9aa5feb38",
+      "_feed_address": "9bnTvExDE51oez37qmiUrJd21VePYvsC8JLmCxGBhT2B"
+    },
+    {
+      "adrena_feed_id": 145,
+      "symbol": "WBTCUSD",
+      "switchboard_feed_hash": "fa5702e1517843e073f324a5f71350ff4cdf773f5fba01cde62a2ae254361b79",
+      "_feed_address": "DfMy1ptW8aGM15Tbq7dN6rS3UYnARBpbLU7ietvikKZK",
+      "_cid": "bafkreih2k4boculyipqhh4zeux3rguh7jtpxop27xia43zrkflrfinq3pe",
+      "_feed_name": "Adrena WBTC/USD Price Feed",
+      "_pinned_on": ["https://crossbar.switchboard.xyz", "https://crossbar.autonom.cc"],
+      "_source_jobs": "providers-testing/service/config/wbtcusd_mainnet.json \u2014 medianTask over Coinbase retail WBTC-USD + Binance WBTC/USDT*Coinbase USDT/USD + MEXC WBTC/USDT*Coinbase USDT/USD, minSuccessfulRequired=2, maxRangePercent=1.5. Coinbase Exchange WBTC-USD is delisted and Bitstamp is empty; Jupiter swap leg prototyped but wormhole WBTC doesn't route through whitelisted AMMs in the Crossbar simulator."
+    },
+    {
+      "adrena_feed_id": 146,
+      "symbol": "BONKUSD",
+      "switchboard_feed_hash": "efc3feb6353478af641540457ca7e7a778e7dddb446f436d6bad7e15d809010c",
+      "_feed_address": "4MULkeCpERgxU94HPFaBeM2kmwYjbM3iHfsvSXxyjAs7"
+    },
+    {
+      "adrena_feed_id": 147,
+      "symbol": "USDCUSD",
+      "switchboard_feed_hash": "6795044f45a4f3089f90fc79bd27bb29b3102760519640139df1473ad4f7791e",
+      "_feed_address": "4cHYyQNZdrpDkCyw8eHcGXs7K6QyC5uQpj5YeM74mwCJ"
+    }
+  ]
+}
