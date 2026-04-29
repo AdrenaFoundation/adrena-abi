@@ -188,3 +188,169 @@ fn pool_names_are_unique() {
         );
     }
 }
+
+#[test]
+fn pool_custodies_synthetic_lp_mint_pinned_to_onchain_truth() {
+    // Last-mile drift gate. The runtime validator
+    // `validate_and_build_pool_context` does a strict `Vec<Pubkey>` equality
+    // between manifest and on-chain pool accounts. Order is part of the
+    // equality. This test pins the canonical on-chain order so a manifest
+    // edit without a corresponding constant update fails CI before any
+    // service quarantines a pool at boot.
+    //
+    // ── Why this exists ──────────────────────────────────────────────────
+    // 2026-04-29 incident: XAG and WTI were added to commodities-pool via
+    // two separate Realms proposals. We wrote pools_manifest.json with
+    // syntheticCustodies in "code intent" order [XAU, XAG, WTI], but
+    // on-chain landed [XAU, WTI, XAG] because the WTI proposal executed
+    // first. Every consumer that called validate_and_build_pool_context
+    // quarantined commodities-pool — MrSablier, MrSablierStaking,
+    // MrOracle (Stage-2 AUM stopped firing for commodities-pool entirely).
+    // Resolution required pushing a new abi commit + bumping every
+    // consumer pin. This test would have caught it before the manifest PR
+    // ever merged.
+    //
+    // ── How to update ────────────────────────────────────────────────────
+    // When adding/removing a custody (real or synthetic), in the SAME PR:
+    //   1. Update pools_manifest.json with the new pubkey.
+    //   2. Run `solana account <pool-pda>` (or
+    //      `adrena/cli get-pool <name>`) AFTER the on-chain proposal has
+    //      executed to read the actual `pool.custodies[]` /
+    //      `pool.synthetic_custodies[]` order. Order is determined by
+    //      transaction landing order, NOT proposal authoring order.
+    //   3. Bump the constant below to match.
+
+    struct ExpectedPool<'a> {
+        custodies: &'a [&'a str],
+        synthetic_custodies: &'a [&'a str],
+        lp_mint: &'a str,
+    }
+
+    let expected: BTreeMap<&str, ExpectedPool> = BTreeMap::from([
+        (
+            "main-pool",
+            ExpectedPool {
+                // Read 2026-04-21 from on-chain pool.custodies[] at offset 48.
+                // Order: USDC, BONK, jitoSOL, WBTC.
+                custodies: &[
+                    "Dk523LZeDQbZtUwPEBjFXCd2Au1tD7mWZBJJmcgHktNk",
+                    "8aJuzsgjxBnvRhDcfQBD7z4CUj7QoPEpaNwVd7KqsSk5",
+                    "GZ9XfWwgTRhkma2Y91Q9r1XKotNXYjBnKKabj19rhT71",
+                    "GFu3qS22mo6bAjg4Lr5R7L8pPgHq6GvbjJPKEHkbbs2c",
+                ],
+                synthetic_custodies: &[],
+                lp_mint: "4yCLi5yWGzpTWMQ1iWHG5CrGYAdBkhyEdsuSugjDUqwj",
+            },
+        ),
+        (
+            "commodities-pool",
+            ExpectedPool {
+                // Read 2026-04-29 from on-chain pool.custodies[] at offset 48.
+                // Single stable: USDC.
+                custodies: &["woVG8fmrUzFJhWa6mRjiYC2qFCY73oAnQeioYK1m1JX"],
+                // Read 2026-04-29 from on-chain pool.synthetic_custodies[].
+                // Order is execution order: XAU bootstrap, then WTI proposal
+                // landed before XAG proposal. DO NOT REORDER without
+                // re-reading on-chain — a Vec<Pubkey> equality check in
+                // validate_and_build_pool_context will quarantine the pool.
+                synthetic_custodies: &[
+                    "JB86ouHXGYgF4UbPs8yxYdaHudrdsintf5EbBfMydzYt", // XAU
+                    "De21TFyUPHkvFsWAt6xJLBBXGp636VuL5cKk2DvfbHiR", // WTI
+                    "PexsCkkxpVmY4HNxUjT3U9PEg69kYScc8GukUwn6Q3Q", // XAG
+                ],
+                lp_mint: "GMZ7hCGeHyDr1giM4dyP2eTkj9GQ2T1G9cBDridLz5Cx",
+            },
+        ),
+    ]);
+
+    let manifest: serde_json::Value =
+        serde_json::from_str(POOLS_MANIFEST_JSON).expect("pools_manifest.json parses");
+    let pools = manifest["pools"].as_array().expect("pools is array");
+
+    let manifest_by_name: BTreeMap<String, &serde_json::Value> = pools
+        .iter()
+        .map(|p| (p["name"].as_str().unwrap().to_string(), p))
+        .collect();
+
+    // Pools listed in the manifest but missing from `expected` => unpinned.
+    // We force every pool to be pinned, otherwise this test is a no-op for
+    // any future pool added without test discipline.
+    for name in manifest_by_name.keys() {
+        assert!(
+            expected.contains_key(name.as_str()),
+            "pools_manifest.json contains pool `{name}` but no pinned entry exists in \
+             pool_custodies_synthetic_lp_mint_pinned_to_onchain_truth(). Add an entry \
+             with the on-chain custody/synthetic/lpMint truth — this test must remain \
+             exhaustive or it stops catching drift."
+        );
+    }
+
+    // For every pinned pool, fail if it's missing or any field differs.
+    let mut errors = Vec::new();
+    for (name, expected_pool) in &expected {
+        let Some(pool) = manifest_by_name.get(*name) else {
+            errors.push(format!(
+                "pinned pool `{name}` is not in pools_manifest.json — was it removed without removing the pinned entry?"
+            ));
+            continue;
+        };
+
+        // custodies: ordered Vec<String> equality.
+        let manifest_custodies: Vec<String> = pool["custodies"]
+            .as_array()
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                    .collect()
+            })
+            .unwrap_or_default();
+        let expected_custodies: Vec<String> =
+            expected_pool.custodies.iter().map(|s| s.to_string()).collect();
+        if manifest_custodies != expected_custodies {
+            errors.push(format!(
+                "pool `{name}` custodies mismatch:\n  expected (on-chain): {:?}\n  manifest:            {:?}",
+                expected_custodies, manifest_custodies
+            ));
+        }
+
+        // syntheticCustodies: ordered Vec<String> equality.
+        let manifest_synthetic: Vec<String> = pool["syntheticCustodies"]
+            .as_array()
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                    .collect()
+            })
+            .unwrap_or_default();
+        let expected_synthetic: Vec<String> = expected_pool
+            .synthetic_custodies
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
+        if manifest_synthetic != expected_synthetic {
+            errors.push(format!(
+                "pool `{name}` syntheticCustodies mismatch (Vec<Pubkey> equality with strict order):\n  expected (on-chain): {:?}\n  manifest:            {:?}\n  HINT: read on-chain order via `solana account <pool-pda>` or \
+                 `adrena/cli get-pool {name}` after every proposal lands.",
+                expected_synthetic, manifest_synthetic
+            ));
+        }
+
+        // lpMint: exact string match.
+        let manifest_lp = pool["lpMint"].as_str().unwrap_or("");
+        if manifest_lp != expected_pool.lp_mint {
+            errors.push(format!(
+                "pool `{name}` lpMint mismatch:\n  expected: {}\n  manifest: {}",
+                expected_pool.lp_mint, manifest_lp
+            ));
+        }
+    }
+
+    assert!(
+        errors.is_empty(),
+        "pools_manifest.json drift from on-chain truth detected:\n\n{}\n\n\
+         If the change is intentional (a custody/synthetic/lp was added or removed on-chain), \
+         update BOTH the manifest AND this test's `expected` map in lockstep. The values must \
+         reflect actual on-chain order — read it back after the proposal lands, don't guess.",
+        errors.join("\n\n")
+    );
+}
