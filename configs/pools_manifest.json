@@ -37,11 +37,11 @@
       "custodies": [
         "woVG8fmrUzFJhWa6mRjiYC2qFCY73oAnQeioYK1m1JX"
       ],
-      "_syntheticCustodies_comment": "On-chain order from pool.synthetic_custodies[]: XAU, XAG, WTI. XAU synthetic derived from seed 0x8ae6d4e3a1126e3b8a93fc20e232da3efdcb8e7a1a593ca7d4b9426e47ae21d4. XAG synthetic derived from seed 0xcf1980f72c8fb2d54057e9ecf671e8c989283bf507ec8ad648926045aec3e784. WTI synthetic derived from seed 0xc87590370ebfc68bb661e70ddbbee34a6cd412ef465b3b5536340f5c84de8800. trade_oracle/trade_oracle_feed_id pairs: XAU=36, XAG=37, WTI=38 (all Autonom). allow_trade=true, allow_swap=false, max_cumulative_{long,short}_position_size_usd=$500k each side.",
+      "_syntheticCustodies_comment": "On-chain order from pool.synthetic_custodies[]: XAU, WTI, XAG (WTI proposal landed on-chain before XAG, so the slot index order is XAU=0, WTI=1, XAG=2). MrOracle's validate_and_build_pool_context does a Vec<Pubkey> equality check, so this list MUST match on-chain order exactly or commodities-pool gets quarantined at startup. XAU seed 0x8ae6d4e3a1126e3b8a93fc20e232da3efdcb8e7a1a593ca7d4b9426e47ae21d4. WTI seed 0xc87590370ebfc68bb661e70ddbbee34a6cd412ef465b3b5536340f5c84de8800. XAG seed 0xcf1980f72c8fb2d54057e9ecf671e8c989283bf507ec8ad648926045aec3e784. trade_oracle/trade_oracle_feed_id pairs: XAU=36, XAG=37, WTI=38 (all Autonom). allow_trade=true, allow_swap=false, max_cumulative_{long,short}_position_size_usd=$500k each side.",
       "syntheticCustodies": [
         "JB86ouHXGYgF4UbPs8yxYdaHudrdsintf5EbBfMydzYt",
-        "PexsCkkxpVmY4HNxUjT3U9PEg69kYScc8GukUwn6Q3Q",
-        "De21TFyUPHkvFsWAt6xJLBBXGp636VuL5cKk2DvfbHiR"
+        "De21TFyUPHkvFsWAt6xJLBBXGp636VuL5cKk2DvfbHiR",
+        "PexsCkkxpVmY4HNxUjT3U9PEg69kYScc8GukUwn6Q3Q"
       ],
       "lpMint": "GMZ7hCGeHyDr1giM4dyP2eTkj9GQ2T1G9cBDridLz5Cx",
       "_feedIds_comment": "release/39 canonical. Autonom range: 30-35 crypto (SOL/jitoSOL/BTC/WBTC/BONK/USDC, unsessioned), 36 XAU + 37 XAG + 38 WTI (sessioned commodities). USDC at 35 is listed because the pool's USDC stable custody needs pricing for AUM; MrAutonom's sessioned-only filter drops it from market-hours requests automatically. Future commodities append at 39+ in lockstep with configs/oracles/autonom.mainnet.json and feed_metadata.sessioned.",
