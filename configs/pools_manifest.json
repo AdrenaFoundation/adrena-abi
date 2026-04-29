@@ -6,7 +6,8 @@
       "type": "gmx",
       "_address_note": "Pool PDA is fully derived from `name` via get_pool_pda — this field is redundant and kept purely for human readability (grep, log correlation). The loader asserts get_pool_pda(name).0 == address at startup so any typo is caught loudly before any RPC.",
       "address": "4bQRutgDJs6vuh6ZcWaPVXiQaBzbHketjbCDjL4oRN34",
-      "oracleProviders": ["switchboard", "chaoslabs", "autonom"],
+      "_oracleProviders_note": "Order MUST mirror on-chain pool.multi_oracle_config.providers (enum: 0=chaoslabs, 1=autonom, 2=switchboard). Verified mainnet 2026-04-29: providers=[0,2,1] => [chaoslabs, switchboard, autonom]. Field is log/documentation-only; price selection at runtime reads MultiOracleConfig directly from the pool account.",
+      "oracleProviders": ["chaoslabs", "switchboard", "autonom"],
       "_custodies_comment": "On-chain order from pool.custodies[]: USDC, BONK, jitoSOL, WBTC. Read from mainnet Pool account 2026-04-21 at offset 48 with registered_custody_count=4.",
       "custodies": [
         "Dk523LZeDQbZtUwPEBjFXCd2Au1tD7mWZBJJmcgHktNk",
