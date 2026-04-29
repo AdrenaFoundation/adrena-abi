@@ -183,8 +183,8 @@ fn every_sessioned_symbol_is_present_in_at_least_one_provider_map() {
 
 #[test]
 fn autonom_map_covers_full_canonical_layout() {
-    // Locks the Autonom map to the current launch layout: 30..36 inclusive,
-    // 7 entries (6 crypto + 1 commodity), all symbols present in
+    // Locks the Autonom map to the current launch layout: 30..38 inclusive,
+    // 9 entries (6 crypto + 3 commodities), all symbols present in
     // feed_metadata.sessioned. If the launch layout grows, this test must be
     // updated in the same PR that adds the new alias — that's the point: it
     // forces a deliberate update instead of a silent drift.
@@ -192,11 +192,13 @@ fn autonom_map_covers_full_canonical_layout() {
     // Launch layout:
     //   30..35 crypto block  (SOL, jitoSOL, BTC, WBTC, BONK, USDC) — unsessioned
     //   36       XAU (Gold)                                         — sessioned
+    //   37       XAG (Silver)                                       — sessioned
+    //   38       WTI (Crude)                                        — sessioned
     //
-    // Autonom launches with XAU only. Future commodities append at 37+ in a
-    // coordinated release that bumps this test, feed_metadata.sessioned, the
-    // adrena program bootstrap ix, and the CLI verify-migration expected set
-    // in lockstep.
+    // Future commodities (Brent, etc.) append at 39+ in a coordinated release
+    // that bumps this test, feed_metadata.sessioned, the autonom backend's
+    // feed_id_aliases.json, and pools_manifest.commodities-pool.feedIds in
+    // lockstep.
     //
     // Why this exists: the previous round of audit caught a state where
     // feed_metadata listed symbols that autonom.mainnet.json didn't carry,
@@ -215,6 +217,8 @@ fn autonom_map_covers_full_canonical_layout() {
         (34, "BONKUSD"),
         (35, "USDCUSD"),
         (36, "XAU"),
+        (37, "XAG"),
+        (38, "WTI"),
     ]
     .into_iter()
     .collect();
