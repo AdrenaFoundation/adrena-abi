@@ -1289,9 +1289,20 @@ impl LockedStake {
 // LeverageCheckStatus and consumer-oriented Pool helpers
 // =============================================================================
 
+/// Off-chain mirror of the on-chain `Pool::check_leverage` result. The
+/// program uses `require!` to abort, but off-chain consumers want to inspect
+/// every outcome, so each on-chain failure mode maps to its own variant.
+///
+/// Coverage matrix (mirrors `pool.rs::check_leverage` on release/39):
+///   * `MaxLeverageExceeded`            — emitted for every `LeverageCheckType`
+///   * `MinInitialLeverageNotMet`       — `Initial | RemoveCollateral | IncreasePosition | AddCollateral`
+///   * `MaxInitialLeverageExceeded`     — `Initial | RemoveCollateral | IncreasePosition`
+///   * `Ok`                             — leverage passes every applicable bound
 pub enum LeverageCheckStatus {
     Ok(u64),
     MaxLeverageExceeded(u64),
+    MinInitialLeverageNotMet(u64),
+    MaxInitialLeverageExceeded(u64),
 }
 
 impl Pool {
@@ -1365,6 +1376,14 @@ impl Pool {
         }
     }
 
+    /// Off-chain port of `Pool::check_leverage` from the adrena program.
+    ///
+    /// Mirrors release/39 `programs/adrena/src/state/pool.rs::check_leverage`
+    /// 1:1: same fee-selection rule (only `Liquidate` swaps `exit_fee` for
+    /// `liquidation_fee`, and only when the latter dominates), same per-variant
+    /// min/max bounds. The on-chain version uses `require!` and aborts; this
+    /// version returns each failure as a distinct `LeverageCheckStatus`
+    /// variant so off-chain callers can branch without panicking.
     #[allow(clippy::too_many_arguments)]
     pub fn check_leverage(
         &self,
@@ -1374,10 +1393,11 @@ impl Pool {
         collateral_token_price: &OraclePrice,
         collateral_custody: &Custody,
         current_time: i64,
-        initial: bool,
+        check_type: LeverageCheckType,
     ) -> Result<LeverageCheckStatus> {
-        let use_liquidation_fee_usd_for_pnl_calculation =
-            !initial && position.liquidation_fee_usd > position.exit_fee_usd;
+        let use_liquidation_fee_usd_for_pnl_calculation = check_type
+            == LeverageCheckType::Liquidate
+            && position.liquidation_fee_usd > position.exit_fee_usd;
 
         let leverage = self.get_leverage(
             position,
@@ -1390,6 +1410,27 @@ impl Pool {
 
         if leverage > custody.pricing.max_leverage as u64 {
             return Ok(LeverageCheckStatus::MaxLeverageExceeded(leverage));
+        }
+
+        match check_type {
+            LeverageCheckType::Initial
+            | LeverageCheckType::RemoveCollateral
+            | LeverageCheckType::IncreasePosition => {
+                if leverage < MIN_INITIAL_LEVERAGE as u64 {
+                    return Ok(LeverageCheckStatus::MinInitialLeverageNotMet(leverage));
+                }
+                if leverage > custody.pricing.max_initial_leverage as u64 {
+                    return Ok(LeverageCheckStatus::MaxInitialLeverageExceeded(leverage));
+                }
+            }
+            LeverageCheckType::AddCollateral => {
+                if leverage < MIN_INITIAL_LEVERAGE as u64 {
+                    return Ok(LeverageCheckStatus::MinInitialLeverageNotMet(leverage));
+                }
+            }
+            LeverageCheckType::Liquidate => {
+                // No further bounds — `max_leverage` already validated above.
+            }
         }
 
         Ok(LeverageCheckStatus::Ok(leverage))
