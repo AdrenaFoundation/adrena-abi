@@ -1453,6 +1453,17 @@ impl Pool {
 
     // Note: PnL is an unrealized PnL and is an estimation
     #[allow(clippy::too_many_arguments)]
+    /// Off-chain port of `Pool::get_pnl_usd` from the adrena program.
+    /// Mirrors release/39 `programs/adrena/src/state/pool.rs::get_pnl_usd` 1:1
+    /// for the trigger path (mid price; conservative_pricing = false).
+    ///
+    /// VFR funding accounting (parity with on-chain pool.rs:1498-1517 / 1537 / 1589):
+    /// - `net_funding_cost_usd`    = max(0, paid - received)  → adds to unrealized_loss
+    /// - `net_funding_benefit_usd` = max(0, received - paid)  → augments profit
+    ///                                                          OR reduces loss
+    /// Without these terms the off-chain leverage diverges from on-chain whenever
+    /// a position has non-zero net funding (silently late-fires on funding-paying
+    /// positions, silently false-fires on funding-receiving positions).
     pub fn get_pnl_usd(
         &self,
         position: &Position,
@@ -1466,9 +1477,11 @@ impl Pool {
             return Ok(ProfitAndLoss::default());
         }
 
+        // Mid price for trigger path. The on-chain version branches on
+        // `conservative_pricing` to use .low()/.high() for AUM/exit math; the
+        // off-chain trigger-only port stays mid-only.
         let exit_price = match Side::try_from(position.side)? {
-            Side::Long => token_trade_price.price,
-            Side::Short => token_trade_price.price,
+            Side::Long | Side::Short => token_trade_price.price,
             Side::None => anyhow::bail!("Invalid position state"),
         };
 
@@ -1486,7 +1499,19 @@ impl Pool {
             .get_interest_amount_usd(position, current_time)?
             + position.unrealized_interest_usd;
 
-        let unrealized_loss_usd = exit_fee_usd + total_unrealized_interest_usd;
+        // VFR: Net funding impact on position.
+        // Saturating_sub pair is INTENTIONAL — exactly one will be non-zero,
+        // representing either net cost (dominant side pays) or net benefit
+        // (minority side receives).
+        let net_funding_cost_usd = position
+            .unrealized_funding_paid_usd
+            .saturating_sub(position.unrealized_funding_received_usd);
+        let net_funding_benefit_usd = position
+            .unrealized_funding_received_usd
+            .saturating_sub(position.unrealized_funding_paid_usd);
+
+        let unrealized_loss_usd =
+            exit_fee_usd + total_unrealized_interest_usd + net_funding_cost_usd;
 
         let (price_diff_profit, price_diff_loss) = if position.get_side() == Side::Long {
             if exit_price > position.price {
@@ -1505,9 +1530,12 @@ impl Pool {
                 (position.size_usd as u128 * price_diff_profit as u128) / position.price as u128,
             )?;
 
-            if potential_profit_usd >= (unrealized_loss_usd + position.paid_interest_usd) {
-                let cur_profit_usd =
-                    potential_profit_usd - (unrealized_loss_usd + position.paid_interest_usd);
+            // VFR: Funding benefit increases profit (minority side gets paid).
+            let adjusted_potential_profit_usd = potential_profit_usd + net_funding_benefit_usd;
+
+            if adjusted_potential_profit_usd >= (unrealized_loss_usd + position.paid_interest_usd) {
+                let cur_profit_usd = adjusted_potential_profit_usd
+                    - (unrealized_loss_usd + position.paid_interest_usd);
 
                 let max_profit_usd = if current_time <= position.open_time {
                     0
@@ -1528,7 +1556,7 @@ impl Pool {
                 Ok(ProfitAndLoss {
                     profit_usd: 0u64,
                     loss_usd: (unrealized_loss_usd + position.paid_interest_usd)
-                        - potential_profit_usd,
+                        - adjusted_potential_profit_usd,
                     exit_fee,
                     exit_fee_usd,
                     borrow_fee_usd: total_unrealized_interest_usd + position.paid_interest_usd,
@@ -1542,9 +1570,15 @@ impl Pool {
 
             potential_loss_usd += unrealized_loss_usd + position.paid_interest_usd;
 
+            // VFR: Funding benefit can offset or exceed price losses.
+            // Saturating pair → exactly one of (final_loss_usd, funding_profit_usd)
+            // will be non-zero. Matches on-chain behavior at pool.rs:1589-1590.
+            let final_loss_usd = potential_loss_usd.saturating_sub(net_funding_benefit_usd);
+            let funding_profit_usd = net_funding_benefit_usd.saturating_sub(potential_loss_usd);
+
             Ok(ProfitAndLoss {
-                profit_usd: 0u64,
-                loss_usd: potential_loss_usd,
+                profit_usd: funding_profit_usd,
+                loss_usd: final_loss_usd,
                 exit_fee,
                 exit_fee_usd,
                 borrow_fee_usd: total_unrealized_interest_usd + position.paid_interest_usd,
