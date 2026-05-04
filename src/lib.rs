@@ -190,6 +190,17 @@ mod adrena_abi {
     ) -> Result<()> {
         Ok(())
     }
+
+    /// View ix: returns 0 (not liquidatable) or 1 (liquidatable). Read-only —
+    /// off-chain consumers (MrSablier) call this via `simulateTransaction` as an
+    /// authoritative pre-flight before paying for the actual liquidate ix.
+    /// Mirrors adrena/programs/adrena/src/instructions/public/views/get_liquidation_state.rs.
+    pub fn get_liquidation_state(
+        ctx: Context<GetLiquidationState>,
+        params: GetLiquidationStateParams,
+    ) -> Result<u8> {
+        Ok(0)
+    }
 }
 
 #[derive(Accounts)]
@@ -965,4 +976,28 @@ pub struct AutonomMarketOpening<'info> {
     //
     // remaining accounts:
     //   pool.synthetic_custodies.len() synthetic custody accounts (read-only, unsigned)
+}
+
+/// View ix accounts (read-only — no `mut` constraints). Mirrors on-chain
+/// adrena/programs/adrena/src/instructions/public/views/get_liquidation_state.rs.
+#[derive(Accounts)]
+pub struct GetLiquidationState<'info> {
+    /// #1
+    pub cortex: AccountLoader<'info, Cortex>,
+    /// #2
+    pub pool: AccountLoader<'info, Pool>,
+    /// #3
+    pub position: AccountLoader<'info, Position>,
+    /// #4
+    pub custody: AccountLoader<'info, Custody>,
+    /// #5
+    pub oracle: AccountLoader<'info, Oracle>,
+    /// #6
+    pub collateral_custody: AccountLoader<'info, Custody>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct GetLiquidationStateParams {
+    pub oracle_prices: Option<crate::oracle::BatchPrices>,
+    pub multi_oracle_prices: Option<crate::oracle::MultiBatchPrices>,
 }
