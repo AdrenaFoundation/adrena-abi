@@ -1067,6 +1067,129 @@ impl Custody {
         }
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    // VFR funding settlement — off-chain ports of the on-chain implementations
+    // in `adrena/programs/adrena/src/state/custody.rs`. Required by off-chain
+    // liquidation eval because the on-chain liquidate ix calls
+    // `settle_funding_on_position` BEFORE `check_leverage`, which materializes
+    // the per-position accrual based on cumulative funding indices. Without
+    // this off-chain settlement the keeper sees stale funding fields ($0/$0
+    // for positions never modified since open) and disagrees with the chain
+    // about leverage — see commit 58123dd's drift case for the production
+    // impact.
+    // ───────────────────────────────────────────────────────────────────────
+
+    /// Off-chain mirror of `Custody::get_cumulative_funding_indices`
+    /// (custody.rs:569-630). Returns `(l2s_now, s2l_now)` extrapolated from
+    /// the stored `virtual_funding_state` to `current_time`.
+    pub fn get_cumulative_funding_indices(&self, current_time: i64) -> anyhow::Result<(u128, u128)> {
+        let vfs = &self.virtual_funding_state;
+        if vfs.last_update == 0 || current_time <= vfs.last_update {
+            return Ok((vfs.cumulative_long_to_short.to_u128(), vfs.cumulative_short_to_long.to_u128()));
+        }
+
+        let dt = (current_time - vfs.last_update) as u128;
+        let rate = vfs.current_rate_long_to_short;
+        if rate == 0 {
+            return Ok((vfs.cumulative_long_to_short.to_u128(), vfs.cumulative_short_to_long.to_u128()));
+        }
+
+        let abs_rate = rate.unsigned_abs();
+        // integrate per second over the elapsed dt, rate is per hour
+        let delta = math::checked_ceil_div(dt * abs_rate as u128, 3_600)?;
+
+        if rate > 0 {
+            Ok((
+                vfs.cumulative_long_to_short.to_u128() + delta,
+                vfs.cumulative_short_to_long.to_u128(),
+            ))
+        } else {
+            Ok((
+                vfs.cumulative_long_to_short.to_u128(),
+                vfs.cumulative_short_to_long.to_u128() + delta,
+            ))
+        }
+    }
+
+    /// Off-chain mirror of `Custody::get_funding_amount_signed_usd`
+    /// (custody.rs:720-771). Returns signed i128 USD (6 decimals):
+    /// - `> 0`  → position OWES funding (paid_usd should increase)
+    /// - `< 0`  → position RECEIVES funding (received_usd should increase)
+    /// Sign is inverted for shorts so that "positive = payer" holds for both
+    /// sides, matching the on-chain convention.
+    pub fn get_funding_amount_signed_usd(
+        &self,
+        position: &Position,
+        current_time: i64,
+    ) -> anyhow::Result<i128> {
+        if position.size_usd == 0 {
+            return Ok(0);
+        }
+
+        let (l2s_now, s2l_now) = self.get_cumulative_funding_indices(current_time)?;
+        let l2s_snap = position.cumulative_long_to_short_snapshot.to_u128();
+        let s2l_snap = position.cumulative_short_to_long_snapshot.to_u128();
+
+        let d_l2s = if l2s_now > l2s_snap { l2s_now - l2s_snap } else { 0 };
+        let d_s2l = if s2l_now > s2l_snap { s2l_now - s2l_snap } else { 0 };
+
+        // Positive means long-to-short flow dominates
+        let delta_index_signed = (d_l2s as i128) - (d_s2l as i128);
+
+        let abs_delta_index_u128: u128 = if delta_index_signed >= 0 {
+            delta_index_signed as u128
+        } else {
+            (-delta_index_signed) as u128
+        };
+        let usd_unsigned_u128 = math::checked_ceil_div::<u128>(
+            abs_delta_index_u128 * position.size_usd as u128,
+            Cortex::RATE_POWER,
+        )?;
+        let usd_u64 = math::checked_as_u64(usd_unsigned_u128)?;
+        let mut usd_signed: i128 = usd_u64 as i128;
+
+        if delta_index_signed < 0 {
+            usd_signed = -usd_signed;
+        }
+
+        // For short positions, invert perspective so positive means payer
+        if position.get_side() == Side::Short {
+            usd_signed = -usd_signed;
+        }
+
+        Ok(usd_signed)
+    }
+
+    /// Off-chain mirror of `Custody::settle_funding_on_position`
+    /// (custody.rs:773-799). Returns a NEW `Position` with the funding fields
+    /// updated in-memory; does NOT mutate `self` or the input `position`.
+    /// Custody-level aggregate counters (`cumulative_funding_paid_usd`,
+    /// `cumulative_funding_received_usd`) are intentionally NOT updated —
+    /// they're only relevant for on-chain pool AUM accounting.
+    ///
+    /// Off-chain consumers (MrSablier liquidate eval) MUST call this and use
+    /// the returned `Position` when computing `pool.check_leverage(...)`.
+    /// Otherwise leverage diverges from the chain's view by the unsettled
+    /// funding accrued since the position's last on-chain settlement.
+    pub fn position_with_funding_settled(
+        &self,
+        position: &Position,
+        current_time: i64,
+    ) -> anyhow::Result<Position> {
+        let mut p = *position;
+        let funding_amount_signed = self.get_funding_amount_signed_usd(&p, current_time)?;
+        if funding_amount_signed >= 0 {
+            p.unrealized_funding_paid_usd = p
+                .unrealized_funding_paid_usd
+                .saturating_add(funding_amount_signed as u64);
+        } else {
+            p.unrealized_funding_received_usd = p
+                .unrealized_funding_received_usd
+                .saturating_add((-funding_amount_signed) as u64);
+        }
+        Ok(p)
+    }
+
     pub fn get_collective_position(&self, side: Side) -> Result<Position> {
         let accounting = if side == Side::Long {
             &self.long_positions
