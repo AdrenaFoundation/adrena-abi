@@ -192,7 +192,7 @@ mod adrena_abi {
     }
 
     /// View ix: returns 0 (not liquidatable) or 1 (liquidatable). Read-only —
-    /// off-chain consumers (MrSablier) call this via `simulateTransaction` as an
+    /// off-chain liquidation keepers call this via `simulateTransaction` as an
     /// authoritative pre-flight before paying for the actual liquidate ix.
     /// Mirrors adrena/programs/adrena/src/instructions/public/views/get_liquidation_state.rs.
     pub fn get_liquidation_state(

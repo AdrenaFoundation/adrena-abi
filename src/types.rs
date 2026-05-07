@@ -1070,13 +1070,12 @@ impl Custody {
     // ───────────────────────────────────────────────────────────────────────
     // VFR funding settlement — off-chain ports of the on-chain implementations
     // in `adrena/programs/adrena/src/state/custody.rs`. Required by off-chain
-    // liquidation eval because the on-chain liquidate ix calls
-    // `settle_funding_on_position` BEFORE `check_leverage`, which materializes
-    // the per-position accrual based on cumulative funding indices. Without
-    // this off-chain settlement the keeper sees stale funding fields ($0/$0
-    // for positions never modified since open) and disagrees with the chain
-    // about leverage — see commit 58123dd's drift case for the production
-    // impact.
+    // liquidation evaluators because the on-chain liquidate ix calls
+    // `settle_funding_on_position` BEFORE `check_leverage`, materializing the
+    // per-position accrual from the cumulative funding indices. Skipping this
+    // step off-chain leaves the funding fields stale for positions that have
+    // not been touched since open, and the resulting leverage diverges from
+    // the chain's view by exactly the unsettled funding.
     // ───────────────────────────────────────────────────────────────────────
 
     /// Off-chain mirror of `Custody::get_cumulative_funding_indices`
@@ -1167,10 +1166,10 @@ impl Custody {
     /// `cumulative_funding_received_usd`) are intentionally NOT updated —
     /// they're only relevant for on-chain pool AUM accounting.
     ///
-    /// Off-chain consumers (MrSablier liquidate eval) MUST call this and use
-    /// the returned `Position` when computing `pool.check_leverage(...)`.
-    /// Otherwise leverage diverges from the chain's view by the unsettled
-    /// funding accrued since the position's last on-chain settlement.
+    /// Off-chain liquidation evaluators MUST call this and feed the returned
+    /// `Position` into `pool.check_leverage(...)`. Otherwise leverage diverges
+    /// from the chain's view by the unsettled funding accrued since the
+    /// position's last on-chain settlement.
     pub fn position_with_funding_settled(
         &self,
         position: &Position,

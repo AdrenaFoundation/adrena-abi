@@ -5,7 +5,8 @@
 
 use anchor_lang::prelude::*;
 
-// temporary hack waiting to update Anchor. Fixed in 0.29.0
+// Mirrors the on-chain GenesisLock layout. Must stay in lockstep with
+// adrena/programs/adrena/src/state/genesis_lock.rs::RESERVED_GRANTS_COUNT.
 const RESERVED_GRANTS_COUNT: usize = 43;
 
 #[account(zero_copy)]

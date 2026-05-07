@@ -36,7 +36,9 @@ fn oracle_constants_pinned() {
 
 #[test]
 fn cortex_decimal_constants_pinned() {
-    // Off-chain math (datapi liquidityInfo bug we just fixed) reads these.
+    // Every off-chain pricing path (LP price, fee math, leverage) scales
+    // against these. Drift between abi and the on-chain program would
+    // silently mis-scale dollar values across every consumer.
     assert_eq!(Cortex::PRICE_DECIMALS, 10);
     assert_eq!(Cortex::USD_DECIMALS, 6);
     assert_eq!(Cortex::RATE_DECIMALS, 9);
