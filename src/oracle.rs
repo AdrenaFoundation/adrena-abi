@@ -348,12 +348,12 @@ impl OraclePrice {
         }
     }
 
-    pub fn from_price_data(data: &PriceData, name: LimitedString) -> Result<Self> {
+    pub fn from_price_data(data: &PriceData, name: LimitedString, band_bps: u16) -> Result<Self> {
         Ok(Self {
             name,
             price: data.price,
             timestamp: data.timestamp,
-            confidence: get_confidence_from_price(data.price, data.feed_id)?,
+            confidence: get_confidence_from_price(data.price, data.feed_id, band_bps)?,
             exponent: -(Cortex::PRICE_DECIMALS as i32),
             feed_id: data.feed_id,
             _padding: Default::default(),
@@ -493,12 +493,15 @@ impl OraclePrice {
 }
 
 // Apply a policy confidence band (not provider-reported confidence) to protect LPs from MEV.
-pub fn get_confidence_from_price(price: u64, feed_id: u8) -> Result<u64> {
+// The magnitude is DAO-controlled (v2.1.2+) via `Cortex.confidence_band_bps`; callers must
+// pass the live value through `band_bps` (typically read via `cortex.get_confidence_band_bps()`
+// which maps the legacy-0 sentinel back to `Cortex::DEFAULT_CONFIDENCE_BAND_BPS` = 25).
+pub fn get_confidence_from_price(price: u64, feed_id: u8, band_bps: u16) -> Result<u64> {
     // USDC feed ids per release/39 canonical layout (offset +5 in each provider range):
     // ChaosLabs=5, Autonom=35, Switchboard=147
     if feed_id == 5 || feed_id == 35 || feed_id == 147 {
         return Ok(0);
     }
 
-    math::checked_as_u64(price as u128 * 25 / Cortex::BPS_POWER)
+    math::checked_as_u64(price as u128 * band_bps as u128 / Cortex::BPS_POWER)
 }

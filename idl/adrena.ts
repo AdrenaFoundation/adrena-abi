@@ -8,7 +8,7 @@ export type Adrena = {
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.0",
+    "version": "2.1.2",
     "spec": "0.1.0",
     "description": "adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -19489,6 +19489,63 @@ export type Adrena = {
       ]
     },
     {
+      "name": "setConfidenceBandBps",
+      "discriminator": [
+        212,
+        89,
+        194,
+        80,
+        123,
+        208,
+        20,
+        64
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "setConfidenceBandBpsParams"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "setCustodyAllowSwap",
       "discriminator": [
         70,
@@ -24463,13 +24520,8 @@ export type Adrena = {
             "type": "u8"
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
+            "name": "confidenceBandBps",
+            "type": "u16"
           },
           {
             "name": "lmTokenMint",
@@ -28142,6 +28194,18 @@ export type Adrena = {
           },
           {
             "name": "managerFeeShareBps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "setConfidenceBandBpsParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bandBps",
             "type": "u16"
           }
         ]

@@ -285,8 +285,8 @@ running services can be cross-checked for drift.
 {
   "schema_version": 1,
   "adrena_program_id": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
-  "adrena_program_version": "2.1.0",
-  "adrena_release": "release/39-postaudit",
+  "adrena_program_version": "2.1.2",
+  "adrena_release": "release/39_2",
   "adrena_source_commit": "<full 40-char HEAD of adrena/release branch at PR-write time>",
   "idl_sha256": "<sha256 of idl/adrena.json>",
   "feed_maps": {
@@ -595,7 +595,7 @@ Don't suppress override-vs-pinned drift logs.
 Versions diverge intentionally between the npm package and the Rust crate:
 
 - **npm `package.json` version** tracks the program release suffix
-  (`<adrena_program_version>-release<NN>`, e.g. `2.1.0-release39`).
+  (`<adrena_program_version>-release<NN>`, e.g. `2.1.2-release39_2`).
 - **Cargo `Cargo.toml` version** follows Rust crate semver independently.
 
 Don't try to sync them. The variable-naming rule above forbids version-baked

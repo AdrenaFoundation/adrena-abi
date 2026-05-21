@@ -267,18 +267,137 @@ fn get_token_amount_inverse_of_get_asset_amount_usd_within_rounding() {
 #[test]
 fn get_confidence_from_price_zero_for_usdc_feeds() {
     // USDC feed ids: ChaosLabs=5, Autonom=35, Switchboard=147 (per release/39 layout).
-    assert_eq!(get_confidence_from_price(1_000_000_000, 5).unwrap(), 0);
-    assert_eq!(get_confidence_from_price(1_000_000_000, 35).unwrap(), 0);
-    assert_eq!(get_confidence_from_price(1_000_000_000, 147).unwrap(), 0);
+    // band_bps is irrelevant for USDC feeds — exemption hardcoded in the function.
+    let band = adrena_abi::types::Cortex::DEFAULT_CONFIDENCE_BAND_BPS;
+    assert_eq!(get_confidence_from_price(1_000_000_000, 5, band).unwrap(), 0);
+    assert_eq!(get_confidence_from_price(1_000_000_000, 35, band).unwrap(), 0);
+    assert_eq!(get_confidence_from_price(1_000_000_000, 147, band).unwrap(), 0);
+
+    // band_bps = 0 also yields 0 for USDC (USDC short-circuit happens before scaling).
+    assert_eq!(get_confidence_from_price(1_000_000_000, 5, 0).unwrap(), 0);
 }
 
 #[test]
-fn get_confidence_from_price_25_bps_for_volatile_feeds() {
-    // 25 bps of $100 = $0.25. With price=1e12 (= $100 at 1e10): conf = price * 25 / 10000.
-    let price: u64 = 1_000_000_000_000;
-    let conf = get_confidence_from_price(price, 0).unwrap(); // SOL feed (ChaosLabs)
-    let expected = price * 25 / 10_000;
-    assert_eq!(conf, expected);
+fn get_confidence_from_price_scales_with_band_bps_for_volatile_feeds() {
+    // v2.1.2: band magnitude is DAO-tunable via Cortex.confidence_band_bps.
+    // The default (legacy-0 fallback) is 25 BPS = 0.25% of price, matching v2.1.1.
+    let price: u64 = 1_000_000_000_000; // $100 at PRICE_DECIMALS=10
+
+    // Default 25 BPS — same behaviour as pre-v2.1.2.
+    let conf = get_confidence_from_price(price, 0, 25).unwrap();
+    assert_eq!(conf, price * 25 / 10_000);
+
+    // 1 BPS (minimum allowed by `set_confidence_band_bps` admin ix).
+    let conf_min = get_confidence_from_price(price, 0, 1).unwrap();
+    assert_eq!(conf_min, price * 1 / 10_000);
+
+    // 100 BPS (maximum allowed by `set_confidence_band_bps` admin ix).
+    let conf_max = get_confidence_from_price(price, 0, 100).unwrap();
+    assert_eq!(conf_max, price * 100 / 10_000);
+
+    // 0 BPS (only reachable as a legacy-uninitialised value — admin ix bounds enforce >= 1).
+    let conf_zero = get_confidence_from_price(price, 0, 0).unwrap();
+    assert_eq!(conf_zero, 0);
+}
+
+// ── 8b. confidence band (v2.1.2): Cortex.confidence_band_bps + helper ──────
+
+#[test]
+fn cortex_confidence_band_bps_constants_match_program() {
+    // These bounds are enforced in-program by `set_confidence_band_bps` and
+    // gate the DAO's allowable range. Pinned here so any future relaxation /
+    // tightening must be made in lockstep with adrena/programs.
+    assert_eq!(Cortex::DEFAULT_CONFIDENCE_BAND_BPS, 25);
+    assert_eq!(Cortex::MIN_CONFIDENCE_BAND_BPS, 1);
+    assert_eq!(Cortex::MAX_CONFIDENCE_BAND_BPS, 100);
+    assert!(
+        Cortex::MIN_CONFIDENCE_BAND_BPS <= Cortex::DEFAULT_CONFIDENCE_BAND_BPS
+            && Cortex::DEFAULT_CONFIDENCE_BAND_BPS <= Cortex::MAX_CONFIDENCE_BAND_BPS,
+        "DEFAULT must lie within [MIN, MAX]"
+    );
+}
+
+#[test]
+fn cortex_get_confidence_band_bps_falls_back_to_default_on_zero() {
+    // Legacy on-chain Cortex accounts (pre-v2.1.2) have these two bytes as 0
+    // because they came from the `_padding: [u8; 2]` slot. The helper must
+    // return DEFAULT in that case so v2.1.1 behaviour is preserved until the
+    // DAO explicitly writes a value.
+    let cortex: Cortex = Default::default();
+    assert_eq!(cortex.confidence_band_bps, 0, "default-derived value should be 0");
+    assert_eq!(
+        cortex.get_confidence_band_bps(),
+        Cortex::DEFAULT_CONFIDENCE_BAND_BPS,
+        "0-sentinel must map to DEFAULT (25)"
+    );
+}
+
+#[test]
+fn cortex_get_confidence_band_bps_returns_explicit_value() {
+    // Once the DAO calls `set_confidence_band_bps(N)` the stored value is
+    // honoured byte-for-byte. The admin ix enforces N >= MIN_CONFIDENCE_BAND_BPS
+    // so the only way to ever observe a 0 is the legacy sentinel above.
+    let mut cortex: Cortex = Default::default();
+    for n in [
+        Cortex::MIN_CONFIDENCE_BAND_BPS,
+        5,
+        Cortex::DEFAULT_CONFIDENCE_BAND_BPS,
+        50,
+        Cortex::MAX_CONFIDENCE_BAND_BPS,
+    ] {
+        cortex.confidence_band_bps = n;
+        assert_eq!(cortex.get_confidence_band_bps(), n);
+    }
+}
+
+#[test]
+fn from_price_data_plumbs_band_bps_into_confidence() {
+    // OraclePrice::from_price_data is the constructor every off-chain
+    // consumer that simulates on-chain pricing (PnL/AUM mirrors) routes
+    // through. Verify the band_bps arg actually reaches the confidence
+    // field, including the USDC short-circuit.
+    let pd = PriceData { feed_id: 0, price: 1_000_000_000_000, timestamp: 1_700_000_000 };
+    let name = LimitedString::new("SOLUSD");
+
+    let op_default = OraclePrice::from_price_data(&pd, name, 25).unwrap();
+    assert_eq!(op_default.confidence, 1_000_000_000_000 * 25 / 10_000);
+
+    let op_min = OraclePrice::from_price_data(&pd, name, 1).unwrap();
+    assert_eq!(op_min.confidence, 1_000_000_000_000 / 10_000);
+
+    let op_max = OraclePrice::from_price_data(&pd, name, 100).unwrap();
+    assert_eq!(op_max.confidence, 1_000_000_000_000 * 100 / 10_000);
+
+    // USDC short-circuit: even with a non-zero band, confidence stays 0.
+    let usdc_pd = PriceData { feed_id: 5, price: 1_000_000_000_000, timestamp: 1_700_000_000 };
+    let op_usdc = OraclePrice::from_price_data(&usdc_pd, LimitedString::new("USDC"), 100).unwrap();
+    assert_eq!(op_usdc.confidence, 0, "USDC must be exempt regardless of band_bps");
+}
+
+#[test]
+fn cortex_byte_layout_unchanged_by_confidence_band_carve() {
+    // v2.1.2 carved `confidence_band_bps: u16` out of the prior
+    // `_padding: [u8; 2]` slot. The whole point is byte-compatibility with
+    // v2.1.1 Cortex accounts: same struct size, same offsets for every
+    // existing field. If this assertion ever fails, the carve has stopped
+    // being byte-compatible and existing on-chain Cortex accounts must be
+    // migrated (which is currently NOT what `init_one_core` / migration ix
+    // expect).
+    //
+    // Body is 480 bytes (pre-discriminator). Total LEN = 8 + 480 = 488.
+    assert_eq!(std::mem::size_of::<Cortex>(), 480);
+    assert_eq!(Cortex::LEN, 488);
+
+    // Field offset of `confidence_band_bps` must be 6 (after the 6 single-byte
+    // bumps/initialised/decimal fields), matching the prior _padding offset.
+    let cortex = Cortex::default();
+    let base = &cortex as *const _ as usize;
+    let band_addr = &cortex.confidence_band_bps as *const _ as usize;
+    assert_eq!(band_addr - base, 6, "confidence_band_bps must sit at byte offset 6");
+
+    // And it must be exactly 2 bytes wide so the next field (lm_token_mint:
+    // Pubkey at offset 8) still aligns correctly.
+    assert_eq!(std::mem::size_of_val(&cortex.confidence_band_bps), 2);
 }
 
 // ── 9. infer_provider_from_batch ───────────────────────────────────────────

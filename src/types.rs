@@ -297,7 +297,13 @@ pub struct Cortex {
     pub governance_token_bump: u8,
     pub initialized: u8,
     pub fee_conversion_decimals: u8,
-    pub _padding: [u8; 2],
+    // v2.1.2 (release/39_2): byte-compatible carve from the previous
+    // `_padding: [u8; 2]` slot. Same offset, same alignment, same size.
+    // Existing on-chain Cortex accounts read this field as 0; the helper
+    // `get_confidence_band_bps()` maps 0 back to DEFAULT_CONFIDENCE_BAND_BPS
+    // so behaviour is identical to v2.1.1 until the DAO writes an explicit
+    // value via `set_confidence_band_bps`.
+    pub confidence_band_bps: u16,
     pub lm_token_mint: Pubkey,
     pub inception_time: i64,
     pub admin: Pubkey,
@@ -342,6 +348,26 @@ impl Cortex {
     pub const GOVERNANCE_SHADOW_TOKEN_DECIMALS: u8 = Cortex::USD_DECIMALS;
     // Admin transfer timelock (48 hours)
     pub const DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS: i64 = 172800;
+
+    // v2.1.2: policy confidence band bounds. DAO can set any value in
+    // [MIN..=MAX] via `set_confidence_band_bps`. Pre-v2.1.2 Cortex accounts
+    // read the field as 0; `get_confidence_band_bps()` maps 0 back to
+    // DEFAULT so v2.1.1 behaviour is preserved until the DAO writes an
+    // explicit value.
+    pub const DEFAULT_CONFIDENCE_BAND_BPS: u16 = 25;
+    pub const MIN_CONFIDENCE_BAND_BPS: u16 = 1;
+    pub const MAX_CONFIDENCE_BAND_BPS: u16 = 100;
+
+    /// Returns the active confidence band in BPS, mapping the legacy-0
+    /// sentinel back to `DEFAULT_CONFIDENCE_BAND_BPS`. Mirrors the helper
+    /// defined on the on-chain Cortex struct.
+    pub fn get_confidence_band_bps(&self) -> u16 {
+        if self.confidence_band_bps == 0 {
+            Self::DEFAULT_CONFIDENCE_BAND_BPS
+        } else {
+            self.confidence_band_bps
+        }
+    }
 
     pub fn is_empty_account(account_info: &AccountInfo) -> Result<bool> {
         Ok(account_info.try_data_is_empty()? || account_info.try_lamports()? == 0)
