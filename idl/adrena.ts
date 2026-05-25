@@ -8,7 +8,7 @@ export type Adrena = {
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "spec": "0.1.0",
     "description": "adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"

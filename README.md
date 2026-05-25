@@ -285,8 +285,8 @@ running services can be cross-checked for drift.
 {
   "schema_version": 1,
   "adrena_program_id": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
-  "adrena_program_version": "2.1.2",
-  "adrena_release": "release/39_2",
+  "adrena_program_version": "2.1.3",
+  "adrena_release": "release/39_3",
   "adrena_source_commit": "<full 40-char HEAD of adrena/release branch at PR-write time>",
   "idl_sha256": "<sha256 of idl/adrena.json>",
   "feed_maps": {
