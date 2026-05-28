@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "devnet",
   "_provider": "autonom",
-  "_note": "Devnet Autonom feed map. Same feed structure as mainnet \u2014 XAU-only launch commodity set. Replace API URL/key if devnet Autonom endpoint differs.",
+  "_note": "Devnet Autonom feed map. Mirrors mainnet feed-id assignments but devnet has only been bootstrapped with the launch commodity (XAU=36) plus the new equity launch (SPX500=39, NVDA=40). Slots 37 (XAG) and 38 (WTI) were never wired on devnet \u2014 the gap is intentional, the slot numbers stay reserved to match mainnet layout. Replace API URL/key if devnet Autonom endpoint differs.",
   "autonom_feed_map": [
     {
       "adrena_feed_id": 30,
@@ -39,6 +39,18 @@
       "adrena_feed_id": 36,
       "symbol": "XAU",
       "autonom_feed_id": 2056
+    },
+    {
+      "adrena_feed_id": 39,
+      "symbol": "SPX500",
+      "autonom_feed_id": 7001,
+      "_comment": "S&P 500 Index. See mainnet companion entry for asset-class detail."
+    },
+    {
+      "adrena_feed_id": 40,
+      "symbol": "NVDA",
+      "autonom_feed_id": 1022,
+      "_comment": "NVIDIA. See mainnet companion entry for asset-class detail."
     }
   ]
 }

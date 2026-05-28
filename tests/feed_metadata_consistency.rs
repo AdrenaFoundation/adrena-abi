@@ -219,6 +219,8 @@ fn autonom_map_covers_full_canonical_layout() {
         (36, "XAU"),
         (37, "XAG"),
         (38, "WTI"),
+        (39, "SPX500"),
+        (40, "NVDA"),
     ]
     .into_iter()
     .collect();

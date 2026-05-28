@@ -16,6 +16,8 @@
     "USDCUSD":    false,
     "XAU":        true,
     "XAG":        true,
-    "WTI":        true
+    "WTI":        true,
+    "SPX500":     true,
+    "NVDA":       true
   }
 }

@@ -254,9 +254,11 @@ fn pool_custodies_synthetic_lp_mint_pinned_to_onchain_truth() {
                 // re-reading on-chain — a Vec<Pubkey> equality check in
                 // validate_and_build_pool_context will quarantine the pool.
                 synthetic_custodies: &[
-                    "JB86ouHXGYgF4UbPs8yxYdaHudrdsintf5EbBfMydzYt", // XAU
-                    "De21TFyUPHkvFsWAt6xJLBBXGp636VuL5cKk2DvfbHiR", // WTI
-                    "PexsCkkxpVmY4HNxUjT3U9PEg69kYScc8GukUwn6Q3Q", // XAG
+                    "JB86ouHXGYgF4UbPs8yxYdaHudrdsintf5EbBfMydzYt", // XAU    (slot 0)
+                    "De21TFyUPHkvFsWAt6xJLBBXGp636VuL5cKk2DvfbHiR", // WTI    (slot 1)
+                    "PexsCkkxpVmY4HNxUjT3U9PEg69kYScc8GukUwn6Q3Q", // XAG    (slot 2)
+                    "3tE3rg2a9CToC2LPtHPXyQhu9BsXvqXXQPUJqLwFHgLs", // SPX500 (slot 3 — DAO bootstrap pending)
+                    "AZ8TiqfZDfE49vU1yNKh8Nsr1TT7SRfaorGHGabiP4gB", // NVDA   (slot 4 — DAO bootstrap pending)
                 ],
                 lp_mint: "GMZ7hCGeHyDr1giM4dyP2eTkj9GQ2T1G9cBDridLz5Cx",
             },
