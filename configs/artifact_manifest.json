@@ -4,7 +4,7 @@
   "adrena_program_id": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "adrena_program_version": "2.2.0",
   "adrena_release": "release/40",
-  "adrena_source_commit": "13010f2ee666df4c109f6b97cfc2d41cc4f731e4",
+  "adrena_source_commit": "4f4b8fe2e54b6ba7b5512b5ca5823afc10e8d059",
   "idl_sha256": "4bdb50c6b3d00078b4da0ddf39905ccd92f75715ceaab31bb753addd16d3e194",
   "feed_maps": {
     "chaoslabs.mainnet": "1015f2e411aa04388f309e87ca7859dc01b4ade026ff3901ae55d38d8dfeb2e7",
