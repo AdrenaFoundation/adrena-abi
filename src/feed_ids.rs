@@ -11,11 +11,17 @@
 //!
 //! release/39 canonical layout: each provider's range starts with the same
 //! 6-asset crypto block at offset +0..+5: SOL, jitoSOL, BTC, WBTC, BONK, USDC.
-//!     ChaosLabs   (0..=29):   0=SOL, 1=jitoSOL, 2=BTC, 3=WBTC, 4=BONK, 5=USDC
+//!     Reserved    (0..=29):   0=SOL, 1=jitoSOL, 2=BTC, 3=WBTC, 4=BONK, 5=USDC
 //!     Autonom     (30..=141): 30=SOL, 31=jitoSOL, 32=BTC, 33=WBTC, 34=BONK, 35=USDC
 //!     Switchboard (142..=255): 142=SOL, 143=jitoSOL, 144=BTC, 145=WBTC, 146=BONK, 147=USDC
+//!
+//! release/40: the 0..=29 range is the retired ChaosLabs slot, now
+//! `OracleProvider::Reserved` (no signer; batches tagged with it are rejected).
+//! The `CHAOSLABS_*` constant names are kept for offchain compatibility and
+//! still describe this range; they document the inert/retired slot.
 
-/// Inclusive range `(min, max)` of feed ids that map to ChaosLabs.
+/// Inclusive range `(min, max)` of feed ids in the retired slot 0 range
+/// (ex-ChaosLabs, now `OracleProvider::Reserved`).
 pub const CHAOSLABS_RANGE: (u8, u8) = (0, 29);
 
 /// Inclusive range `(min, max)` of feed ids that map to Autonom.
@@ -48,7 +54,7 @@ mod tests {
 
     #[test]
     fn ranges_match_oracle_provider_enum() {
-        assert_eq!(CHAOSLABS_RANGE,   OracleProvider::ChaosLabs.feed_id_range());
+        assert_eq!(CHAOSLABS_RANGE,   OracleProvider::Reserved.feed_id_range());
         assert_eq!(AUTONOM_RANGE,     OracleProvider::Autonom.feed_id_range());
         assert_eq!(SWITCHBOARD_RANGE, OracleProvider::Switchboard.feed_id_range());
     }

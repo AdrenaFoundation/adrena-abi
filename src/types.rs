@@ -309,7 +309,10 @@ pub struct Cortex {
     pub admin: Pubkey,
     pub fee_redistribution_mint: Pubkey,
     pub protocol_fee_recipient: Pubkey,
-    pub pools: [Pubkey; 4],
+    // release/40: contiguous pool registry grown 4 -> 16 in place. The
+    // v39->v40 migration relocated every field below it forward by 384 bytes
+    // once so this stays a single clean array (see migrate_cortex_v39_to_v40).
+    pub pools: [Pubkey; 16],
     pub user_profiles_count: u64,
     pub governance_program: Pubkey,
     pub governance_realm: Pubkey,
@@ -327,8 +330,11 @@ pub struct Cortex {
     // Two-step admin transfer with timelock (Fidesium C1)
     pub pending_admin: Pubkey,
     pub admin_transfer_request_time: i64,
-    // Unused — delay is hardcoded to DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS
+    // Unused: delay is hardcoded to DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS
     pub admin_transfer_min_delay_seconds: i64,
+    // release/40: reserved space for future releases (r41+). Carve fields from
+    // here without a realloc/shift while capacity remains.
+    pub _reserved: [[u8; 32]; 8],
 }
 
 impl Cortex {
@@ -532,7 +538,7 @@ impl MultiOracleConfig {
         Self {
             providers: [
                 crate::oracle::OracleProvider::Switchboard as u8,
-                crate::oracle::OracleProvider::ChaosLabs as u8,
+                crate::oracle::OracleProvider::Reserved as u8,
                 crate::oracle::OracleProvider::Autonom as u8,
             ],
             min_agree: 2,
@@ -550,7 +556,7 @@ impl MultiOracleConfig {
             providers: [
                 crate::oracle::OracleProvider::Autonom as u8,
                 crate::oracle::OracleProvider::Switchboard as u8,
-                crate::oracle::OracleProvider::ChaosLabs as u8,
+                crate::oracle::OracleProvider::Reserved as u8,
             ],
             min_agree: 1,
             price_diff_threshold_bps: 100,
@@ -1758,6 +1764,13 @@ pub struct LimitOrder {
     pub amount: u64,
     pub leverage: u32,
     pub _padding2: [u8; 4],
+    // release/40: embedded SL/TP (0 == leg unset). Set at add_limit_order,
+    // editable in place via edit_limit_order, stamped onto the Position at
+    // execute time. Grew LimitOrder 112 -> 136 (LimitOrderBook 1848 -> 2232);
+    // promoted by migrate_limit_order_book_v39_to_v40.
+    pub stop_loss_limit_price: u64,
+    pub stop_loss_close_position_price: u64,
+    pub take_profit_limit_price: u64,
 }
 
 #[account(zero_copy)]

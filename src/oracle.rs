@@ -44,8 +44,13 @@ impl OracleVersion {
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Default, Debug)]
 #[repr(u8)]
 pub enum OracleProvider {
+    // release/40: slot 0 previously belonged to ChaosLabs (retired 2026-04).
+    // The discriminant + feed_id range (0..=29) are preserved so existing
+    // on-chain configs holding `providers[i] = 0` and the 6 stale feeds already
+    // registered in this range keep parsing. No signer is associated; the
+    // program's `verify_signature` rejects any batch tagged with this provider.
     #[default]
-    ChaosLabs = 0,
+    Reserved = 0,
     Autonom = 1,
     Switchboard = 2,
 }
@@ -53,7 +58,7 @@ pub enum OracleProvider {
 impl From<OracleProvider> for u8 {
     fn from(val: OracleProvider) -> Self {
         match val {
-            OracleProvider::ChaosLabs => 0,
+            OracleProvider::Reserved => 0,
             OracleProvider::Autonom => 1,
             OracleProvider::Switchboard => 2,
         }
@@ -65,7 +70,7 @@ impl TryFrom<u8> for OracleProvider {
 
     fn try_from(value: u8) -> std::result::Result<Self, Self::Error> {
         Ok(match value {
-            0 => OracleProvider::ChaosLabs,
+            0 => OracleProvider::Reserved,
             1 => OracleProvider::Autonom,
             2 => OracleProvider::Switchboard,
             _ => anyhow::bail!("Invalid oracle provider value: {}", value),
@@ -77,7 +82,7 @@ impl OracleProvider {
     // IMPORTANT: Make sure the feed ids never overlap between providers.
     pub const fn feed_id_range(&self) -> (u8, u8) {
         match self {
-            OracleProvider::ChaosLabs => (0, 29),
+            OracleProvider::Reserved => (0, 29),
             OracleProvider::Autonom => (30, 141),
             OracleProvider::Switchboard => (142, 255),
         }
@@ -85,7 +90,7 @@ impl OracleProvider {
 
     pub fn from_feed_id(feed_id: u8) -> Result<Self> {
         if (0..=29).contains(&feed_id) {
-            Ok(OracleProvider::ChaosLabs)
+            Ok(OracleProvider::Reserved)
         } else if (30..=141).contains(&feed_id) {
             Ok(OracleProvider::Autonom)
         } else if (142..=255).contains(&feed_id) {

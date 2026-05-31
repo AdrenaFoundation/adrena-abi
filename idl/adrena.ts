@@ -8,7 +8,7 @@ export type Adrena = {
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.3",
+    "version": "2.2.0",
     "spec": "0.1.0",
     "description": "adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -5620,6 +5620,128 @@ export type Adrena = {
           "type": {
             "defined": {
               "name": "distributeFeesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "editLimitOrder",
+      "docs": [
+        "release/40 — edit a pending limit order in place (trigger / limit /",
+        "leverage / embedded SL/TP). No collateral or SOL movement; owner-only",
+        "via the book PDA seed. See edit_limit_order.rs."
+      ],
+      "discriminator": [
+        42,
+        114,
+        3,
+        11,
+        137,
+        245,
+        206,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "docs": [
+            "#1"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#3"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "limitOrderBook",
+          "docs": [
+            "#4"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  95,
+                  111,
+                  114,
+                  100,
+                  101,
+                  114,
+                  95,
+                  98,
+                  111,
+                  111,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "editLimitOrderParams"
             }
           }
         }
@@ -12934,6 +13056,73 @@ export type Adrena = {
       "args": []
     },
     {
+      "name": "migrateCortexV39ToV40",
+      "docs": [
+        "Migrates Cortex from the release/39 layout (pools[4], 488 bytes) to the",
+        "release/40 layout (pools[16] + _reserved, 1128 bytes). One-time, run as",
+        "part of the r39 → r40 operator runbook. Idempotent."
+      ],
+      "discriminator": [
+        205,
+        60,
+        50,
+        94,
+        215,
+        161,
+        105,
+        147
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1 — admin authority. Verified against the captured `old.admin`."
+          ],
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "#2 — pays the rent delta for the +640 appended bytes."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#3 — Cortex PDA. Manual size check before realloc; can't be loaded as",
+            "`Cortex` via Anchor while still at the old size.",
+            ""
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "docs": [
+            "#4"
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "migrateCustodyV37ToV38",
       "discriminator": [
         211,
@@ -13092,6 +13281,115 @@ export type Adrena = {
               }
             ]
           }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrateLimitOrderBookV39ToV40",
+      "docs": [
+        "release/40 — one-shot repack of a v39 LimitOrderBook (1848B) to the v40",
+        "layout (2232B, LimitOrder grew +24B for embedded SL/TP). Permissionless;",
+        "payer funds the rent delta. Idempotent. See",
+        "migrate_limit_order_book_v39_to_v40.rs."
+      ],
+      "discriminator": [
+        32,
+        166,
+        98,
+        189,
+        134,
+        101,
+        175,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "#1 — pays the rent delta for the +384 appended bytes. Permissionless:",
+            "any signer may fund the migration."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "#2 — the book owner. Only used to derive the book PDA seed; not a signer."
+          ]
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#3"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "limitOrderBook",
+          "docs": [
+            "#4 — the LimitOrderBook PDA. Manual size check + repack; cannot be loaded",
+            "as the new typed account while still at the old size.",
+            ""
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  95,
+                  111,
+                  114,
+                  100,
+                  101,
+                  114,
+                  95,
+                  98,
+                  111,
+                  111,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "docs": [
+            "#5"
+          ],
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -19372,6 +19670,57 @@ export type Adrena = {
       "args": []
     },
     {
+      "name": "resyncOracleRegisteredPricesCount",
+      "docs": [
+        "Permissionless one-shot remediation for `Oracle.registered_prices_count`.",
+        "See `instructions/admin/initialization/resync_oracle_registered_prices_count.rs`",
+        "for the full rationale. Idempotent."
+      ],
+      "discriminator": [
+        186,
+        228,
+        210,
+        151,
+        15,
+        103,
+        156,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "#1 - Permissionless caller (any signer; pays tx fee)."
+          ],
+          "signer": true
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#2 - Oracle PDA. Must already be initialized (we read the bump that",
+            "init_oracle stored). Constraint matches `register_oracle_feed`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "setAdmin",
       "discriminator": [
         251,
@@ -21971,6 +22320,92 @@ export type Adrena = {
       "args": []
     },
     {
+      "name": "unregisterOracleFeed",
+      "docs": [
+        "Inverse of `register_oracle_feed` — admin-gated removal of a single",
+        "oracle feed slot. See `instructions/admin/initialization/unregister_oracle_feed.rs`",
+        "for safety posture. Does NOT validate cross-account consumers",
+        "(Custody / Pool.multi_oracle_config) — same posture as",
+        "`set_pool_oracle_config`; DAO proposal author is responsible."
+      ],
+      "discriminator": [
+        234,
+        187,
+        101,
+        231,
+        18,
+        106,
+        175,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1",
+            "Admin authority (DAO controlled via cortex.has_one = admin)."
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "unregisterOracleFeedParams"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "updateOracle",
       "discriminator": [
         112,
@@ -23827,6 +24262,24 @@ export type Adrena = {
           {
             "name": "leverage",
             "type": "u32"
+          },
+          {
+            "name": "stopLossLimitPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "stopLossClosePositionPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "takeProfitLimitPrice",
+            "type": {
+              "option": "u64"
+            }
           }
         ]
       }
@@ -24548,7 +25001,7 @@ export type Adrena = {
             "type": {
               "array": [
                 "pubkey",
-                4
+                16
               ]
             }
           },
@@ -24619,6 +25072,20 @@ export type Adrena = {
           {
             "name": "adminTransferMinDelaySeconds",
             "type": "i64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    32
+                  ]
+                },
+                8
+              ]
+            }
           }
         ]
       }
@@ -25048,6 +25515,54 @@ export type Adrena = {
                   "name": "multiBatchPrices"
                 }
               }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "editLimitOrderParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "triggerPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "limitPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "leverage",
+            "type": {
+              "option": "u32"
+            }
+          },
+          {
+            "name": "stopLossLimitPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "stopLossClosePositionPrice",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "takeProfitLimitPrice",
+            "type": {
+              "option": "u64"
             }
           }
         ]
@@ -26116,6 +26631,18 @@ export type Adrena = {
                 4
               ]
             }
+          },
+          {
+            "name": "stopLossLimitPrice",
+            "type": "u64"
+          },
+          {
+            "name": "stopLossClosePositionPrice",
+            "type": "u64"
+          },
+          {
+            "name": "takeProfitLimitPrice",
+            "type": "u64"
           }
         ]
       }
@@ -26959,6 +27486,26 @@ export type Adrena = {
           },
           {
             "name": "registeredPricesCount",
+            "docs": [
+              "Count of slots currently in use (name != default).",
+              "",
+              "Historical note (release/39 and earlier): this field was set only at",
+              "`init_oracle` and at the v38→v39 migration, never bumped by",
+              "`add_new_price_in_empty_slot` (called from `register_oracle_feed`,",
+              "`register_oracle_feeds_v38_to_v39`, and `add_synthetic_custody`).",
+              "As a result mainnet read 0 here despite multiple active feeds.",
+              "release/40 self-heals via `resync_registered_count()`, called from",
+              "every write path AND exposed as a permissionless remediation ix",
+              "(`resync_oracle_registered_prices_count`) so operators can fix",
+              "already-deployed accounts in one call.",
+              "",
+              "On-chain readers do NOT depend on this field — they iterate",
+              "`self.prices` directly via `find_price_for_provider` /",
+              "`get_current_feed_ids_for_provider` / `contains_feed_id`. Off-chain",
+              "consumers SHOULD also iterate slots and detect emptiness from content",
+              "(price == 0 OR empty name), since this field can lag for any account",
+              "that hasn't been written-to since the bug was patched."
+            ],
             "type": "u8"
           },
           {
@@ -29113,6 +29660,45 @@ export type Adrena = {
           {
             "name": "low",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unregisterOracleFeedParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "docs": [
+              "`OracleProvider as u8`. Must agree with `feed_id`'s range. Kept on the",
+              "wire for symmetry with `register_oracle_feed` and as an explicit",
+              "operator-intent assertion — catches typos like",
+              "`provider=Autonom, feed_id=2` (which targets the Reserved range)."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "feedId",
+            "docs": [
+              "Global feed id of the slot to remove. Must lie within",
+              "`provider.feed_id_range()`."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Expected name of the on-chain slot. Must match the slot's current",
+              "`name` byte-for-byte. An empty `LimitedString::default()` is rejected",
+              "because it would silently match against the empty-slot sentinel."
+            ],
+            "type": {
+              "defined": {
+                "name": "limitedString"
+              }
+            }
           }
         ]
       }

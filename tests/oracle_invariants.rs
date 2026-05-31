@@ -60,7 +60,7 @@ fn oracle_version_latest_is_v3() {
 
 #[test]
 fn oracle_provider_ranges_are_canonical() {
-    assert_eq!(OracleProvider::ChaosLabs.feed_id_range(), (0, 29));
+    assert_eq!(OracleProvider::Reserved.feed_id_range(), (0, 29));
     assert_eq!(OracleProvider::Autonom.feed_id_range(), (30, 141));
     assert_eq!(OracleProvider::Switchboard.feed_id_range(), (142, 255));
 }
@@ -92,10 +92,11 @@ fn oracle_provider_u8_round_trip() {
 }
 
 #[test]
-fn oracle_provider_default_is_chaoslabs() {
-    // Defensive: many on-chain code paths rely on Default = ChaosLabs.
+fn oracle_provider_default_is_reserved() {
+    // Defensive: many on-chain code paths rely on Default = slot 0 (the retired
+    // ChaosLabs slot, now Reserved).
     let default_p = OracleProvider::default();
-    assert_eq!(default_p as u8, OracleProvider::ChaosLabs as u8);
+    assert_eq!(default_p as u8, OracleProvider::Reserved as u8);
 }
 
 // ── 3. OraclePrice confidence band (low/high) ──────────────────────────────
@@ -384,9 +385,13 @@ fn cortex_byte_layout_unchanged_by_confidence_band_carve() {
     // migrated (which is currently NOT what `init_one_core` / migration ix
     // expect).
     //
-    // Body is 480 bytes (pre-discriminator). Total LEN = 8 + 480 = 488.
-    assert_eq!(std::mem::size_of::<Cortex>(), 480);
-    assert_eq!(Cortex::LEN, 488);
+    // release/40 grew Cortex (pools 4 -> 16 + a trailing _reserved block):
+    // body is now 1120 bytes (pre-discriminator), total LEN = 8 + 1120 = 1128.
+    // The confidence_band_bps carve below is independent of that growth and its
+    // offset/width invariant (asserted next) is what this test really guards.
+    // The size change is promoted on-chain by migrate_cortex_v39_to_v40.
+    assert_eq!(std::mem::size_of::<Cortex>(), 1120);
+    assert_eq!(Cortex::LEN, 1128);
 
     // Field offset of `confidence_band_bps` must be 6 (after the 6 single-byte
     // bumps/initialised/decimal fields), matching the prior _padding offset.
@@ -415,7 +420,7 @@ fn infer_provider_from_batch_matches_first_feed_id() {
     };
     assert_eq!(
         infer_provider_from_batch(&bp).unwrap() as u8,
-        OracleProvider::ChaosLabs as u8
+        OracleProvider::Reserved as u8
     );
 }
 
@@ -485,7 +490,7 @@ fn multi_batch_accepts_distinct_providers() {
     let mb = MultiBatchPrices {
         batches: vec![
             oracle::BatchPricesWithProvider {
-                provider: OracleProvider::ChaosLabs as u8,
+                provider: OracleProvider::Reserved as u8,
                 batch: BatchPrices {
                     prices: vec![],
                     signature: [0u8; 64],
