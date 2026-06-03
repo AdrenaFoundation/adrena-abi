@@ -124,11 +124,17 @@ const AUTONOM_OPENING_GOLDEN_HASH: &str =
 
 #[test]
 fn autonom_market_opening_message_hash_matches_golden_vector() {
+    // release/39_4: EMPTY per-feed vectors append zero bytes, so this golden
+    // vector is byte-identical to the pre-39_4 layout. The constant is
+    // deliberately unchanged — this pins backward-compatibility (a 39_4 program
+    // verifying an old-shape, empty-per-feed payload recovers the same signer).
     let data = AutonomMarketOpeningData {
         feeds: vec![36, 37, 38],
         market_close_affected_feeds: vec![36],
         market_open_timestamp: 1_700_000_000,
         market_close_timestamp: 1_700_086_400,
+        feed_market_open_timestamps: vec![],
+        feed_market_close_timestamps: vec![],
         signature: [0u8; 64],
         recovery_id: 0,
     };
@@ -145,6 +151,58 @@ fn autonom_market_opening_message_hash_matches_golden_vector() {
     }
 }
 
+/// release/39_4 — golden vector WITH per-feed windows populated. Pins the new
+/// appended layout (i64 LE opens then i64 LE closes, after feeds + affected) so
+/// it cannot drift away from the on-chain build_message_hash / the Autonom
+/// backend signer.
+const AUTONOM_OPENING_PER_FEED_GOLDEN_HASH: &str =
+    "ec4687162eda4a4c8dfb202b6279d72c51db53d928254126b28aa27cf8a5c69d";
+
+#[test]
+fn autonom_market_opening_per_feed_message_hash_matches_golden_vector() {
+    let data = AutonomMarketOpeningData {
+        feeds: vec![40, 41],
+        market_close_affected_feeds: vec![41],
+        market_open_timestamp: 1_700_000_000,
+        market_close_timestamp: 1_700_000_001,
+        feed_market_open_timestamps: vec![1_700_000_111, 1_700_000_222],
+        feed_market_close_timestamps: vec![1_700_009_333, 1_700_009_444],
+        signature: [0u8; 64],
+        recovery_id: 0,
+    };
+    let hash = data.build_message_hash().expect("hash builds");
+    let actual = hex::encode(hash);
+    if actual != AUTONOM_OPENING_PER_FEED_GOLDEN_HASH {
+        panic!(
+            "AutonomMarketOpeningData per-feed build_message_hash drift.\n\
+             expected: {AUTONOM_OPENING_PER_FEED_GOLDEN_HASH}\n\
+             actual:   {actual}\n\
+             If intentional, update the constant. Otherwise MrAutonom-signed \
+             market-opening txs will fail the on-chain secp256k1 verify.",
+        );
+    }
+}
+
+#[test]
+fn autonom_market_opening_per_feed_windows_change_hash() {
+    // Sanity: the per-feed windows ARE part of the signed bytes — changing one
+    // must change the hash (otherwise the signer isn't attesting them).
+    let mk = |open0: i64| AutonomMarketOpeningData {
+        feeds: vec![40, 41],
+        market_close_affected_feeds: vec![],
+        market_open_timestamp: 1_700_000_000,
+        market_close_timestamp: 1_700_000_001,
+        feed_market_open_timestamps: vec![open0, 1_700_000_222],
+        feed_market_close_timestamps: vec![1_700_009_333, 1_700_009_444],
+        signature: [0u8; 64],
+        recovery_id: 0,
+    };
+    assert_ne!(
+        mk(1_700_000_111).build_message_hash().unwrap(),
+        mk(1_700_000_999).build_message_hash().unwrap()
+    );
+}
+
 #[test]
 fn autonom_market_opening_signature_does_not_affect_hash() {
     let mk = |sig: [u8; 64]| AutonomMarketOpeningData {
@@ -152,6 +210,8 @@ fn autonom_market_opening_signature_does_not_affect_hash() {
         market_close_affected_feeds: vec![],
         market_open_timestamp: 1_700_000_000,
         market_close_timestamp: 1_700_086_400,
+        feed_market_open_timestamps: vec![],
+        feed_market_close_timestamps: vec![],
         signature: sig,
         recovery_id: 0,
     };

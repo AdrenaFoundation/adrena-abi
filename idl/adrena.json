@@ -2,7 +2,7 @@
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.3",
+    "version": "2.1.4",
     "spec": "0.1.0",
     "description": "Adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -24141,6 +24141,18 @@
             "type": "i64"
           },
           {
+            "name": "feed_market_open_timestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
+            "name": "feed_market_close_timestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
             "name": "signature",
             "type": {
               "array": [
@@ -24822,11 +24834,19 @@
             }
           },
           {
+            "name": "market_open_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "market_close_timestamp",
+            "type": "i64"
+          },
+          {
             "name": "_padding_autonom1",
             "type": {
               "array": [
                 "u8",
-                24
+                8
               ]
             }
           },
