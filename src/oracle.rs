@@ -9,9 +9,9 @@ pub const ORACLE_EXPONENT_SCALE: i32 = -9;
 pub const ORACLE_PRICE_SCALE: u128 = 1_000_000_000;
 const ORACLE_MAX_PRICE: u64 = (1 << 28) - 1;
 
-// Oracle pricing latency window. History: 15s (original) -> 5s (anti-vampire, release/37_2)
-// -> 7s (relaxed, release/37_4). Still 7s in release/39-postaudit.
-pub const STALENESS: i64 = 7; // in seconds
+/// Oracle pricing latency window, in seconds. On-chain `check_price_validity`
+/// rejects any stored price older than this at READ time.
+pub const STALENESS: i64 = 7;
 
 // Timestamp sanity bounds (catch wrong units / corrupted data)
 pub const YEAR_2020_SECONDS: i64 = 1_577_836_800;
@@ -32,7 +32,7 @@ pub const MAX_ORACLE_PRICES_COUNT: usize = 50;
 pub enum OracleVersion {
     V1 = 0,
     V2 = 2,
-    V3 = 3, // release/39 - increased MAX_ORACLE_PRICES_COUNT to 50
+    V3 = 3,
 }
 
 impl OracleVersion {
@@ -144,9 +144,8 @@ impl Oracle {
     }
 }
 
-//
-// OLD AND DEPRECATED VERSION OF Oracle - kept for migration purposes (pre-v39 = 20-slot layout)
-//
+// Pre-v3 Oracle layout (20 price slots). Retained only so migration tooling
+// can decode the old account bytes when reading historical state.
 pub mod legacy {
     use {
         crate::limited_string::LimitedString,
@@ -184,7 +183,6 @@ pub mod legacy {
         pub name: LimitedString,
     }
 
-    // OraclePreV39 - pre-release/39 struct with 20 price slots (before oracle expansion)
     #[account(zero_copy)]
     #[derive(Debug, BorshDeserialize, BorshSerialize)]
     #[repr(C)]
@@ -213,7 +211,6 @@ pub struct OraclePrice {
     pub name: LimitedString,
 }
 
-// Multi-provider oracle batch wire types (release/39-postaudit).
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct BatchPrices {
     pub prices: Vec<PriceData>,
@@ -497,8 +494,9 @@ impl OraclePrice {
 // pass the live value through `band_bps` (typically read via `cortex.get_confidence_band_bps()`
 // which maps the legacy-0 sentinel back to `Cortex::DEFAULT_CONFIDENCE_BAND_BPS` = 25).
 pub fn get_confidence_from_price(price: u64, feed_id: u8, band_bps: u16) -> Result<u64> {
-    // USDC feed ids per release/39 canonical layout (offset +5 in each provider range):
-    // ChaosLabs=5, Autonom=35, Switchboard=147
+    // USDC feed_ids: ChaosLabs=5, Autonom=35, Switchboard=147 (offset +5 in
+    // each provider range). Stables get a 0-bps band; the on-chain hardcode
+    // mirrors this list and must be edited in lockstep with any USDC slot move.
     if feed_id == 5 || feed_id == 35 || feed_id == 147 {
         return Ok(0);
     }
