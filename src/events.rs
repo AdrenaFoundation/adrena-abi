@@ -1,4 +1,4 @@
-// Ported verbatim from adrena/programs/adrena/src/events.rs (release/39).
+// Ported verbatim from adrena/programs/adrena/src/events.rs.
 // Kept as an ABI surface so off-chain consumers (MrNotification, indexers,
 // dashboards) decode the exact same byte layout the program emits via
 // `emit!(...)` without re-declaring structs locally.

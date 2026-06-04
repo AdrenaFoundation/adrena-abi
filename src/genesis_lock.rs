@@ -1,4 +1,4 @@
-// Ported from adrena/programs/adrena/src/state/genesis_lock.rs (release/39).
+// Ported from adrena/programs/adrena/src/state/genesis_lock.rs.
 // Zero-copy account — off-chain consumers decoding raw account data need the
 // exact field order + repr(C). Impl blocks with on-chain logic (campaign
 // state transitions, grant validation) are intentionally NOT ported.

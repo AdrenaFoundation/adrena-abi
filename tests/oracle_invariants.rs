@@ -29,7 +29,7 @@ fn oracle_constants_pinned() {
     assert_eq!(ORACLE_PRICE_SCALE, 1_000_000_000);
     assert_eq!(STALENESS, 7, "on-chain price staleness window");
     assert_eq!(MAX_WRITE_TIME_FUTURE_DRIFT_SECONDS, 2);
-    assert_eq!(MAX_ORACLE_PRICES_COUNT, 50, "release/39 v3 layout");
+    assert_eq!(MAX_ORACLE_PRICES_COUNT, 50, "Oracle v3 layout");
     assert_eq!(YEAR_2020_SECONDS, 1_577_836_800);
     assert_eq!(YEAR_2100_SECONDS, 4_102_444_800);
 }
@@ -266,7 +266,7 @@ fn get_token_amount_inverse_of_get_asset_amount_usd_within_rounding() {
 
 #[test]
 fn get_confidence_from_price_zero_for_usdc_feeds() {
-    // USDC feed ids: ChaosLabs=5, Autonom=35, Switchboard=147 (per release/39 layout).
+    // USDC feed ids: ChaosLabs=5, Autonom=35, Switchboard=147 (canonical +5 offset).
     // band_bps is irrelevant for USDC feeds — exemption hardcoded in the function.
     let band = adrena_abi::types::Cortex::DEFAULT_CONFIDENCE_BAND_BPS;
     assert_eq!(get_confidence_from_price(1_000_000_000, 5, band).unwrap(), 0);

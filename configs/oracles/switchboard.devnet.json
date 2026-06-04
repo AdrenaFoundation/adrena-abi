@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "devnet",
   "_provider": "switchboard",
-  "_note": "release/39 canonical Switchboard on-demand DEVNET feed map. Mirrors mainnet layout. Queue EYiAmGSdsQTuCw413V5BzaruWuCCSDgTPtBGvLkXHbe7 is the on-demand devnet default. Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. Slots 143 (jitoSOL) and 144 (BTC) currently use DUMMY feed hashes - they MUST be replaced with real Switchboard devnet hashes before Switchboard is enabled for those feeds in any pool's multi_oracle_config on devnet. Devnet hashes for SOL/WBTC/BONK/USDC verified end-to-end in providers-testing on 2026-04-11.",
+  "_note": "Canonical Switchboard on-demand DEVNET feed map. Mirrors mainnet layout. Queue EYiAmGSdsQTuCw413V5BzaruWuCCSDgTPtBGvLkXHbe7 is the on-demand devnet default. Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. Slots 143 (jitoSOL) and 144 (BTC) currently use DUMMY feed hashes - they MUST be replaced with real Switchboard devnet hashes before Switchboard is enabled for those feeds in any pool's multi_oracle_config on devnet. Devnet hashes for SOL/WBTC/BONK/USDC verified end-to-end in providers-testing on 2026-04-11.",
   "_queue": "EYiAmGSdsQTuCw413V5BzaruWuCCSDgTPtBGvLkXHbe7",
   "switchboard_feed_map": [
     {

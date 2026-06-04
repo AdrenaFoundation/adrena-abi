@@ -1,4 +1,4 @@
-// Ported from adrena/programs/adrena/src/state/user_profile.rs (release/39).
+// Ported from adrena/programs/adrena/src/state/user_profile.rs.
 // The UserProfile account stores these as raw `u8` (for zero-copy stability),
 // so off-chain consumers that want typed access round-trip through TryFrom/From.
 

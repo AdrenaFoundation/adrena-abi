@@ -9,8 +9,8 @@
 //! The unit test below verifies these constants stay in sync with the enum.
 //! If the two ever drift, that test fails and the build is red.
 //!
-//! release/39 canonical layout: each provider's range starts with the same
-//! 6-asset crypto block at offset +0..+5: SOL, jitoSOL, BTC, WBTC, BONK, USDC.
+//! Canonical layout: each provider's range starts with the same 6-asset
+//! crypto block at offset +0..+5: SOL, jitoSOL, BTC, WBTC, BONK, USDC.
 //!     ChaosLabs   (0..=29):   0=SOL, 1=jitoSOL, 2=BTC, 3=WBTC, 4=BONK, 5=USDC
 //!     Autonom     (30..=141): 30=SOL, 31=jitoSOL, 32=BTC, 33=WBTC, 34=BONK, 35=USDC
 //!     Switchboard (142..=255): 142=SOL, 143=jitoSOL, 144=BTC, 145=WBTC, 146=BONK, 147=USDC

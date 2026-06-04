@@ -31,7 +31,7 @@ pub const MAX_LOCKED_STAKE_COUNT: usize = 32;
 pub const FULLY_ALP_LIQUID_BREAKPOINT_TIMESTAMP: i64 = 1742385600;
 
 // =============================================================================
-// Instruction param structs (release/39-postaudit shape)
+// Instruction param structs
 // =============================================================================
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
@@ -141,7 +141,7 @@ pub struct RemoveLiquidityParams {
 }
 
 // =============================================================================
-// Deprecated legacy user profile (release/37)
+// Deprecated legacy user profile — retained for historical decode only
 // =============================================================================
 
 #[deprecated]
@@ -188,7 +188,7 @@ impl UserProfileV1 {
 }
 
 // =============================================================================
-// UserProfile (release/39-postaudit layout)
+// UserProfile
 // =============================================================================
 
 #[account(zero_copy)]
@@ -284,7 +284,7 @@ pub struct Staking {
 }
 
 // =============================================================================
-// Cortex (release/39-postaudit layout with admin timelock)
+// Cortex
 // =============================================================================
 
 #[account(zero_copy)]
@@ -297,12 +297,11 @@ pub struct Cortex {
     pub governance_token_bump: u8,
     pub initialized: u8,
     pub fee_conversion_decimals: u8,
-    // v2.1.2 (release/39_2): byte-compatible carve from the previous
-    // `_padding: [u8; 2]` slot. Same offset, same alignment, same size.
-    // Existing on-chain Cortex accounts read this field as 0; the helper
-    // `get_confidence_band_bps()` maps 0 back to DEFAULT_CONFIDENCE_BAND_BPS
-    // so behaviour is identical to v2.1.1 until the DAO writes an explicit
-    // value via `set_confidence_band_bps`.
+    // Byte-compatible carve from a former `_padding: [u8; 2]` slot. Same
+    // offset / alignment / size. Pre-existing Cortex accounts read 0 here;
+    // `get_confidence_band_bps()` maps 0 → `DEFAULT_CONFIDENCE_BAND_BPS` so
+    // behaviour is preserved until the DAO writes an explicit value via
+    // `set_confidence_band_bps`.
     pub confidence_band_bps: u16,
     pub lm_token_mint: Pubkey,
     pub inception_time: i64,
@@ -324,7 +323,7 @@ pub struct Cortex {
     pub ecosystem_bucket_minted_amount: u64,
     pub genesis_liquidity_alp_amount: u64,
     pub unique_position_id_counter: u64,
-    // Two-step admin transfer with timelock (Fidesium C1)
+    // Two-step admin transfer with timelock.
     pub pending_admin: Pubkey,
     pub admin_transfer_request_time: i64,
     // Unused — delay is hardcoded to DEFAULT_ADMIN_TRANSFER_DELAY_SECONDS
@@ -399,7 +398,7 @@ pub struct U128Split {
 }
 
 // =============================================================================
-// Pool-related enums (release/39 additions)
+// Pool-related enums
 // =============================================================================
 
 #[derive(PartialEq, Copy, Clone, Default, Debug)]
@@ -500,7 +499,7 @@ pub enum LeverageCheckType {
 }
 
 // =============================================================================
-// MultiOracleConfig (release/39, Fidesium H2: 16 -> 80 bytes)
+// MultiOracleConfig — 80 bytes total
 // =============================================================================
 
 #[derive(Copy, Clone, PartialEq, AnchorSerialize, AnchorDeserialize, Debug, Pod, Zeroable)]
@@ -513,9 +512,9 @@ pub struct MultiOracleConfig {
     pub price_diff_threshold_bps: u16,
     // Staleness threshold in seconds
     pub staleness_seconds: u16,
-    // Fidesium H2 (release/39): togglable asymmetric liquidation defense
+    // Togglable asymmetric liquidation defense.
     pub asymmetric_liquidation: u8,
-    // Fidesium H2 (release/39): togglable circuit breaker defense
+    // Togglable circuit breaker defense.
     pub circuit_breaker_enabled: u8,
     pub circuit_breaker_seconds: u16,
     pub _padding: [u8; 68],
@@ -590,7 +589,7 @@ impl MultiOracleConfig {
 }
 
 // =============================================================================
-// PositionExitFeeConfig (release/38+)
+// PositionExitFeeConfig
 // =============================================================================
 
 #[derive(
@@ -655,7 +654,7 @@ impl PositionExitFeeConfig {
 }
 
 // =============================================================================
-// Pool (release/39-postaudit layout)
+// Pool
 // =============================================================================
 
 #[account(zero_copy)]
@@ -690,7 +689,7 @@ pub struct Pool {
     // Timestamp of the last LP deposit - prevents same-second LP sandwich attacks
     pub last_lp_deposit_time: i64,
     //
-    // release/39 (Autonom) fields - consumes release/38 pool reserved bytes
+    // Autonom fields (carved from former pool reserved bytes).
     pub pool_type: u8, // PoolType
     pub oracle_provider: u8, // OracleProvider
     pub registered_synthetic_custody_count: u8,
@@ -721,12 +720,11 @@ pub struct Pool {
     pub cumulative_manager_fee_usd: u64,
     pub cumulative_lp_fee_usd: u64,
     //
-    // release/39 multi-oracle config
     pub multi_oracle_config: MultiOracleConfig,
     //
     pub synthetic_custodies: [Pubkey; MAX_SYNTHETIC_CUSTODIES],
     //
-    // Fidesium H2: reduced from 768 to 704 (MultiOracleConfig grew by 64 bytes: 16 -> 80)
+    // Was [u8; 768]; shrunk by 64 when MultiOracleConfig grew 16 → 80.
     pub _reserved: [u8; 704],
 }
 
@@ -739,7 +737,7 @@ impl Default for Pool {
 }
 
 // =============================================================================
-// Position (release/39-postaudit with VFR fields)
+// Position (with VFR fields)
 // =============================================================================
 
 #[account(zero_copy)]
@@ -773,7 +771,7 @@ pub struct Position {
     pub paid_interest_usd: u64,
     pub stop_loss_limit_price: u64,
     pub stop_loss_close_position_price: u64,
-    // Virtual Funding Rate tracking (release/39)
+    // Virtual Funding Rate tracking
     pub cumulative_long_to_short_snapshot: U128Split,
     pub cumulative_short_to_long_snapshot: U128Split,
     pub unrealized_funding_paid_usd: u64,
@@ -835,7 +833,7 @@ impl Position {
 }
 
 // =============================================================================
-// Custody sub-structures (release/39-postaudit)
+// Custody sub-structures
 // =============================================================================
 
 #[derive(
@@ -944,8 +942,8 @@ pub struct PositionsAccounting {
     pub locked_amount: u64,
     pub weighted_price: U128Split,
     pub total_quantity: U128Split,
-    // Fidesium H2: Aggregate VFR funding across all open positions on this side
-    // (materialized from release/38's _padding1: [u8; 8])
+    // Aggregate VFR funding paid across all open positions on this side
+    // (materialized from a former `_padding1: [u8; 8]` slot).
     pub cumulative_funding_paid_usd: u64,
     pub collateral_usd: u64, // Stat only used for long positions
     pub cumulative_interest_snapshot: U128Split,
@@ -955,7 +953,8 @@ pub struct PositionsAccounting {
     pub tmp_offset_end_ts: u64,
     pub tmp_offset: U128Split,
     pub unrealized_interest_usd: u64,
-    // Fidesium H2: (materialized from release/38's _padding2: [u8; 8])
+    // Aggregate VFR funding received (materialized from a former
+    // `_padding2: [u8; 8]` slot).
     pub cumulative_funding_received_usd: u64,
 }
 
@@ -996,7 +995,7 @@ pub struct VirtualFundingState {
 }
 
 // =============================================================================
-// Custody (release/39-postaudit)
+// Custody
 // =============================================================================
 
 #[account(zero_copy)]
@@ -1027,11 +1026,11 @@ pub struct Custody {
     pub borrow_rate_state: BorrowRateState,
     // Optimal utilization in BPS for the two-slope borrow rate model
     pub optimal_utilization_bps: u64,
-    // Virtual funding rate configuration and state (release/38+)
+    // Virtual funding rate configuration and state.
     pub virtual_funding: VirtualFundingParams,
     pub virtual_funding_state: VirtualFundingState,
     //
-    // release/39 (Autonom) fields
+    // Autonom fields.
     pub is_synthetic: u8,
     pub version: u8,
     pub oracle_feed_id: u8,
@@ -1040,20 +1039,20 @@ pub struct Custody {
     // Alignment padding (keeps the following i64 fields 8-byte aligned).
     pub _padding_autonom0: [u8; 4],
     //
-    // release/39_4 — PER-FEED market-hours window (carved from the former
+    // Per-feed market-hours window (carved from a former
     // `_padding_autonom1: [u8; 24]`; same offset, same total size, no realloc).
-    // Lets a single Autonom pool hold assets on DIFFERENT schedules (e.g.
+    // Lets a single Autonom pool hold assets on different schedules (e.g.
     // commodities ~23h + US equities 6.5h) without the per-pool window
     // conflicting. Set by `autonom_market_opening` per synthetic custody.
-    // `0` == unset, in which case the gate + AUM fall back to the pool-level
+    // `0` == unset; in that case the gate + AUM fall back to the pool-level
     // window (`Pool.market_open_timestamp` / `market_close_timestamp`), so
-    // existing on-chain custodies whose bytes are zeroed keep their behavior
+    // pre-existing custodies whose bytes are zeroed keep their behaviour
     // until armed.
     pub market_open_timestamp: i64,
     pub market_close_timestamp: i64,
     pub _padding_autonom1: [u8; 8],
     //
-    // Remaining reserved space for future releases (release/40+)
+    // Remaining reserved space for future releases.
     pub _reserved: [[u8; 32]; 6],
 }
 
@@ -1454,7 +1453,7 @@ impl LockedStake {
 /// program uses `require!` to abort, but off-chain consumers want to inspect
 /// every outcome, so each on-chain failure mode maps to its own variant.
 ///
-/// Coverage matrix (mirrors `pool.rs::check_leverage` on release/39):
+/// Coverage matrix (mirrors `pool.rs::check_leverage`):
 ///   * `MaxLeverageExceeded`            — emitted for every `LeverageCheckType`
 ///   * `MinInitialLeverageNotMet`       — `Initial | RemoveCollateral | IncreasePosition | AddCollateral`
 ///   * `MaxInitialLeverageExceeded`     — `Initial | RemoveCollateral | IncreasePosition`
@@ -1539,7 +1538,7 @@ impl Pool {
 
     /// Off-chain port of `Pool::check_leverage` from the adrena program.
     ///
-    /// Mirrors release/39 `programs/adrena/src/state/pool.rs::check_leverage`
+    /// Mirrors `adrena/programs/adrena/src/state/pool.rs::check_leverage`
     /// 1:1: same fee-selection rule (only `Liquidate` swaps `exit_fee` for
     /// `liquidation_fee`, and only when the latter dominates), same per-variant
     /// min/max bounds. The on-chain version uses `require!` and aborts; this
@@ -1615,7 +1614,7 @@ impl Pool {
     // Note: PnL is an unrealized PnL and is an estimation
     #[allow(clippy::too_many_arguments)]
     /// Off-chain port of `Pool::get_pnl_usd` from the adrena program.
-    /// Mirrors release/39 `programs/adrena/src/state/pool.rs::get_pnl_usd` 1:1
+    /// Mirrors `adrena/programs/adrena/src/state/pool.rs::get_pnl_usd` 1:1
     /// for the trigger path (mid price; conservative_pricing = false).
     ///
     /// VFR funding accounting (parity with on-chain pool.rs:1498-1517 / 1537 / 1589):
@@ -1837,7 +1836,7 @@ impl LimitOrder {
 // so off-chain consumers don't re-declare them.
 // =============================================================================
 
-// Source: adrena/programs/adrena/src/state/pool.rs (release/39).
+// Source: adrena/programs/adrena/src/state/pool.rs
 // Returned by close_position / liquidate paths. Not an on-chain account; this
 // is a plain calculation output consumed by event handlers and indexers.
 #[derive(Debug)]
@@ -1857,7 +1856,7 @@ pub struct ExitPositionNumbers {
     pub total_fee_usd: u64, // borrow_fee_usd + exit_fee_usd
 }
 
-// Source: adrena/programs/adrena/src/state/user_staking.rs (release/39).
+// Source: adrena/programs/adrena/src/state/user_staking.rs
 // The on-chain LOCKED_LM_STAKING_OPTIONS + LOCKED_LP_STAKING_OPTIONS tables
 // are defined against this shape. Off-chain consumers (UI, indexers) need
 // it to render multiplier tiers.

@@ -15,8 +15,8 @@
 //!      static was edited or the derivation changed — both warrant a failing
 //!      test.
 //!   2. The derived addresses are also asserted against hardcoded base58
-//!      strings (the on-chain truth as of release/39 mainnet) so a coordinated
-//!      "edit both lib.rs and the test" change still surfaces.
+//!      strings (mainnet on-chain truth) so a coordinated "edit both lib.rs
+//!      and the test" change still surfaces.
 
 use {
     adrena_abi::{

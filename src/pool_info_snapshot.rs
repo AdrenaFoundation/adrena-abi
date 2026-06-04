@@ -1,4 +1,4 @@
-// Ported from adrena/programs/adrena/src/state/pool_info_snapshot.rs (release/39).
+// Ported from adrena/programs/adrena/src/state/pool_info_snapshot.rs.
 // These PDAs are periodically refreshed on-chain; off-chain consumers read them
 // to avoid recomputing per-custody stats themselves (stats dashboards, indexers).
 

@@ -1,5 +1,5 @@
 // Ported from adrena/programs/adrena/src/state/vest.rs + vest_registry.rs +
-// instructions/admin/cortex/mint_lm_tokens_from_bucket.rs (release/39).
+// instructions/admin/cortex/mint_lm_tokens_from_bucket.rs.
 //
 // `Vest` is a zero-copy account — off-chain consumers decoding the raw
 // account data need the exact field order + repr(C) to match the on-chain

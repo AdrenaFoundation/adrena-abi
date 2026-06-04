@@ -1,4 +1,4 @@
-// Ported verbatim from adrena/programs/adrena/src/error.rs (release/39).
+// Ported verbatim from adrena/programs/adrena/src/error.rs.
 // Off-chain consumers decode program-returned error codes into
 // `AdrenaError` variants for human-readable logging / UI without bundling the
 // on-chain program.

@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "mainnet",
   "_provider": "switchboard",
-  "_note": "release/39 canonical Switchboard on-demand MAINNET feed map. adrena_feed_id range 142..255 reserved for Switchboard (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. All six slots are now Adrena-owned feeds on the mainnet on-demand queue. Slots 142 (SOLUSD) and 145 (WBTCUSD) were migrated 2026-04-19 from borrowed public-queue feeds to Adrena-owned definitions pinned via providers-testing/service/src/build-mainnet-feeds.ts (source JSON under providers-testing/service/config/solusd_mainnet.json and wbtcusd_mainnet.json). Queue A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w is the on-demand mainnet default.",
+  "_note": "Canonical Switchboard on-demand MAINNET feed map. adrena_feed_id range 142..255 reserved for Switchboard (see adrena/programs/adrena/src/state/pool.rs OracleProvider::feed_id_range). Crypto block 142-147 mirrors ChaosLabs (0-5) order: SOL, jitoSOL, BTC, WBTC, BONK, USDC. All six slots are now Adrena-owned feeds on the mainnet on-demand queue. Slots 142 (SOLUSD) and 145 (WBTCUSD) were migrated 2026-04-19 from borrowed public-queue feeds to Adrena-owned definitions pinned via providers-testing/service/src/build-mainnet-feeds.ts (source JSON under providers-testing/service/config/solusd_mainnet.json and wbtcusd_mainnet.json). Queue A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w is the on-demand mainnet default.",
   "_queue": "A43DyUGA7s8eXPxqEjJY6EBu1KKbNgfxF8h17VAHn13w",
   "switchboard_feed_map": [
     {

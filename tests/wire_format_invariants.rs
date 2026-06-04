@@ -124,10 +124,10 @@ const AUTONOM_OPENING_GOLDEN_HASH: &str =
 
 #[test]
 fn autonom_market_opening_message_hash_matches_golden_vector() {
-    // release/39_4: EMPTY per-feed vectors append zero bytes, so this golden
-    // vector is byte-identical to the pre-39_4 layout. The constant is
-    // deliberately unchanged — this pins backward-compatibility (a 39_4 program
-    // verifying an old-shape, empty-per-feed payload recovers the same signer).
+    // EMPTY per-feed vectors append zero bytes, so this golden hash is
+    // byte-identical to the legacy per-pool layout. The constant is
+    // deliberately unchanged — pins backward compatibility: a per-feed-aware
+    // program verifying an empty-per-feed payload recovers the same signer.
     let data = AutonomMarketOpeningData {
         feeds: vec![36, 37, 38],
         market_close_affected_feeds: vec![36],
