@@ -2,7 +2,7 @@
   "_schema_version": "3",
   "_cluster": "devnet",
   "_provider": "autonom",
-  "_note": "Devnet Autonom feed map. Mirrors mainnet feed-id assignments but devnet has only been bootstrapped with the launch commodity (XAU=36) plus the new equity launch (SPX500=39, NVDA=40). Slots 37 (XAG) and 38 (WTI) were never wired on devnet \u2014 the gap is intentional, the slot numbers stay reserved to match mainnet layout. Replace API URL/key if devnet Autonom endpoint differs.",
+  "_note": "Devnet Autonom feed map. Full feed-id parity with mainnet so any devnet pool whose feedIds mirror mainnet resolves cleanly through the shared symbol/sessioned lookup (MrAutonom's splitFeedIdsBySession hard-fails on unknown feed_id). Devnet on-chain provisioning may lag mainnet \u2014 a slot listed here is signable by the autonom backend if devnet is configured for it, but the slot does not have to be registered in the on-chain Oracle account on devnet. Replace API URL/key if devnet Autonom endpoint differs.",
   "autonom_feed_map": [
     {
       "adrena_feed_id": 30,
@@ -39,6 +39,18 @@
       "adrena_feed_id": 36,
       "symbol": "XAU",
       "autonom_feed_id": 2056
+    },
+    {
+      "adrena_feed_id": 37,
+      "symbol": "XAG",
+      "autonom_feed_id": 2069,
+      "_comment": "Silver. Mirrors mainnet assignment so devnet pools sharing the mainnet feedIds list resolve cleanly through MrAutonom's symbol/sessioned lookup."
+    },
+    {
+      "adrena_feed_id": 38,
+      "symbol": "WTI",
+      "autonom_feed_id": 2035,
+      "_comment": "Crude oil (WTI). Mirrors mainnet assignment so devnet pools sharing the mainnet feedIds list resolve cleanly through MrAutonom's symbol/sessioned lookup."
     },
     {
       "adrena_feed_id": 39,

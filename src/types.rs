@@ -1037,8 +1037,21 @@ pub struct Custody {
     pub oracle_feed_id: u8,
     pub trade_oracle_feed_id: u8,
     pub seed: [u8; 32],
+    // Alignment padding (keeps the following i64 fields 8-byte aligned).
     pub _padding_autonom0: [u8; 4],
-    pub _padding_autonom1: [u8; 24],
+    //
+    // release/39_4 — PER-FEED market-hours window (carved from the former
+    // `_padding_autonom1: [u8; 24]`; same offset, same total size, no realloc).
+    // Lets a single Autonom pool hold assets on DIFFERENT schedules (e.g.
+    // commodities ~23h + US equities 6.5h) without the per-pool window
+    // conflicting. Set by `autonom_market_opening` per synthetic custody.
+    // `0` == unset, in which case the gate + AUM fall back to the pool-level
+    // window (`Pool.market_open_timestamp` / `market_close_timestamp`), so
+    // existing on-chain custodies whose bytes are zeroed keep their behavior
+    // until armed.
+    pub market_open_timestamp: i64,
+    pub market_close_timestamp: i64,
+    pub _padding_autonom1: [u8; 8],
     //
     // Remaining reserved space for future releases (release/40+)
     pub _reserved: [[u8; 32]; 6],

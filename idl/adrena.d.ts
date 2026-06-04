@@ -8,7 +8,7 @@ export type Adrena = {
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.3",
+    "version": "2.1.4",
     "spec": "0.1.0",
     "description": "adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -24147,6 +24147,18 @@ export type Adrena = {
             "type": "i64"
           },
           {
+            "name": "feedMarketOpenTimestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
+            "name": "feedMarketCloseTimestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
             "name": "signature",
             "type": {
               "array": [
@@ -24828,11 +24840,19 @@ export type Adrena = {
             }
           },
           {
+            "name": "marketOpenTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "marketCloseTimestamp",
+            "type": "i64"
+          },
+          {
             "name": "paddingAutonom1",
             "type": {
               "array": [
                 "u8",
-                24
+                8
               ]
             }
           },
