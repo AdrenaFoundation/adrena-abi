@@ -1,6 +1,6 @@
 {
   "name": "@adrena/abi",
-  "version": "2.1.4-release39.4.0",
+  "version": "2.1.5-release39.5.0",
   "description": "Canonical Adrena program IDL + oracle feed maps. Pinned by every offchain consumer via github commit ref.",
   "private": false,
   "type": "commonjs",

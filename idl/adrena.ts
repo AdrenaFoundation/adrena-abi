@@ -8,7 +8,7 @@ export type Adrena = {
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "spec": "0.1.0",
     "description": "adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -18826,6 +18826,142 @@ export type Adrena = {
       "returns": "u8"
     },
     {
+      "name": "removeSyntheticCustody",
+      "discriminator": [
+        29,
+        210,
+        157,
+        210,
+        248,
+        235,
+        79,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "transferAuthority",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  102,
+                  101,
+                  114,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#3"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#4"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "custody",
+          "docs": [
+            "#5",
+            "Must be a synthetic custody owned by this pool (token custodies go through",
+            "`remove_custody`, which also drains/closes their vault)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#6"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "resolvePositionBorrowFees",
       "discriminator": [
         220,
@@ -19986,6 +20122,97 @@ export type Adrena = {
           "type": {
             "defined": {
               "name": "setCustodyMaxCumulativeShortPositionSizeUsdParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "setCustodyTradeHalt",
+      "discriminator": [
+        77,
+        17,
+        66,
+        197,
+        41,
+        248,
+        254,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "custody",
+          "docs": [
+            "#4",
+            "Supports both token custodies (PDA from mint) and synthetic custodies (PDA from seed).",
+            "release/39_5 — ALSO asserts `custody.pool == pool` (the explicit owning-pool bind",
+            "the other per-custody setters leave implicit; mirrors migrate_custody_v38_to_v39)."
+          ],
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "setCustodyTradeHaltParams"
             }
           }
         }
@@ -23599,6 +23826,11 @@ export type Adrena = {
       "code": 6110,
       "name": "oracleAccountCapacityExhausted",
       "msg": "Oracle account does not have enough empty slots for the requested registrations"
+    },
+    {
+      "code": 6111,
+      "name": "tradeHalted",
+      "msg": "Trade halted: this custody's close/liquidate exit path is halted by admin"
     }
   ],
   "types": [
@@ -24848,13 +25080,12 @@ export type Adrena = {
             "type": "i64"
           },
           {
-            "name": "paddingAutonom1",
-            "type": {
-              "array": [
-                "u8",
-                8
-              ]
-            }
+            "name": "marketCloseEventTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "tradeHalt",
+            "type": "u8"
           },
           {
             "name": "reserved",
@@ -24866,7 +25097,16 @@ export type Adrena = {
                     32
                   ]
                 },
-                6
+                5
+              ]
+            }
+          },
+          {
+            "name": "reservedTail",
+            "type": {
+              "array": [
+                "u8",
+                31
               ]
             }
           }
@@ -28348,6 +28588,18 @@ export type Adrena = {
           {
             "name": "maxCumulativeShortPositionSizeUsd",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "setCustodyTradeHaltParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tradeHalt",
+            "type": "bool"
           }
         ]
       }

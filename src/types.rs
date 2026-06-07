@@ -1050,10 +1050,18 @@ pub struct Custody {
     // until armed.
     pub market_open_timestamp: i64,
     pub market_close_timestamp: i64,
-    pub _padding_autonom1: [u8; 8],
+    // release/39_5 — mirrors on-chain programs/adrena/src/state/custody.rs: per-feed
+    // corporate-action close-event instant, carved from the former
+    // `_padding_autonom1: [u8; 8]` (same offset, same size, no realloc).
+    pub market_close_event_timestamp: i64,
+    // release/39_5 — per-custody emergency exit halt (0 = active, 1 = halted), carved
+    // from the former `_reserved` block (1 byte; the reserved block shrinks 192 -> 191).
+    pub trade_halt: u8,
     //
-    // Remaining reserved space for future releases.
-    pub _reserved: [[u8; 32]; 6],
+    // Remaining reserved space for future releases (was `[[u8; 32]; 6]` = 192; 1 byte
+    // reallocated to `trade_halt`). Total Custody size unchanged.
+    pub _reserved: [[u8; 32]; 5],
+    pub _reserved_tail: [u8; 31],
 }
 
 impl Custody {
