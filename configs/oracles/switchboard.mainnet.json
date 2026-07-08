@@ -48,8 +48,15 @@
     {
       "adrena_feed_id": 146,
       "symbol": "BONKUSD",
-      "switchboard_feed_hash": "efc3feb6353478af641540457ca7e7a778e7dddb446f436d6bad7e15d809010c",
-      "_feed_address": "4MULkeCpERgxU94HPFaBeM2kmwYjbM3iHfsvSXxyjAs7"
+      "switchboard_feed_hash": "8bffd0292bf507990a13dacbc9950cded188c491c7bba54ca5d7dc5b49e6bd60",
+      "_cid": "bafkreiel77icsk7va6mque62zpezkdg62gemjeohxosuzjox3rnutzv5ma",
+      "_feed_name": "Adrena BONK/USD Price Feed",
+      "_pinned_on": ["https://crossbar.switchboard.xyz"],
+      "_source_jobs": "providers-testing/service/config/bonkusd_mainnet.json — medianTask over Kraken BONKUSD + Coinbase Exchange BONK-USD + Coinbase retail BONK-USD (all direct BONK-USD, no USDT leg, no Jupiter), minSuccessfulRequired=2, maxRangePercent=2.0. Built via build-mainnet-feeds.ts buildBonkUsdFeed.",
+      "_note": "2026-07-08: replaced the original Adrena BONK feed (efc3feb, _prev below). Its median relied on Binance BONKUSDT (HTTP 451 geo-block from the oracle's OVH-France egress 141.94.193.169) + api.jup.ag BONK->USDC quote (HTTP 429), dropping 2 of 3 median jobs below minSuccessfulRequired=2 -> ORACLE_CONSENSUS_FAILED, which blanked the whole 6-feed consensus batch. New feed uses only direct BONK-USD markets (Coinbase retail + Coinbase Exchange + Kraken). Pinned to crossbar.switchboard.xyz; oracle gateway signature verified (value 0.000004024 via queue.fetchManagedUpdateIxs). Same pattern as the jitoSOL 429 fix (143).",
+      "_prev_switchboard_feed_hash": "efc3feb6353478af641540457ca7e7a778e7dddb446f436d6bad7e15d809010c",
+      "_prev_feed_address": "4MULkeCpERgxU94HPFaBeM2kmwYjbM3iHfsvSXxyjAs7",
+      "_prev_feed_name": "BONK/USD (Binance 451 + api.jup.ag 429)"
     },
     {
       "adrena_feed_id": 147,
