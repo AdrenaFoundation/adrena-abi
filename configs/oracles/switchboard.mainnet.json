@@ -18,8 +18,15 @@
     {
       "adrena_feed_id": 143,
       "symbol": "JITOSOLUSD",
-      "switchboard_feed_hash": "cfa7308a1bf3291226c8df6eb288812c3beaffc614fce15146096d318dd1f3a6",
-      "_feed_address": "8uTYSufNFNUsjhBQ9bzX4GVBesPbP73eJnoRyUGepxy1"
+      "switchboard_feed_hash": "8236c69fa7aa4df54d330f6c0ec6d564a41d252723df4bbf89db66ee40c38747",
+      "_feed_name": "Surge Stream JITOSOL/USD, WEIGHTED",
+      "_cid": "bafkreiecg3dj7j5kjx2u2mypnqhmnvleuqoskjzd35f37co3m3xebq4hi4",
+      "_pinned_on": ["https://crossbar.switchboard.xyz", "https://crossbar.autonom.cc"],
+      "_source_jobs": "Single switchboardSurgeTask (source WEIGHTED, symbol JITOSOL/USD). No per-request external HTTP dependency, so it cannot hit the api.jup.ag rate-limit failure mode. minJobResponses=1, maxJobRangePct=1.",
+      "_note": "2026-07-08: replaced the Adrena-owned 'jitoSOL/USD Redesigned Price Feed' (cfa7308a...) with Switchboard's Surge WEIGHTED feed. The old feed's two jupiterSwapTask legs returned HTTP 429 from api.jup.ag, dropping 2 of its 3 median jobs below minSuccessfulRequired=2 (ORACLE_UNAVAILABLE / ORACLE_CONSENSUS_FAILED at the gateway). Previous definition preserved under _prev_* below so it can be flipped back. See sb.md.",
+      "_prev_switchboard_feed_hash": "cfa7308a1bf3291226c8df6eb288812c3beaffc614fce15146096d318dd1f3a6",
+      "_prev_feed_address": "8uTYSufNFNUsjhBQ9bzX4GVBesPbP73eJnoRyUGepxy1",
+      "_prev_feed_name": "jitoSOL/USD Redesigned Price Feed"
     },
     {
       "adrena_feed_id": 144,
