@@ -48,15 +48,14 @@
     {
       "adrena_feed_id": 146,
       "symbol": "BONKUSD",
-      "switchboard_feed_hash": "8bffd0292bf507990a13dacbc9950cded188c491c7bba54ca5d7dc5b49e6bd60",
-      "_cid": "bafkreiel77icsk7va6mque62zpezkdg62gemjeohxosuzjox3rnutzv5ma",
+      "switchboard_feed_hash": "71e4615ff86c030d71288a8ea1cb9448773da5ba5d7bce2477cd5cc96efba26c",
+      "_cid": "bafkreidr4rqv76dmamgxckekr2q4xfcio462los5pphci56nltew565cnq",
       "_feed_name": "Adrena BONK/USD Price Feed",
       "_pinned_on": ["https://crossbar.switchboard.xyz"],
-      "_source_jobs": "providers-testing/service/config/bonkusd_mainnet.json — medianTask over Kraken BONKUSD + Coinbase Exchange BONK-USD + Coinbase retail BONK-USD (all direct BONK-USD, no USDT leg, no Jupiter), minSuccessfulRequired=2, maxRangePercent=2.0. Built via build-mainnet-feeds.ts buildBonkUsdFeed.",
-      "_note": "2026-07-08: replaced the original Adrena BONK feed (efc3feb, _prev below). Its median relied on Binance BONKUSDT (HTTP 451 geo-block from the oracle's OVH-France egress 141.94.193.169) + api.jup.ag BONK->USDC quote (HTTP 429), dropping 2 of 3 median jobs below minSuccessfulRequired=2 -> ORACLE_CONSENSUS_FAILED, which blanked the whole 6-feed consensus batch. New feed uses only direct BONK-USD markets (Coinbase retail + Coinbase Exchange + Kraken). Pinned to crossbar.switchboard.xyz; oracle gateway signature verified (value 0.000004024 via queue.fetchManagedUpdateIxs). Same pattern as the jitoSOL 429 fix (143).",
-      "_prev_switchboard_feed_hash": "efc3feb6353478af641540457ca7e7a778e7dddb446f436d6bad7e15d809010c",
-      "_prev_feed_address": "4MULkeCpERgxU94HPFaBeM2kmwYjbM3iHfsvSXxyjAs7",
-      "_prev_feed_name": "BONK/USD (Binance 451 + api.jup.ag 429)"
+      "_source_jobs": "medianTask over Coinbase Exchange BONK-USD + Binance BONKUSDT x USDT/USD + MEXC BONKUSDT x USDT/USD, minSuccessfulRequired=2, maxRangePercent=1.5. Same shape as the WBTC feed (145). Kraken dropped: its thin BONK/USD last-trade (~0.000003) drifts ~6.8% off the real ~0.0000028 and blew the range guard. Binance is HTTP-451 geo-blocked from the oracle egress 141.94.193.169 so it is dead weight, but Coinbase + MEXC carry the 2-of-3 exactly like WBTC. Gateway liveness verified: 9/9 signed 200, value ~0.0000028 matching autonom.",
+      "_note": "2026-07-18: replaced 8bffd029 (_prev below), which failed with TaskError MaxRangeExceeded. Its median included Kraken BONKUSD, whose thin/stale last-trade (~0.000003) drifted ~6.8% off the real ~0.0000028, exceeding maxRangePercent -> ORACLE_UNAVAILABLE -> on-chain MissingOraclePrice(6088), which blocked MrOracle stage 2 / AUM. Lineage: efc3feb6 (Binance451 + jup429) -> 8bffd029 (Kraken MaxRangeExceeded) -> 71e4615 (this: drop Kraken, WBTC-shape). Same playbook as the jitoSOL 143 fix.",
+      "_prev_switchboard_feed_hash": "8bffd0292bf507990a13dacbc9950cded188c491c7bba54ca5d7dc5b49e6bd60",
+      "_prev_feed_name": "Adrena BONK/USD Price Feed (Kraken MaxRangeExceeded)"
     },
     {
       "adrena_feed_id": 147,
